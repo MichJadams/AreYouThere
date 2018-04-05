@@ -1,14 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+  <head>
+    <title>WebGL Demo</title>
+    <meta charset="utf-8">
 
-    <canvas id = "glCanvas" width="640" height="480"></canvas>
-    
-</body>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <link rel="stylesheet" href="./webgl.css" type="text/css">
+
+
+  </head>
+
+  <body>
+    <canvas id="glcanvas" width="640" height="480"></canvas>
+  </body>
+ 
+  
+  <script src="js/gl-matrix.js"></script>
+
+
+  <script src="js/drawScene.js"></script>
+
+  <script src="js/initBuffers.js"></script>
+
+  <script src="js/shaders/fsSource.js"></script>
+
+  <script src="js/shaders/vsSource.js"></script>
+  
+  <script src="js/shaders/shader.js"></script>
+
+
+  <script src="js/main.js"></script>
+
+
+
+
 </html>
