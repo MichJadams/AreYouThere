@@ -3,35 +3,14 @@
   <head>
     <title>WebGL Demo</title>
     <meta charset="utf-8">
-
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <link rel="stylesheet" href="./webgl.css" type="text/css">
-
-
   </head>
-
   <body>
-    <canvas id="glcanvas" width="640" height="480"></canvas>
+    <!-- <canvas id="glcanvas" width="640" height="480"></canvas> -->
+    <div id="gameScene"></div>
   </body>
- 
-  
-  <script src="js/gl-matrix.js"></script>
-
-
-  <script src="js/drawScene.js"></script>
-
-  <script src="js/initBuffers.js"></script>
-
-  <script src="js/shaders/fsSource.js"></script>
-
-  <script src="js/shaders/vsSource.js"></script>
-  
-  <script src="js/shaders/shader.js"></script>
-
-
-  <script src="js/main.js"></script>
-
-
-
+  <!-- <script src="js/main.js" type="module"></script> -->
+  <script src="public/bundle.js"></script>
 
 </html>

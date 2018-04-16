@@ -1,3 +1,4 @@
+var webpack = require('webpack');
 module.exports = {
     /* starting point for our frontend JavaScript (place to enter when bundling) */
     entry: './js/main.js',
@@ -14,5 +15,22 @@ module.exports = {
         exclude: /(node_modules|bower_components)/, // which folders to ignore / not apply this to
         use: ['babel-loader'] // which loader to use for this rule-set --> check out .babelrc for our specified rules
       }]
-    }
+    },
+    resolve: {
+      alias: {
+        'three/OrbitControls': __dirname+'/node_modules/three/examples/js/controls/OrbitControls.js',
+        'three/OBJLoader': __dirname+'/node_modules/three/examples/js/loaders/OBJLoader.js'
+        // ...
+      }
+    },
+    
+    //...
+    
+    plugins:[
+      
+      new webpack.ProvidePlugin({
+        'THREE': 'three'
+      }),
+      //...
+    ]
   }
