@@ -1,8 +1,21 @@
-console.log("here in the create scene file")
 
-function createScene(){
+import 'three';
+import {render, onWindowResize } from './initScene'
 
-    //add a check here to see number of players.... 
+export let scene;
+
+export let hero;
+export let sceneWidth;
+export let sceneHeight;
+export let camera;
+export let renderer;
+export let dom;
+export let sun;
+export let ground;
+export let orbitControl;
+
+export function createScene(){
+    //add a check here to see number of players.... eventually 
     sceneWidth=window.innerWidth;
     sceneHeight=window.innerHeight;
     scene = new THREE.Scene();//the 3d scene
@@ -23,7 +36,7 @@ function createScene(){
 	hero.receiveShadow=false;
     hero.position.y=2;
     hero.name = "hero"
-    scene.add( hero );
+    scene.add(hero) 
     
 	var planeGeometry = new THREE.PlaneGeometry( 5, 5, 4, 4 );
 	var planeMaterial = new THREE.MeshStandardMaterial( { color: 0x00ff00 } )
@@ -32,7 +45,8 @@ function createScene(){
 	ground.castShadow=false;
     ground.rotation.x=-Math.PI/2;
     ground.name = "ground"
-	scene.add( ground );
+    scene.add( ground )
+
 
 	camera.position.z = 5;
 	camera.position.y = 1;
@@ -40,13 +54,15 @@ function createScene(){
 	sun = new THREE.DirectionalLight( 0xffffff, 0.8);
 	sun.position.set( 0,4,1 );
 	sun.castShadow = true;
-	scene.add(sun);
+    scene.add(sun);
+
 	//Set up shadow properties for the sun light
 	sun.shadow.mapSize.width = 256;
 	sun.shadow.mapSize.height = 256;
 	sun.shadow.camera.near = 0.5;
 	sun.shadow.camera.far = 50 ;
-	sun.name = "sun"
+
+    scene.sun = sun 
 	orbitControl = new THREE.OrbitControls( camera, renderer.domElement );//helper to rotate around in scene
 	orbitControl.addEventListener( 'change', render );
 	//orbitControl.enableDamping = true;
@@ -57,7 +73,6 @@ function createScene(){
 	//scene.add( helper );// enable to see the light cone
 	
 	window.addEventListener('resize', onWindowResize, false);//resize callback
-    console.log("scene is", scene)
+ 
 }
-createScene()
-export default class scene{};
+

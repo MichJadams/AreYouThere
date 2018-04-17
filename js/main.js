@@ -1,54 +1,52 @@
 import 'three';
 import 'three/OrbitControls';
-
-let sceneWidth;
-let sceneHeight;
-let camera;
-let scene;
-let renderer;
-let dom;
-let hero;
-let sun;
-let ground;
-let orbitControl;
-
-
+import {createScene} from './createScene.js'
+import {update} from './initScene.js'
+import {Client} from './client.js'
 
 function init() {
 	// set up the scene
-
+	createScene();
+  Client.sendTest("je")
 	//call game loop
-  let gamestate = 'initilize'
-
-  console.log("but I did get here")
-
- 
-  const gameLoop=(gamestate)=>{
-
-    console.log("here")
-    switch(gamestate){
-
-      case 'initilize':
-      createScene();
-      gameState = 'fade in';
-      break; 
-      
-      case 'fade in':
-      //add something here with instructions and potentially audio?? so kewl
-      gameState = 'play'
-      break;
-      
-      case 'play':
-      update();
-      break;
-      
-      case 'fade out':
-      console.log("game over, bye")
-      break;
-    }
-    // gameLoop(gamestate); //merp
-  }
-  gameLoop(gamestate)
-
+	update();
 }
+
+
+
+// function init() {
+//   let gamestate = 'initilize'
+  
+//   const gameLoop=(gamestate,update)=>{
+    
+//     switch(gamestate){
+      
+//       case 'initilize':
+//       createScene();
+//       gamestate = 'fade in';
+//       gameLoop(gamestate,update); //merp
+
+//       break; 
+      
+//       case 'fade in':
+      
+//       //add something here with instructions and potentially audio?? so kewl
+//       gamestate = 'play'
+//       gameLoop(gamestate,update)
+//       break;
+      
+//       case 'play':
+//       console.log("inside the play case ", typeof update)
+//       update();
+//       break;
+      
+//       case 'fade out':
+//       console.log("game over, bye")
+//       break;
+//     }
+//     // gameLoop(gamestate,update); //merp
+//   }
+//   gameLoop(gamestate,update)
+
+// }
 init();

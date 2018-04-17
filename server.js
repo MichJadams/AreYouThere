@@ -12,10 +12,22 @@ app.use('/js', express.static(__dirname+'/js'))
 
 
 app.get('/', (req,res,next)=>{
-    console.log(__dirname+'/index.html')
+
     res.sendFile(__dirname +'/index.html')
 })
 
+io.on('connection',(socket)=>{
+    console.log("connection")
+    
+    socket.on('newPlayer', ()=>{
+        console.log("connected!")
+        socket.on('playerJoined',()=>{
+            io.emit('newplayer')
+        })
+    })
+    
+    
+})
 server.listen(process.env.PORT || 8081, ()=>{
     console.log("listening on port", server.address().port)
 })

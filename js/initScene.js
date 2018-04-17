@@ -1,24 +1,37 @@
-console.log("here in the init scene file")
+import 'three'
+import {
+scene,
+hero,
+sceneWidth,
+sceneHeight,
+camera,
+renderer,
+dom,
+sun,
+ground,
+orbitControl,
+} from './createScene'
 
-import scene from './createScene'
-
-const update=()=>{
+export const update=()=>{
     //animate
-    scene.childern[0].rotation.x += 0.01;
+    // console.log("the secne height in update is", sceneHeight)
+    console.log("hrjfdsafae")
+    // console.log("Here are all the things", scene, renderer,sceneHeight,sceneWidth, camera)
+    hero.rotation.x += 0.01;
     hero.rotation.y += 0.01;
     render();
-	requestAnimationFrame(update);//request next update
+    requestAnimationFrame(update);//request next update
 }
-const render=()=>{
-    console.log("rerender??")
+export const render=()=>{
+    // console.log("rednering", scene, camera)
     renderer.render(scene, camera);//draw
 }
-const onWindowResize=()=>{
-	//resize & align
+export const onWindowResize=()=>{
+    //resize & align
+    // console.log("here")
 	sceneHeight = window.innerHeight;
 	sceneWidth = window.innerWidth;
 	renderer.setSize(sceneWidth, sceneHeight);
 	camera.aspect = sceneWidth/sceneHeight;
 	camera.updateProjectionMatrix();
 }
-update()
