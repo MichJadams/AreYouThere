@@ -1,6 +1,7 @@
 
 import 'three';
 import {render, onWindowResize } from './initScene'
+import {Client} from './client.js'
 
 export let scene;
 
@@ -13,6 +14,7 @@ export let dom;
 export let sun;
 export let ground;
 export let orbitControl;
+
 
 export function createScene(){
     //add a check here to see number of players.... eventually 

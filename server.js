@@ -16,15 +16,27 @@ app.get('/', (req,res,next)=>{
     res.sendFile(__dirname +'/index.html')
 })
 
+server.players = {}
+
+io.use(cookierParser())
 io.on('connection',(socket)=>{
     console.log("connection")
-    
-    socket.on('newPlayer', ()=>{
-        console.log("connected!")
-        socket.on('playerJoined',()=>{
-            io.emit('newplayer')
-        })
+    socket.on('test', (data)=>{
+        console.log("connected!", )
+        console.log("sent this string", data)
     })
+
+    socket.on('playerJoined', ()=>{
+        console.log("a new player joined, and thier ID is ", socket.request.cookies.io)
+        server.players[socket.request.cookies.io] = {}
+        console.log("the players in the waiting room are", server.players)
+        console.log(Object.keys(server.players))
+        if(Object.keys(server.players) >=2){
+            console.log("starting the game with",Object.keys(server.players).length, " players" )
+            io.emit('startgame')
+        }
+    })
+
     
     
 })

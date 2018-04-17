@@ -11,6 +11,7 @@ sun,
 ground,
 orbitControl,
 } from './createScene'
+import {Client} from './client.js'
 
 export const update=()=>{
     //animate

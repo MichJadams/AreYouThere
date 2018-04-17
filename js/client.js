@@ -1,14 +1,12 @@
 console.log("hereexport ")
 export let Client = {}
 Client.socket = io.connect()
-Client.sendTest = ()=>{
+Client.sendTest = (data)=>{
     console.log("test sent to the server")
-    Client.socket.emit('test')
+    Client.socket.emit('test',data)
 }
-Client.playerJoined = function(){
-    console.log("player joined")
-    Client.Socket.emit('playerJoined')
+
+Client.playerJoined=()=>{
+    console.log("a player joined")
+    Client.socket.emit('playerJoined')
 }
-Client.socket.on('newPlauer', (data)=>{
-    console.log("NEW PLAYER")
-})
