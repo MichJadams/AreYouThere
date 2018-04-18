@@ -1,32 +1,27 @@
-import 'three';
-import 'three/OrbitControls';
-import {createScene} from './createScene.js'
-import {update} from './initScene.js'
-import {Client} from './client.js'
-
-
-Client.playerJoined()
 
 
 
+module.exports = function(app,io,socket){
+    let players = {}
+    socket.on('playerJoined', ()=>{
+        console.log("a new player joined, and thier ID is ", socket.request.cookies.io)
+        players[socket.request.cookies.io] = {}
 
-// function init() {
-// 	// set up the scene
-// 	createScene();
-//   Client.sendTest("je")
-// 	//call game loop
-// 	update();
-// }
+        console.log("the players in the waiting room are", players)
+        console.log(Object.keys(players))
+
+        if(Object.keys(players).length >=2){
+            console.log("starting the game with",Object.keys(players).length, " players" )
+            io.emit('startgame')
+        }
+    })
+}
 
 
 
-// let gamestate = 'player join'
-// Client.socket.on("startgame", ()=>{ 
-//   console.log("receive a signal to start the game")
-//   gamestate = 'initilize';
-     
-// })
-// function init() {
+
+
+
 //   const gameLoop=(gamestate)=>{
 //     console.log("the gamestate is", gamestate)
 //     switch(gamestate){
@@ -34,7 +29,7 @@ Client.playerJoined()
 //       case 'player join':
 //       //make a waiting room here.
 //       console.log("player joined")
-//       Client.playerJoined()
+
 //       gamestate = 'waiting room'
   
 //       break; 
@@ -68,4 +63,3 @@ Client.playerJoined()
 //   gameLoop(gamestate)
 
 // }
-// init();

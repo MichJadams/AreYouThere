@@ -16,12 +16,16 @@ import {Client} from './client.js'
 export const update=()=>{
     //animate
     // console.log("the secne height in update is", sceneHeight)
-    console.log("hrjfdsafae")
+    
     // console.log("Here are all the things", scene, renderer,sceneHeight,sceneWidth, camera)
-    hero.rotation.x += 0.01;
-    hero.rotation.y += 0.01;
-    render();
-    requestAnimationFrame(update);//request next update
+ 
+
+
+        hero.rotation.x += 0.01;
+        hero.rotation.y += 0.01;
+        render();
+        ;
+
 }
 export const render=()=>{
     // console.log("rednering", scene, camera)
