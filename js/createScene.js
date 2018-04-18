@@ -15,7 +15,7 @@ export let sun;
 export let ground;
 export let orbitControl;
 
-export function generatePlayer(playerID){
+export function generatePlayer(playerID,scene){
 	var heroGeometry = new THREE.BoxGeometry( 1, 1, 1 );//cube
 	var heroMaterial = new THREE.MeshStandardMaterial( { color: 0x883333 } );
 	hero = new THREE.Mesh( heroGeometry, heroMaterial );
@@ -26,6 +26,7 @@ export function generatePlayer(playerID){
     scene.add(hero) 
 }
 export function createScene(){
+	
     //add a check here to see number of players.... eventually 
     sceneWidth=window.innerWidth;
     sceneHeight=window.innerHeight;
@@ -73,7 +74,7 @@ export function createScene(){
 	sun.shadow.camera.near = 0.5;
 	sun.shadow.camera.far = 50 ;
 
-    scene.sun = sun 
+    
 	orbitControl = new THREE.OrbitControls( camera, renderer.domElement );//helper to rotate around in scene
 	orbitControl.addEventListener( 'change', render );
 	//orbitControl.enableDamping = true;
@@ -82,7 +83,8 @@ export function createScene(){
 	
 	//var helper = new THREE.CameraHelper( sun.shadow.camera );
 	//scene.add( helper );// enable to see the light cone
-	
+	// console.log("The world has been generated", scene)
+	return scene
 	window.addEventListener('resize', onWindowResize, false);//resize callback
  
 }

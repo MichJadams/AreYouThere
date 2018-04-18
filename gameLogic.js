@@ -10,8 +10,11 @@ module.exports = function(app,io,socket){
 
     socket.on('playerJoined', ()=>{
         console.log("a new player joined, and thier ID is ", socket.request.cookies.io)
-        
-        gamedata.players[socket.request.cookies.io]={rot:{x:3,y:50}}
+        if(Object.keys(gamedata.players).length==0){
+            console.log("this is the first player, and the world is being built")
+            io.emit('generateScene')
+        }
+        gamedata.players[socket.request.cookies.io]={rot:{x:randomIntFromInterval(1,70),y:randomIntFromInterval(1,100)}}
         console.log("the players in the waiting room are", gamedata.players)
         //christen the socket, there is probably a way better way to do this. 
         socket.emit('namePlayer',socket.request.cookies.io)
@@ -47,46 +50,6 @@ module.exports = function(app,io,socket){
     })
 
 }
-
-
-//   const gameLoop=(gamestate)=>{
-//     console.log("the gamestate is", gamestate)
-//     switch(gamestate){
-      
-//       case 'player join':
-//       //make a waiting room here.
-//       console.log("player joined")
-
-//       gamestate = 'waiting room'
-  
-//       break; 
-      
-//       case 'waiting room':
-//       //add something here with instructions and potentially audio?? so kewl
- 
-//       break;
-
-
-//       case 'initilize':
-//       //make this an asynch function
-//       createScene();
-//       gamestate = 'play';
-
-//       break;
-
-
-//       case 'play':
-//       //make this an asynch function
-//       requestAnimationFrame(update)
-//       //gameLoop(gamestate)
-//       break;
-      
-//       case 'fade out':
-//       console.log("game over, bye")
-//       break;
-//     }
-//     gameLoop(gamestate)
-//   }
-//   gameLoop(gamestate)
-
-// }
+const randomIntFromInterval=(min,max)=>{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}

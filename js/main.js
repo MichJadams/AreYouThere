@@ -3,19 +3,21 @@ import 'three/OrbitControls';
 import {createScene, generatePlayer} from './createScene.js'
 import {update} from './initScene.js'
 import {Client} from './client.js'
-
+let scene
 
 Client.playerJoined()
 
-
+Client.socket.on('generateScene',()=>{
+  scene = createScene();
+  console.log("the scene picked from the create scene file", scene)
+})
 Client.socket.on('startgame',()=>{
   console.log("starting the game!!!!!")
-  createScene();
-  generatePlayer(Client.socket.name)
 })
 Client.socket.on('namePlayer',(playerID)=>{
-  console.log("sent player id is", playerID)
   Client.socket.name = playerID
+  console.log("the scene being passed to generate player", scene)
+  generatePlayer(Client.socket.name,scene)
   console.log("this is the players id", Client.socket.name)
 })
 //recieve a command from the server to redraw the scene
