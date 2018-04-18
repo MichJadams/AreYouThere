@@ -15,7 +15,16 @@ export let sun;
 export let ground;
 export let orbitControl;
 
-
+export function generatePlayer(playerID){
+	var heroGeometry = new THREE.BoxGeometry( 1, 1, 1 );//cube
+	var heroMaterial = new THREE.MeshStandardMaterial( { color: 0x883333 } );
+	hero = new THREE.Mesh( heroGeometry, heroMaterial );
+	hero.castShadow=true;
+	hero.receiveShadow=false;
+    hero.position.y=2;
+    hero.name = playerID
+    scene.add(hero) 
+}
 export function createScene(){
     //add a check here to see number of players.... eventually 
     sceneWidth=window.innerWidth;
@@ -31,14 +40,14 @@ export function createScene(){
 	dom.appendChild(renderer.domElement);
 	
 	//add items to scene
-	var heroGeometry = new THREE.BoxGeometry( 1, 1, 1 );//cube
-	var heroMaterial = new THREE.MeshStandardMaterial( { color: 0x883333 } );
-	hero = new THREE.Mesh( heroGeometry, heroMaterial );
-	hero.castShadow=true;
-	hero.receiveShadow=false;
-    hero.position.y=2;
-    hero.name = "hero"
-    scene.add(hero) 
+	// var heroGeometry = new THREE.BoxGeometry( 1, 1, 1 );//cube
+	// var heroMaterial = new THREE.MeshStandardMaterial( { color: 0x883333 } );
+	// hero = new THREE.Mesh( heroGeometry, heroMaterial );
+	// hero.castShadow=true;
+	// hero.receiveShadow=false;
+    // hero.position.y=2;
+    // hero.name = "hero"
+    // scene.add(hero) 
     
 	var planeGeometry = new THREE.PlaneGeometry( 5, 5, 4, 4 );
 	var planeMaterial = new THREE.MeshStandardMaterial( { color: 0x00ff00 } )

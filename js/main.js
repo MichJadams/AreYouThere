@@ -1,12 +1,38 @@
 import 'three';
 import 'three/OrbitControls';
-import {createScene} from './createScene.js'
+import {createScene, generatePlayer} from './createScene.js'
 import {update} from './initScene.js'
 import {Client} from './client.js'
 
 
 Client.playerJoined()
 
+
+Client.socket.on('startgame',()=>{
+  console.log("starting the game!!!!!")
+  createScene();
+  generatePlayer(Client.socket.name)
+})
+Client.socket.on('namePlayer',(playerID)=>{
+  console.log("sent player id is", playerID)
+  Client.socket.name = playerID
+  console.log("this is the players id", Client.socket.name)
+})
+//recieve a command from the server to redraw the scene
+Client.socket.on('redraw',(gamedata)=>{
+  //here is where we want to turn the gamedata into the rendering update data
+  let updatData = gamedata;
+
+  update(updatData,Client.socket.name)
+  .then((updatedData)=>{
+    //console.log("this si the updated data from the update function", updatedData)
+    Client.updated(updatedData)
+  })
+  .catch((error)=>{
+    console.log(error.message)
+  })
+
+})
 
 
 
