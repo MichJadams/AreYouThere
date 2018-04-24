@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha -R spec",
     "start": "webpack -w & nodemon server.js"
   },
   "author": "",
@@ -15,15 +15,18 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "bootstrap": "^4.0.0",
+    "chai": "^4.1.2",
     "express": "^4.16.3",
     "nodemon": "^1.17.3",
     "path": "^0.12.7",
     "socket.io": "^2.1.0",
+    "socket.io-client": "^2.1.0",
     "socket.io-cookie-parser": "^1.0.0",
     "three": "^0.84.0",
     "webpack": "^4.5.0"
   },
   "devDependencies": {
+    "should": "^13.2.1",
     "webpack-cli": "^2.0.13"
   }
 }

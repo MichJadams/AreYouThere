@@ -1,16 +1,17 @@
 import 'three'
-import {
-scene,
-hero,
-sceneWidth,
-sceneHeight,
-camera,
-renderer,
-dom,
-sun,
-ground,
-orbitControl,
-} from './createScene'
+// import {
+// scene,
+// hero,
+// sceneWidth,
+// sceneHeight,
+// camera,
+// renderer,
+// dom,
+// sun,
+// ground,
+// orbitControl,
+// } from './createScene'
+
 import {Client} from './client.js'
 let updatedData={}
 export const update=(updateData,playerID)=>{

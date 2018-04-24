@@ -5,21 +5,23 @@ const io = require('socket.io')(server)
 const cookierParser = require('socket.io-cookie-parser')
 
 
-
-
 app.use('/public', express.static(__dirname+'/public'))
 app.use('/assests', express.static(__dirname+'/assests'))
 app.use('/js', express.static(__dirname+'/js'))
 
 
 app.get('/', (req,res,next)=>{
-
     res.sendFile(__dirname +'/index.html')
 })
 
 
 io.use(cookierParser())
 io.on('connection',(socket)=>{
+    socket.on('connection name',function(user){
+        console.log("hitting here")
+      io.sockets.emit('new user', user.name + " has joined.");
+    })
+
     const gameLogic = require('./gameLogic.js')(app,io,socket)
 })
 server.listen(process.env.PORT || 8081, ()=>{

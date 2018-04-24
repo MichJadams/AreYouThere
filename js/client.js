@@ -1,4 +1,4 @@
-console.log("hereexport ")
+
 export let Client = {}
 Client.socket = io.connect()
 
@@ -12,9 +12,11 @@ Client.playerJoined=()=>{
     console.log(Client.socket)
     Client.socket.emit('playerJoined')
 }
-//emit a command saying that the state has been rendered
-// Client.redraw=()=>{
-    // }
+
 Client.updated=(updatedData)=>{
     Client.socket.emit('updated',updatedData)
+}
+
+Client.sendCreatedScene=(scene)=>{
+    Client.socket.emit('sendCreatedScee',scene)
 }
