@@ -1,0 +1,15 @@
+.welcomeContainer{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+.welcomeText{
+    color:purple;
+    font-size: 30px;
+    font-family: 'Gamja Flower', cursive;
+}
+.nameForm{
+    padding: 10px;
+    text-align: center;
+}

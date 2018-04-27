@@ -31,20 +31,20 @@ describe("server", function(){
             usersName.should.equal(chatUser2.name + " has joined.");
             client2.disconnect();
           });
-      
         });
       
-        var numUsers = 0;
-        client1.on('new user', function(usersName){
-          numUsers += 1;
+        // var numUsers = 0;
+        // client1.on('new user', function(usersName){
+        //   numUsers += 1;
       
-          if(numUsers === 2){
-            usersName.should.equal(chatUser2.name + " has joined.");
-            client1.disconnect();
-            done();
-          }
-        });
+        //   if(numUsers === 2){
+        //     usersName.should.equal(chatUser2.name + " has joined.");
+        //     client1.disconnect();
+        //     done();
+        //   }
+        // });
       });
+      if('should construct a scene object ')
       
       
 });
