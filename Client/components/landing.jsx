@@ -1,12 +1,9 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>WebGL Demo</title>
-    <meta charset="utf-8">
-    <script src="/socket.io/socket.io.js"></script>
-    <link type="text/css" rel="stylesheet" href="/assests/Styles/landing.css" >
- 
-  </head>
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import style from '../assests/styes/landing.css';
+export default class Landing extends Component{
+  render(){
+
   <body>
     
     <div class="welcomeContainer">
@@ -21,11 +18,7 @@
         <button type="submit">join lobby</button>
         </div>
       </form>
-      
     </div>
-    
-    
   </body>
-</html>
-
-
+  }
+}

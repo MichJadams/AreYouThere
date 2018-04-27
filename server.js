@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const session = require('express-session')
 const cookieParser = require("cookie-parser")
-
+const generateLobby = require("./generatedLobby")
 app.use('/public', express.static(__dirname+'/public'))
 app.use('/assests', express.static(__dirname+'/assests'))
 app.use('/js', express.static(__dirname+'/js'))
@@ -32,9 +32,23 @@ app.post('/',(req,res,next)=>{
 
 app.get('/lobby', (req,res,next)=>{
     
+    res.send(generateLobby(badway))
     console.log("third redirect",req.session.id)
     console.log("the players in the lobby are,",badway[req.session.id].name)
-    res.sendFile(__dirname +'/htmlGameStates/lobby.html')
+    //generate lobby
+
+    // const generateLobby =(badway)=>{
+    //     Object.keys(badway).map((sessionID)=>{
+    //         const playerlist = document.getElementsByClassName("waitingPlayers")[0] 
+    //         const playerDiv = document.createElement("div")
+    //         playerlist.appendChild(playerDiv)
+    //         const playerName = document.createTextNode("name =",badway[sessionID].name)
+    //         playerDiv.appendChild(playerName)
+            
+    //     })
+    // }
+    
+    // res.sendFile(__dirname +'/htmlGameStates/lobby.html')
 })
 
 app.get('/waitingRoom', (req,res,next)=>{
