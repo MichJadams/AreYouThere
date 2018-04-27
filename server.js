@@ -15,16 +15,19 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 app.get('/', (req,res,next)=>{
-    res.sendFile(__dirname +'/htmlGameStates/splash.html')
-    
+    res.sendFile(__dirname +'/htmlGameStates/landing.html')
 })
 app.post('/',(req,res,next)=>{
     console.log("the name the player picked is", req.body)
+    res.redirect("/lobby")
+    
+})
 
-})
 app.get('/lobby', (req,res,next)=>{
-    res.sendFile(__dirname +'/htmlGameStates/index.html')
+    console.log("player connected to the lobby")
+    res.sendFile(__dirname +'/htmlGameStates/lobby.html')
 })
+
 app.get('/waitingRoom', (req,res,next)=>{
     res.sendFile(__dirname +'/htmlGameStates/index.html')
 })
