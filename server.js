@@ -5,26 +5,35 @@ const io = require('socket.io')(server)
 const cookierParser = require('socket.io-cookie-parser')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const session = require('express-session')
+const cookieParser = require("cookie-parser")
 
 app.use('/public', express.static(__dirname+'/public'))
 app.use('/assests', express.static(__dirname+'/assests'))
 app.use('/js', express.static(__dirname+'/js'))
-
+app.use(cookieParser());
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
-
+app.use(session({  secret: '34SDgsdgspxxxxxxxdfsG', // just a long random string
+resave: false,
+saveUninitialized: true}))
+let badway = {}
 app.get('/', (req,res,next)=>{
+    console.log("first session id",req.session.id)
     res.sendFile(__dirname +'/htmlGameStates/landing.html')
 })
-app.post('/',(req,res,next)=>{
-    console.log("the name the player picked is", req.body)
+
+app.post('/',(req,res,next)=>{ 
+    console.log("second session id",req.session.id)
+    badway[req.session.id]={name: req.body.name}
     res.redirect("/lobby")
-    
 })
 
 app.get('/lobby', (req,res,next)=>{
-    console.log("player connected to the lobby")
+    
+    console.log("third redirect",req.session.id)
+    console.log("the players in the lobby are,",badway[req.session.id].name)
     res.sendFile(__dirname +'/htmlGameStates/lobby.html')
 })
 
