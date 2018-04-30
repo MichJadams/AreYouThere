@@ -16,7 +16,6 @@ export default class Lobby extends Component{
         <div class ="waitingServers">Theses are servers waiting for players</div>
         <table class ="waitingServers">
         </table>
-    
       </div>)
     }
   }

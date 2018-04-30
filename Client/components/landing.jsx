@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { render, Link } from 'react-router-dom';
 // import style from '../assests/styes/landing.css';
-
+import lobby from './lobby.jsx'
 export default class Landing extends Component{
 
   render(){
@@ -14,7 +14,7 @@ export default class Landing extends Component{
         <label for="name"></label>
         <input type="text" name="name" class="nameForm"/>
         <div>
-        <button type="submit">join lobby</button>
+        <Link to={"/lobby"}><button>join lobby</button></Link>
         </div>
       </form>
     </div>
