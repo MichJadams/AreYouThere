@@ -1,3 +1,5 @@
+/* the landing styles */
+
 .welcomeContainer{
     display: flex;
     justify-content: center;
@@ -12,4 +14,15 @@
 .nameForm{
     padding: 10px;
     text-align: center;
+}
+/* the lobby styles  */
+.lobbyContainer{
+    display:flex;
+}
+.waitingPlayers{
+
+}
+
+.waitingServers{
+
 }

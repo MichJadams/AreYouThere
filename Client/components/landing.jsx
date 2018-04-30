@@ -1,22 +1,42 @@
 import React, { Component } from 'react';
+import ReactDom from 'react-dom'
 import { render, Link } from 'react-router-dom';
-// import style from '../assests/styes/landing.css';
 import lobby from './lobby.jsx'
+
 export default class Landing extends Component{
+
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    console.log("this state is", this.state)
+    event.preventDefault();
+  }
 
   render(){
   return (<body>
-    <div class="welcomeContainer">
-      <div class="welcomeText">
-        <h1 >who are you there?</h1>
+    <div className="welcomeContainer">
+      <div className="welcomeText">
+        <h1>who are you there?</h1>
       </div>
-      <form method="POST" action="/" >
-        <label for="name"></label>
-        <input type="text" name="name" class="nameForm"/>
+            <form onSubmit={this.handleSubmit}>
+              <label>
+                Name:
+                <input type="text" value={this.state.value} onChange={this.handleChange} />
+              </label>
+              </form>
+              <Link to={"/lobby"} params={{userName:this.state.value}}>link</Link>
         <div>
-        <Link to={"/lobby"}><button>join lobby</button></Link>
         </div>
-      </form>
     </div>
   </body>)
   }
