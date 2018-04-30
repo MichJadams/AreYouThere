@@ -1,28 +1,24 @@
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+// import style from '../assests/styes/landing.css';
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>WebGL Demo</title>
-    <meta charset="utf-8">
-    <script src="/socket.io/socket.io.js"></script>
-    <link type="text/css" rel="stylesheet" href="/assests/Styles/landing.css" >
- 
-  </head>
-  <body>
 
+export default class Lobby extends Component{
+
+
+  render(){
+  return(  <div>
         <h1 >This is the lobby</h1>
         <div >Theses are players waiting to join or start a maze</div>
         <table class ="waitingPlayers">
-
         </table>
-
         <button>Create a Server</button>
         <div class ="waitingServers">Theses are servers waiting for players</div>
         <table class ="waitingServers">
-
         </table>
-    <!-- <script type="text/javascript" src="/"> -->
-  </body>
-</html>
+    
+      </div>)
+    }
+  }
 
 
