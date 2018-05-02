@@ -85,28 +85,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServers", function() { return subscribeToServers; });
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
-// export let Client = {}
-// // import 
-// Client.socket = io.connect()
-
-// Client.sendTest = (data)=>{
-//     console.log("test sent to the server")
-//     Client.socket.emit('test',data)
-// }
-
-// Client.playerJoined=()=>{
-//     console.log("a player joined")
-//     console.log(Client.socket)
-//     Client.socket.emit('playerJoined')
-// }
-
-// Client.updated=(updatedData)=>{
-//     Client.socket.emit('updated',updatedData)
-// }
-
-// Client.sendCreatedScene=(scene)=>{
-//     Client.socket.emit('sendCreatedScee',scene)
-// }
 
 const socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('http://localhost:8081');
 
@@ -116,8 +94,7 @@ function subscribeToTimer(cb) {
 }
 function subscribeToWaitingPlayers(cb) {
     socket.on('waitingPlayerList', waitingPlayerList => cb(null, waitingPlayerList));
-    socket.emit("subscribeToWaitingPlayers", { name: "john" });
-    // socket.emit('subscribeToTimer', 1000);
+    socket.emit("subscribeToWaitingPlayers");
 }
 function subscribeToServers(cb) {
     socket.on('serversList', serversList => cb(null, serversList));
@@ -256,26 +233,17 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       console.log("updating the state of the waiting players", waitingPlayers);
       this.setState({ waitingPlayers });
     });
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToServers"])((err, servers) => {
+      console.log("whus is this never called???");
+      console.log("updating the state of the servers", servers);
+      this.setState({ servers });
+    });
     this.state = {
-      servers: [{ id: 3, name: 'hardcoded' }, { id: 6, name: 'nest' }],
-      waitingPlayers: [{ name: 'tester' }, { name: 'bettername' }]
+      servers: [],
+      waitingPlayers: []
     };
   }
-  componentDidMount() {
-    axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('/lobby/servers').then(res => res.data).then(servers => {
-      this.setState({ servers: servers });
-      console.log("what the client got back from the server, servers", servers);
-      console.log("this is the state now", this.state);
-    });
 
-    // axios.get('/lobby/players')
-    // .then(res=>res.data)
-    // .then(players=>{
-    //   this.setState({players:players})
-    //   console.log("what the client got back from the server, players", players)
-    //   console.log("this is the state now", this.state)
-    // })
-  }
   render() {
     const players = this.state.waitingPlayers;
     const servers = this.state.servers;

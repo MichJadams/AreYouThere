@@ -27,8 +27,8 @@ saveUninitialized: true}))
 
 //hoooorible
 let badwayMasterGameState = {
-    servers:[{ id: 1, name:"hangingout",status:'open',gameState:{}}],
-    waitingPlayers:[]
+    servers:[{ id: 1, name:"starterServer",status:'open',gameState:{}}],
+    waitingPlayers:[{name:'bill'}]
 
 } //this is not how I actually want to store game info. there is a better way, just can't think of it rn. 
 
@@ -43,32 +43,6 @@ app.post('/name',(req,res,next)=>{
     res.sendStatus(201)
     next()
 })
-app.get('/lobby/players',(req,res,next)=>{
-    console.log(badwayMasterGameState.waitingPlayers)
-    res.json(badwayMasterGameState.waitingPlayers)
-    next()
-})
-app.get('/lobby/servers',(req,res,next)=>{
-    console.log(badwayMasterGameState.waitingPlayers)
-    res.json(badwayMasterGameState.servers)
-    next()
-})
-
-// app.get('/lobby', (req,res,next)=>{
-    
-//     res.send(generateLobby(badway))
-//     console.log("third redirect",req.session.id)
-//     console.log("the players in the lobby are,",badway[req.session.id].name)
-// })
-
-// app.get('/waitingRoom', (req,res,next)=>{
-//     res.sendFile(__dirname +'/htmlGameStates/index.html')
-// })
-// app.get('/playing', (req,res,next)=>{
-//     res.sendFile(__dirname +'/htmlGameStates/index.html')
-// })
-
-
 io.use(cookierParser())
 io.on('connection',(socket)=>{
     socket.on('subscribeToTimer', (interval)=>{
@@ -77,8 +51,8 @@ io.on('connection',(socket)=>{
             socket.emit('timer', new Date());
       }, interval);
     })
-    socket.on('subscribeToWaitingPlayers', (playerName)=>{
-        console.log("client is subscribing to player list", playerName)
+    socket.on('subscribeToWaitingPlayers', ()=>{
+        console.log("client is subscribing to player list")
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
         
     })

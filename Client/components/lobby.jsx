@@ -11,30 +11,17 @@ export default class Landing extends Component{
       console.log("updating the state of the waiting players", waitingPlayers)
       this.setState({waitingPlayers})
     })
-    this.state={
-      servers:[{id:3, name:'hardcoded'},{id:6, name:'nest'}],
-      waitingPlayers:[{name: 'tester'},{name: 'bettername'}]
-    }
- 
-    
-  }
-   componentDidMount(){
-    axios.get('/lobby/servers')
-    .then(res=>res.data)
-    .then(servers=>{
-      this.setState({servers:servers})
-      console.log("what the client got back from the server, servers", servers)
-      console.log("this is the state now", this.state)
+    subscribeToServers((err,servers)=>{
+      console.log("whus is this never called???")
+      console.log("updating the state of the servers", servers)
+      this.setState({servers})
     })
-    
-    // axios.get('/lobby/players')
-    // .then(res=>res.data)
-    // .then(players=>{
-      //   this.setState({players:players})
-      //   console.log("what the client got back from the server, players", players)
-      //   console.log("this is the state now", this.state)
-      // })
-   }
+    this.state={
+      servers:[],
+      waitingPlayers:[]
+    }    
+  }
+
   render(){
     const players = this.state.waitingPlayers
     const servers = this.state.servers
@@ -57,7 +44,7 @@ export default class Landing extends Component{
             servers.map(server =>{
               return(
                 <li key={server.id}>
-                <Link to={`\servers\${server.id}`}>
+                <Link to={`\servers\${server.id}\waitingRoom`}>
                 <div>{server.name}</div>
                 </Link>
                 </li>

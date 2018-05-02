@@ -12,7 +12,7 @@ ReactDom.render(
     <Switch>
         <Route exact path='/' component={landing}/>
         <Route path='/lobby' component={lobby}/>
-        <Route path='/waitingRoom' component={waitingRoom}/>
+        <Route path='/server/:id/waitingRoom' component={waitingRoom}/>
     </Switch>
     </Router>
    ,
