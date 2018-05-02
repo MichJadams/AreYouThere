@@ -19,16 +19,14 @@ app.use(bodyParser.json())
 
 app.use('/',express.static(path.join(__dirname, 'public')) )
 
-
-
 app.use(session({  secret: '34SDgsdgspxxxxxxxdfsG', // just a long random string
 resave: false,
 saveUninitialized: true}))
 
 //hoooorible
 let badwayMasterGameState = {
-    servers:[{ id: 1, name:"starterServer",status:'open',gameState:{}}],
-    waitingPlayers:[{name:'bill'}]
+    servers:[{ id: 1, name:"starterServer",status:'open',gameState:{}, connectedPlayers:[]}],
+    waitingPlayers:[{name:'bill', id: '124u234fdsk932'}]
 
 } //this is not how I actually want to store game info. there is a better way, just can't think of it rn. 
 
@@ -38,35 +36,79 @@ let badwayMasterGameState = {
 // })
 
 app.post('/name',(req,res,next)=>{ 
-    console.log("a person has selected a name", req.body.name)
-    badwayMasterGameState.waitingPlayers.push({name: req.body.name})
+    // console.log("a person has selected a name", req.body.name)
+    // console.log("this is the socket id?", req.cookies.io)
+    badwayMasterGameState.waitingPlayers.push({name: req.body.name,id:req.cookies.io})
     res.sendStatus(201)
     next()
 })
+app.post('/createServer',(req,res,next)=>{ 
+    req.body.gameState ={}
+    badwayMasterGameState.servers.push(req.body)
+    res.sendStatus(201)
+    next()
+})
+app.post('/joinServer',(req,res,next)=>{
+    //remove this player form the waiting players 
+    const playerToMove = badwayMasterGameState.waitingPlayers.find((player)=>{return player.id === req.cookies.io})
+    // console.log("this is the player we are removeing from the waiting player list",playerToMove)
+    const indexOfPlayerToMove = badwayMasterGameState.waitingPlayers.indexOf(playerToMove)
+    // console.log("this is the index of the player to remove", badwayMasterGameState.waitingPlayers.indexOf(playerToMove))
+    // console.log("this is the current list of waiting players BEFORE", badwayMasterGameState.waitingPlayers)
+    badwayMasterGameState.waitingPlayers.splice(indexOfPlayerToMove,indexOfPlayerToMove+1)
+    // console.log("this is the current list of waiting players AFTER", badwayMasterGameState.waitingPlayers)
+
+    //add this player to the game state server player
+    // console.log("this is the id of the server they want to join", req.body.serverToJoin)
+    const theServerInQuestion = badwayMasterGameState.servers.find((server)=>{return +server.id === +req.body.serverToJoin})
+    // console.log("the server in question", theServerInQuestion)
+    const indexOfServerToJoin = badwayMasterGameState.servers.indexOf(theServerInQuestion)
+    // console.log("index of the server they want to join", indexOfServerToJoin)
+    console.log("the SERVERS BEFORE", badwayMasterGameState.servers)
+    badwayMasterGameState.servers[indexOfServerToJoin].connectedPlayers.push(playerToMove)
+    console.log("the SERVERS AFTER", badwayMasterGameState.servers)
+    next()
+})
+
 io.use(cookierParser('hello there',{}))
 io.on('connection',(socket)=>{
     socket.on('subscribeToTimer', (interval)=>{
-        console.log("client is subscribing to timer with interval,", interval)
+        // console.log("client is subscribing to timer with interval,", interval)
         setInterval(() => {
             socket.emit('timer', new Date());
       }, interval);
     })
-    socket.on('subscribeToWaitingPlayers', ()=>{
-        console.log("client is subscribing to player list")
+    socket.on('subscribeToWaitingPlayers', (playerName)=>{
+        console.log("client is subscribing to player list", playerName)
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
         
     })
     socket.on('subscribeToServers', ()=>{
-        console.log("client is subscribing to server list,")
+        // console.log("client is subscribing to server list,")
         io.emit('serversList', badwayMasterGameState.servers);
       
     })
+    //createserver sockets
     socket.on('subscribeToServerCookieID', ()=>{
-        console.log("fjdkslajfldksa",socket.id)
-        console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
-
+        // console.log("fjdkslajfldksa",socket.id)
+        // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
         io.emit('serverCookieID', socket.id);
-      
+    })
+    //waiting room sockets
+    socket.on('subscribeToServerWaitingRoomCapacity', ()=>{
+        console.log("looking for the connected players of this server",socket.id)
+        //var obj = objArray.find(function (obj) { return obj.id === 3; })
+        // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
+        // io.emit('serverCookieID', socket.id);
+    })
+    socket.on('subscribeToServerState', (serverID)=>{
+        console.log("the server id is", serverID)
+        const theServerInQuestion = badwayMasterGameState.servers.find((server)=>{return server.id === serverID})
+        //if this is a new socket for this server, add it
+        console.log("sending back this info for this server", theServerInQuestion)
+        // console.log("fjdkslajfldksa",socket.id)
+        // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
+        io.emit('serverState',theServerInQuestion);
     })
 
 

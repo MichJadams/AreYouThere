@@ -6,26 +6,33 @@ import {subscribeToWaitingPlayers,subscribeToServers } from './client.js'
 export default class Landing extends Component{
   constructor(){
     super()
-    subscribeToWaitingPlayers((err,waitingPlayers)=>{
-      
-      
-      this.setState({waitingPlayers})
-    })
-    subscribeToServers((err,servers)=>{
-  
-  
-      this.setState({servers})
-    })
     this.state={
       servers:[],
       waitingPlayers:[]
-    }    
+    }
+    subscribeToWaitingPlayers((err,waitingPlayers)=>{
+      this.setState({waitingPlayers})
+    })
+    subscribeToServers((err,servers)=>{
+      this.setState({servers})
+    })
+    this.goingToServer =this.goingToServer.bind(this)
+  }
+ 
+  goingToServer(event){
+    //sending out a socket call where the usered socket it is stuck to the server with the matching name
+    // console.log("jkfdlsajflds",event.target.id)
+    // console.log("these are the waiting players and thier ids", this.state.waitingPlayers)
+    //add the player that cliked to the server they clicked on. 
+    axios.post('/joinServer',{serverToJoin:event.target.id})
+    .then(res=>{console.log("this player moved into a room")})
+    .catch(err=>{console.log("err",err)})
   }
 
   render(){
     const players = this.state.waitingPlayers
     const servers = this.state.servers
-    console.log("the players", players)
+    // console.log("the players", players)
   return(  
         <div className="lobbyContainer"> 
         <div className ="waitingPlayers">
@@ -44,9 +51,12 @@ export default class Landing extends Component{
             servers.map(server =>{
               return(
                 <li key={server.id}>
-                <Link to={`/servers/${server.id}/waitingRoom`}>
-                <div>{server.name}</div>
+                
+                <Link to={`/${server.id}/waitingRoom`} >
+                <div onClick={this.goingToServer} id={server.id}>{server.name}</div>
                 </Link>
+                
+                
                 </li>
               )
             })

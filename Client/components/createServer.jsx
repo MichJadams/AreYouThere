@@ -13,15 +13,25 @@ export default class createServer extends Component{
         //hash the cookie id here
         this.setState({id:serverCookieID})
     })
-    this.state = {id:null,status: 'open', name: '', capacity:2};
-    this.handleChange = this.handleChange.bind(this);
+    this.state = {id:null,status: 'open', name: 'lost', capacity:2};
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleStatusChange = this.handleStatusChange.bind(this);
+    this.handleCapacityChange = this.handleCapacityChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
+  handleNameChange(event) {
       this.setState({name: event.target.value});
-      console.log("this is the event", event.target.value)
+      console.log("this is the name", event.target.value)
   }
+  handleStatusChange(event) {
+    this.setState({status: event.target.value});
+    console.log("this is the status", event.target.value)
+}
+  handleCapacityChange(event) {
+  this.setState({capacity: event.target.value});
+  console.log("this capacity", event.target.value)
+}
 
   handleSubmit(event) {
     console.log("this state is", this.state)
@@ -41,19 +51,22 @@ export default class createServer extends Component{
             <form onSubmit={this.handleSubmit}>
               <label>
                 Name of Room:
-                <input type="text" value={this.state.name} onChange={this.handleChange} />
+                <input type="text" value={this.state.name} onChange={this.handleNameChange} />
               </label>
               <label>
-              status?(open or closed to public):
-              <input type="text" value={this.state.status} onChange={this.handleChange} />
-            </label>
-            <label>
-            number of people you want to host:
-            <input type="text" value={this.state.capacity} onChange={this.handleChange} />
-          </label>
-              <button type="submit">submit</button>
+                status?(open or closed to public):
+                <select value={this.state.status} onChange={this.handleStatusChange}>
+                  <option value="open">Open</option>
+                  <option value="closed">Closed</option>
+                </select>
+                </label>
+                <label>
+                    number of people you want to host:
+                  <input type="number" value={this.state.capacity} onChange={this.handleCapacityChange} />
+                </label>
+                <button type="submit">submit</button>
               </form>
-              <Link to={"/lobby"} params={{userName:this.state.value}}>link</Link>
+              <Link to={`/${this.state.id}/waitingRoom`}>Create Server</Link>
         <div>
         </div>
     </div>

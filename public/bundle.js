@@ -75,7 +75,7 @@
 /*!*************************************!*\
   !*** ./Client/components/client.js ***!
   \*************************************/
-/*! exports provided: subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID */
+/*! exports provided: subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerWaitingRoomCapacity, subscribeToServerState */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84,6 +84,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToWaitingPlayers", function() { return subscribeToWaitingPlayers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServers", function() { return subscribeToServers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerCookieID", function() { return subscribeToServerCookieID; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerWaitingRoomCapacity", function() { return subscribeToServerWaitingRoomCapacity; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerState", function() { return subscribeToServerState; });
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -107,6 +109,13 @@ function subscribeToServers(cb) {
 function subscribeToServerCookieID(cb) {
     socket.on('serverCookieID', cookieID => cb(null, cookieID));
     socket.emit("subscribeToServerCookieID");
+}
+//waiting room sockets 
+function subscribeToServerState(serverID, cb) {
+    // console.log("fromt he socket function", cb)
+    socket.on('serverState', serverState => cb(null, serverState));
+    //now I only want to emit to players in that room/view....eeek.
+    socket.emit("subscribeToServerState", serverID);
 }
 
 
@@ -146,14 +155,24 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       //hash the cookie id here
       this.setState({ id: serverCookieID });
     });
-    this.state = { id: null, status: 'open', name: '', capacity: 2 };
-    this.handleChange = this.handleChange.bind(this);
+    this.state = { id: null, status: 'open', name: 'lost', capacity: 2 };
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleStatusChange = this.handleStatusChange.bind(this);
+    this.handleCapacityChange = this.handleCapacityChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
+  handleNameChange(event) {
     this.setState({ name: event.target.value });
-    console.log("this is the event", event.target.value);
+    console.log("this is the name", event.target.value);
+  }
+  handleStatusChange(event) {
+    this.setState({ status: event.target.value });
+    console.log("this is the status", event.target.value);
+  }
+  handleCapacityChange(event) {
+    this.setState({ capacity: event.target.value });
+    console.log("this capacity", event.target.value);
   }
 
   handleSubmit(event) {
@@ -187,19 +206,32 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           'label',
           null,
           'Name of Room:',
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'text', value: this.state.name, onChange: this.handleChange })
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'text', value: this.state.name, onChange: this.handleNameChange })
         ),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'label',
           null,
           'status?(open or closed to public):',
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'text', value: this.state.status, onChange: this.handleChange })
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'select',
+            { value: this.state.status, onChange: this.handleStatusChange },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'option',
+              { value: 'open' },
+              'Open'
+            ),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'option',
+              { value: 'closed' },
+              'Closed'
+            )
+          )
         ),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'label',
           null,
           'number of people you want to host:',
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'text', value: this.state.capacity, onChange: this.handleChange })
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'number', value: this.state.capacity, onChange: this.handleCapacityChange })
         ),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'button',
@@ -209,8 +241,8 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"],
-        { to: "/lobby", params: { userName: this.state.value } },
-        'link'
+        { to: `/${this.state.id}/waitingRoom` },
+        'Create Server'
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('div', null)
     );
@@ -248,25 +280,27 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor(props) {
     super(props);
     this.state = { timestamp: 'no timestamp yet', value: '' };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
-    console.log("this is the state", this.state);
+    // console.log("this is the state", this.state)
     this.setState({ value: event.target.value });
   }
 
   handleSubmit(event) {
-    console.log("this state is", this.state);
+    // console.log("this state is", this.state)
     // Client.playerJoined()
+
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/name', { name: this.state.value }).then(res => {
       console.log(res);
     }).catch(err => {
       console.log(err);
     });
     event.preventDefault();
+    //I want something like this to work
+
   }
 
   render() {
@@ -343,24 +377,35 @@ __webpack_require__.r(__webpack_exports__);
 class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor() {
     super();
-    Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToWaitingPlayers"])((err, waitingPlayers) => {
-
-      this.setState({ waitingPlayers });
-    });
-    Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToServers"])((err, servers) => {
-
-      this.setState({ servers });
-    });
     this.state = {
       servers: [],
       waitingPlayers: []
     };
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToWaitingPlayers"])((err, waitingPlayers) => {
+      this.setState({ waitingPlayers });
+    });
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToServers"])((err, servers) => {
+      this.setState({ servers });
+    });
+    this.goingToServer = this.goingToServer.bind(this);
+  }
+
+  goingToServer(event) {
+    //sending out a socket call where the usered socket it is stuck to the server with the matching name
+    // console.log("jkfdlsajflds",event.target.id)
+    // console.log("these are the waiting players and thier ids", this.state.waitingPlayers)
+    //add the player that cliked to the server they clicked on. 
+    axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/joinServer', { serverToJoin: event.target.id }).then(res => {
+      console.log("this player moved into a room");
+    }).catch(err => {
+      console.log("err", err);
+    });
   }
 
   render() {
     const players = this.state.waitingPlayers;
     const servers = this.state.servers;
-    console.log("the players", players);
+    // console.log("the players", players)
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
       { className: 'lobbyContainer' },
@@ -394,10 +439,10 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             { key: server.id },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
-              { to: `/servers/${server.id}/waitingRoom` },
+              { to: `/${server.id}/waitingRoom` },
               react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
                 'div',
-                null,
+                { onClick: this.goingToServer, id: server.id },
                 server.name
               )
             )
@@ -432,11 +477,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
+/* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
+
 
 
 
 class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor(props) {
+    super(props);
+
+    const serverId = props.match.params.id;
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(serverId, (err, serverState) => {
+      // console.log("this is the server state the server is receivening", serverState)
+      this.setState(serverState);
+    });
+    this.state = { id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: {}, name: '' };
+    console.log("this is the state of the server waiting room", this.state);
+  }
   render() {
+    const players = [{ name: 'fakename', id: 'thisisafakeplayerid' }, { name: 'seoncdfakename', id: 'thisisasecondfakeplayerid' }];
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
       null,
@@ -448,20 +507,15 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'div',
         null,
-        'Theses are players waiting to join or start a maze'
+        'Theses are the players in the waiting room'
       ),
-      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('table', { className: 'waitingPlayers' }),
-      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-        'button',
-        null,
-        'Create a Server'
-      ),
-      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-        'div',
-        { className: 'waitingServers' },
-        'Theses are servers waiting for players'
-      ),
-      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('table', { className: 'waitingServers' })
+      players.map(player => {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'li',
+          { key: players.indexOf(player) },
+          player.name
+        );
+      })
     );
   }
 }
@@ -504,7 +558,7 @@ react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { exact: true, path: '/', component: _components_landing_jsx__WEBPACK_IMPORTED_MODULE_3__["default"] }),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { path: '/lobby', component: _components_lobby_jsx__WEBPACK_IMPORTED_MODULE_4__["default"] }),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { exact: true, path: '/server/createServer', component: _components_createServer_jsx__WEBPACK_IMPORTED_MODULE_6__["default"] }),
-        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { path: '/server/:id/waitingRoom', component: _components_waitingRoom_jsx__WEBPACK_IMPORTED_MODULE_5__["default"] })
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { exact: true, path: '/:id/waitingRoom', component: _components_waitingRoom_jsx__WEBPACK_IMPORTED_MODULE_5__["default"] })
     )
 ), document.getElementById('root'));
 

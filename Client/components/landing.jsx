@@ -9,23 +9,26 @@ export default class Landing extends Component{
   constructor(props) {
     super(props);
     this.state = {timestamp:'no timestamp yet', value: ''};
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
-    console.log("this is the state", this.state)
+    // console.log("this is the state", this.state)
     this.setState({value: event.target.value});
   }
 
   handleSubmit(event) {
-    console.log("this state is", this.state)
+    // console.log("this state is", this.state)
     // Client.playerJoined()
+
     axios.post('/name',{name: this.state.value})
     .then((res)=>{console.log(res)})
     .catch((err)=>{console.log(err)})
     event.preventDefault();
+//I want something like this to work
+
+
   }
 
   render(){
