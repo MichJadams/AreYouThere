@@ -24,7 +24,7 @@ export default class Landing extends Component{
     // Client.playerJoined()
     axios.post('/name',{name: this.state.value})
     .then((res)=>{console.log(res)})
-    .catch((err)=>{console.log(error)})
+    .catch((err)=>{console.log(err)})
     event.preventDefault();
   }
 

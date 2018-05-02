@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-// const servers={}
-// const players = {'stringofletter':{name: 'tim'}, 'randomanotherstring': {name: 'allan'}}
-
-
+import {subscribeToWaitingPlayers,subscribeToServers } from './client.js'
 
 export default class Landing extends Component{
   constructor(){
     super()
+    subscribeToWaitingPlayers((err,waitingPlayers)=>{
+      console.log("whus is this never called???")
+      console.log("updating the state of the waiting players", waitingPlayers)
+      this.setState({waitingPlayers})
+    })
     this.state={
       servers:[{id:3, name:'hardcoded'},{id:6, name:'nest'}],
-      players:[{name: 'tester'},{name: 'bettername'}]
+      waitingPlayers:[{name: 'tester'},{name: 'bettername'}]
     }
  
-    console.log("this is the state from the lobby", this.state)
+    
   }
    componentDidMount(){
     axios.get('/lobby/servers')
@@ -24,16 +26,17 @@ export default class Landing extends Component{
       console.log("what the client got back from the server, servers", servers)
       console.log("this is the state now", this.state)
     })
-    axios.get('/lobby/players')
-    .then(res=>res.data)
-    .then(players=>{
-      this.setState({players:players})
-      console.log("what the client got back from the server, players", players)
-      console.log("this is the state now", this.state)
-    })
+    
+    // axios.get('/lobby/players')
+    // .then(res=>res.data)
+    // .then(players=>{
+      //   this.setState({players:players})
+      //   console.log("what the client got back from the server, players", players)
+      //   console.log("this is the state now", this.state)
+      // })
    }
   render(){
-    const players = this.state.players
+    const players = this.state.waitingPlayers
     const servers = this.state.servers
     console.log("the players", players)
   return(  

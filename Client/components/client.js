@@ -27,4 +27,13 @@ function subscribeToTimer(cb){
     socket.on('timer', timestamp => cb(null, timestamp));
     socket.emit('subscribeToTimer', 1000);
 }
-export { subscribeToTimer }
+function subscribeToWaitingPlayers(cb){
+    socket.on('waitingPlayerList', waitingPlayerList => cb(null, waitingPlayerList));
+    socket.emit("subscribeToWaitingPlayers",{name:"john"})
+    // socket.emit('subscribeToTimer', 1000);
+}
+function subscribeToServers(cb){
+    socket.on('serversList', serversList => cb(null, serversList));
+    socket.emit("subscribeToServers")
+}
+export { subscribeToTimer,subscribeToWaitingPlayers, subscribeToServers }

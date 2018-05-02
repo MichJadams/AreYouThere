@@ -40,19 +40,18 @@ let badwayMasterGameState = {
 app.post('/name',(req,res,next)=>{ 
     console.log("a person has selected a name", req.body.name)
     badwayMasterGameState.waitingPlayers.push({name: req.body.name})
-    
+    res.sendStatus(201)
+    next()
 })
 app.get('/lobby/players',(req,res,next)=>{
-    
-    
     console.log(badwayMasterGameState.waitingPlayers)
     res.json(badwayMasterGameState.waitingPlayers)
+    next()
 })
 app.get('/lobby/servers',(req,res,next)=>{
-    
-    
     console.log(badwayMasterGameState.waitingPlayers)
     res.json(badwayMasterGameState.servers)
+    next()
 })
 
 // app.get('/lobby', (req,res,next)=>{
@@ -78,6 +77,18 @@ io.on('connection',(socket)=>{
             socket.emit('timer', new Date());
       }, interval);
     })
+    socket.on('subscribeToWaitingPlayers', (playerName)=>{
+        console.log("client is subscribing to player list", playerName)
+        io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
+        
+    })
+    socket.on('subscribeToServers', ()=>{
+        console.log("client is subscribing to server list,")
+        io.emit('serversList', badwayMasterGameState.servers);
+      
+    })
+
+
     socket.on('connection name',function(user){
         console.log("hitting here")
       io.sockets.emit('new user', user.name + " has joined.");

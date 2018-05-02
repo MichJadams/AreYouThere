@@ -16,16 +16,12 @@ export default class Landing extends Component{
   }
 
   render(){
-  return (
-      
-        
-        
+        return (
         <div className="App">
         <p className="App-intro">
         This is the timer value: {this.state.timestamp}
         </p>
       </div>
      
-  )
-  }
+  )}
 }
