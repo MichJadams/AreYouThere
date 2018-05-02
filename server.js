@@ -42,11 +42,17 @@ app.post('/name',(req,res,next)=>{
     badwayMasterGameState.waitingPlayers.push({name: req.body.name})
     
 })
-app.get('/lobby',(req,res,next)=>{
-    console.log("sending lobby data to the client")
-    console.log(badwayMasterGameState.servers)
+app.get('/lobby/players',(req,res,next)=>{
+    
+    
     console.log(badwayMasterGameState.waitingPlayers)
-    res.json(badwayMasterGameState)
+    res.json(badwayMasterGameState.waitingPlayers)
+})
+app.get('/lobby/servers',(req,res,next)=>{
+    
+    
+    console.log(badwayMasterGameState.waitingPlayers)
+    res.json(badwayMasterGameState.servers)
 })
 
 // app.get('/lobby', (req,res,next)=>{

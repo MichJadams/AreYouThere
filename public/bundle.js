@@ -197,20 +197,24 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor() {
     super();
     this.state = {
-      servers: [{ id: 3, name: 'hardcoded' }, { id: 3, name: 'nest' }],
+      servers: [{ id: 3, name: 'hardcoded' }, { id: 6, name: 'nest' }],
       players: [{ name: 'tester' }, { name: 'bettername' }]
     };
+
     console.log("this is the state from the lobby", this.state);
   }
-  //  componentWillMount(){
-  //    axios.get('/lobby')
-  //    .then(res=>res.data)
-  //    .then(masterGameState=>{
-  //      this.setState({servers:masterGameState.servers})
-  //      this.setState({players:masterGameState.players})
-  //      console.log("what the client got back from the server, mastergamestate", masterGameState)
-  //    })
-  //  }
+  componentDidMount() {
+    axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('/lobby/servers').then(res => res.data).then(servers => {
+      this.setState({ servers: servers });
+      console.log("what the client got back from the server, servers", servers);
+      console.log("this is the state now", this.state);
+    });
+    axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('/lobby/players').then(res => res.data).then(players => {
+      this.setState({ players: players });
+      console.log("what the client got back from the server, players", players);
+      console.log("this is the state now", this.state);
+    });
+  }
   render() {
     const players = this.state.players;
     const servers = this.state.servers;

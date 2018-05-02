@@ -12,20 +12,7 @@ export default class Landing extends Component{
     subscribeToTimer((err,timestamp)=>{this.setState({
       timestamp
     })})
-    this.state = {timestamp:'no timestamp yet', value: ''};
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChange(event) {
-    this.setState({value: event.target.value});
-  }
-
-  handleSubmit(event) {
-    console.log("this state is", this.state)
-    // Client.playerJoined()
-    event.preventDefault();
+    this.state = {timestamp:'no timestamp yet', value: ''}; 
   }
 
   render(){
