@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 module.exports = {
+    mode: 'development',
     /* starting point for our frontend JavaScript (place to enter when bundling) */
     entry: './Client/index.js',
     /* where to output our newly bundled file */

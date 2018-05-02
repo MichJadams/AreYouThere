@@ -20,9 +20,9 @@
     display:flex;
 }
 .waitingPlayers{
-
+    flex:1
 }
 
 .waitingServers{
-
+    flex: 1
 }
