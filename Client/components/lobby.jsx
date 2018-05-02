@@ -7,13 +7,13 @@ export default class Landing extends Component{
   constructor(){
     super()
     subscribeToWaitingPlayers((err,waitingPlayers)=>{
-      console.log("whus is this never called???")
-      console.log("updating the state of the waiting players", waitingPlayers)
+      
+      
       this.setState({waitingPlayers})
     })
     subscribeToServers((err,servers)=>{
-      console.log("whus is this never called???")
-      console.log("updating the state of the servers", servers)
+  
+  
       this.setState({servers})
     })
     this.state={
@@ -44,14 +44,14 @@ export default class Landing extends Component{
             servers.map(server =>{
               return(
                 <li key={server.id}>
-                <Link to={`\servers\${server.id}\waitingRoom`}>
+                <Link to={`/servers/${server.id}/waitingRoom`}>
                 <div>{server.name}</div>
                 </Link>
                 </li>
               )
             })
           }
-          <button>Create a Server</button>
+          <Link to={"/server/createServer"}><button>Create a Server</button></Link>
         </div>
       </div>)
   } 

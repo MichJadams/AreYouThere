@@ -75,7 +75,7 @@
 /*!*************************************!*\
   !*** ./Client/components/client.js ***!
   \*************************************/
-/*! exports provided: subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers */
+/*! exports provided: subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -83,11 +83,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToTimer", function() { return subscribeToTimer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToWaitingPlayers", function() { return subscribeToWaitingPlayers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServers", function() { return subscribeToServers; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerCookieID", function() { return subscribeToServerCookieID; });
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
 
 const socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('http://localhost:8081');
 
+//lobby sockets 
 function subscribeToTimer(cb) {
     socket.on('timer', timestamp => cb(null, timestamp));
     socket.emit('subscribeToTimer', 1000);
@@ -101,6 +103,119 @@ function subscribeToServers(cb) {
     socket.emit("subscribeToServers");
 }
 
+//createServer sockets 
+function subscribeToServerCookieID(cb) {
+    socket.on('serverCookieID', cookieID => cb(null, cookieID));
+    socket.emit("subscribeToServerCookieID");
+}
+
+
+/***/ }),
+
+/***/ "./Client/components/createServer.jsx":
+/*!********************************************!*\
+  !*** ./Client/components/createServer.jsx ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return createServer; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
+/* harmony import */ var _lobby_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./lobby.jsx */ "./Client/components/lobby.jsx");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
+
+
+
+
+
+
+
+class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+
+  constructor(props) {
+    super(props);
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_5__["subscribeToServerCookieID"])((err, serverCookieID) => {
+      //hash the cookie id here
+      this.setState({ id: serverCookieID });
+    });
+    this.state = { id: null, status: 'open', name: '', capacity: 2 };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({ name: event.target.value });
+    console.log("this is the event", event.target.value);
+  }
+
+  handleSubmit(event) {
+    console.log("this state is", this.state);
+
+    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/createServer', this.state).then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.log(err);
+    });
+    event.preventDefault();
+  }
+
+  render() {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+      'div',
+      { className: 'welcomeContainer' },
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        'div',
+        { className: 'welcomeText' },
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'h1',
+          null,
+          'Create your own room/server'
+        )
+      ),
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        'form',
+        { onSubmit: this.handleSubmit },
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'label',
+          null,
+          'Name of Room:',
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'text', value: this.state.name, onChange: this.handleChange })
+        ),
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'label',
+          null,
+          'status?(open or closed to public):',
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'text', value: this.state.status, onChange: this.handleChange })
+        ),
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'label',
+          null,
+          'number of people you want to host:',
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'text', value: this.state.capacity, onChange: this.handleChange })
+        ),
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'button',
+          { type: 'submit' },
+          'submit'
+        )
+      ),
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"],
+        { to: "/lobby", params: { userName: this.state.value } },
+        'link'
+      ),
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('div', null)
+    );
+  }
+}
 
 /***/ }),
 
@@ -229,13 +344,11 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor() {
     super();
     Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToWaitingPlayers"])((err, waitingPlayers) => {
-      console.log("whus is this never called???");
-      console.log("updating the state of the waiting players", waitingPlayers);
+
       this.setState({ waitingPlayers });
     });
     Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToServers"])((err, servers) => {
-      console.log("whus is this never called???");
-      console.log("updating the state of the servers", servers);
+
       this.setState({ servers });
     });
     this.state = {
@@ -281,7 +394,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             { key: server.id },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
-              { to: `\servers\${server.id}` },
+              { to: `/servers/${server.id}/waitingRoom` },
               react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
                 'div',
                 null,
@@ -291,9 +404,13 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           );
         }),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-          'button',
-          null,
-          'Create a Server'
+          react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
+          { to: "/server/createServer" },
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'button',
+            null,
+            'Create a Server'
+          )
         )
       )
     );
@@ -368,10 +485,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_landing_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/landing.jsx */ "./Client/components/landing.jsx");
 /* harmony import */ var _components_lobby_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/lobby.jsx */ "./Client/components/lobby.jsx");
 /* harmony import */ var _components_waitingRoom_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/waitingRoom.jsx */ "./Client/components/waitingRoom.jsx");
+/* harmony import */ var _components_createServer_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/createServer.jsx */ "./Client/components/createServer.jsx");
 
 
 
 //components
+
 
 
 
@@ -384,7 +503,8 @@ react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_
         null,
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { exact: true, path: '/', component: _components_landing_jsx__WEBPACK_IMPORTED_MODULE_3__["default"] }),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { path: '/lobby', component: _components_lobby_jsx__WEBPACK_IMPORTED_MODULE_4__["default"] }),
-        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { path: '/waitingRoom', component: _components_waitingRoom_jsx__WEBPACK_IMPORTED_MODULE_5__["default"] })
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { exact: true, path: '/server/createServer', component: _components_createServer_jsx__WEBPACK_IMPORTED_MODULE_6__["default"] }),
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { path: '/server/:id/waitingRoom', component: _components_waitingRoom_jsx__WEBPACK_IMPORTED_MODULE_5__["default"] })
     )
 ), document.getElementById('root'));
 

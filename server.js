@@ -43,7 +43,7 @@ app.post('/name',(req,res,next)=>{
     res.sendStatus(201)
     next()
 })
-io.use(cookierParser())
+io.use(cookierParser('hello there',{}))
 io.on('connection',(socket)=>{
     socket.on('subscribeToTimer', (interval)=>{
         console.log("client is subscribing to timer with interval,", interval)
@@ -59,6 +59,13 @@ io.on('connection',(socket)=>{
     socket.on('subscribeToServers', ()=>{
         console.log("client is subscribing to server list,")
         io.emit('serversList', badwayMasterGameState.servers);
+      
+    })
+    socket.on('subscribeToServerCookieID', ()=>{
+        console.log("fjdkslajfldksa",socket.id)
+        console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
+
+        io.emit('serverCookieID', socket.id);
       
     })
 
