@@ -53,17 +53,17 @@ export default class Landing extends Component{
           <h4>Theses are servers waiting for players</h4>
           {
             this.state.servers.map(server =>{
-              return(
-                <li key={server.id}>
-                
-                <button onClick={this.goingToServer} id={server.id}>click me first</button>
-                <Link to={`/${server.id}/waitingRoom`} >
-                {server.name}
-                </Link>
-                
-                
-                </li>
-              )
+              console.log(server.gameState.playing)
+              if(server.gameState.playing === false){
+                return(
+                  <li key={server.id}>
+                  
+                  <button onClick={this.goingToServer} id={server.id}>click me first</button>
+                  <Link to={`/${server.id}/waitingRoom`} >
+                  {server.name}
+                  </Link>
+                  </li>)
+              }
             })
           }
           <Link to={"/server/createServer"}><button>Create a Server</button></Link>

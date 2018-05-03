@@ -6,17 +6,17 @@ export default class WaitingRoom extends Component{
   constructor(props){
     super(props)
     
-    const clientInfo = {id:props.match.params.id}
+    const clientInfo = {id:props.match.params.id, playing: false}
     subscribeToServerState(clientInfo,(err,serverState)=>{
-      // console.log("this is the server state the server is sending and the client in recievning", serverState)
+      console.log("this is the server state the server is sending and the client in recievning", serverState)
       this.setState(serverState)
     })
-    this.state = {id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{}, name:'', capacity:5}
+    this.state = {id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{ playing: false}, name:'', capacity:5}
     // console.log("this is the state of the server waiting room", this.state)
     this.startingAGame = this.startingAGame.bind(this)
   }
   startingAGame(event){
-    const clientInfo = {id:this.state.id}
+    const clientInfo = {id:this.state.id, playing: true}
     //here I want to emit and event to the server that changes the gamestate to "starting!" 
     subscribeToServerState(clientInfo,(err,serverState)=>{
       console.log("starting the game!", serverState)
@@ -38,7 +38,7 @@ export default class WaitingRoom extends Component{
           })
         }
         <button onClick={this.startingAGame}>Start the game</button>
-        <Link to={`/{this.state.id}/maze`}></Link>
+        <Link to={`/{this.state.id}/maze`}>click here to move on</Link>
       </div>)
     }
   }

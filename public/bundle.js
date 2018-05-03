@@ -103,7 +103,6 @@ function subscribeToServers(cb) {
     socket.on('serversList', serversList => cb(null, serversList));
     socket.emit("subscribeToServers");
 }
-
 //createServer sockets 
 function subscribeToServerCookieID(cb) {
     socket.on('serverCookieID', cookieID => cb(null, cookieID));
@@ -113,7 +112,7 @@ function subscribeToServerCookieID(cb) {
 function subscribeToServerState(serverID, cb) {
     // console.log("fromt he socket function", cb)
     socket.on('serverState', serverState => cb(null, serverState));
-    //now I only want to emit to players in that room/view....eeek.
+    //now I only want to emit to players in that room/view....eeek, figured this outttt.
     socket.emit("subscribeToServerState", serverID);
 }
 
@@ -154,7 +153,7 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       //hash the cookie id here
       this.setState({ id: serverCookieID });
     });
-    this.state = { id: null, status: 'open', name: 'lost', capacity: 2 };
+    this.state = { id: null, status: 'open', name: 'lost', capacity: 2, gameState: { playing: false }, connectedPlayers: [] };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
     this.handleCapacityChange = this.handleCapacityChange.bind(this);
@@ -184,6 +183,7 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     });
     event.preventDefault();
     console.log("id to join!!!!!!", this.state.id);
+
     const tempid = this.state.id;
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/joinServer', { serverToJoin: tempid }).then(res => {
       console.log("this player joined the server(which they made)");
@@ -321,16 +321,6 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           'h1',
           null,
           'who are you there?'
-        ),
-        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-          'div',
-          { className: 'App' },
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'p',
-            { className: 'App-intro' },
-            'This is the timer value: ',
-            this.state.timestamp
-          )
         )
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
@@ -449,20 +439,23 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           'Theses are servers waiting for players'
         ),
         this.state.servers.map(server => {
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'li',
-            { key: server.id },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-              'button',
-              { onClick: this.goingToServer, id: server.id },
-              'click me first'
-            ),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-              react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
-              { to: `/${server.id}/waitingRoom` },
-              server.name
-            )
-          );
+          console.log(server.gameState.playing);
+          if (server.gameState.playing === false) {
+            return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'li',
+              { key: server.id },
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+                'button',
+                { onClick: this.goingToServer, id: server.id },
+                'click me first'
+              ),
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+                react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
+                { to: `/${server.id}/waitingRoom` },
+                server.name
+              )
+            );
+          }
         }),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
@@ -553,17 +546,17 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor(props) {
     super(props);
 
-    const clientInfo = { id: props.match.params.id };
+    const clientInfo = { id: props.match.params.id, playing: false };
     Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
-      // console.log("this is the server state the server is sending and the client in recievning", serverState)
+      console.log("this is the server state the server is sending and the client in recievning", serverState);
       this.setState(serverState);
     });
-    this.state = { id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: {}, name: '', capacity: 5
+    this.state = { id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5
       // console.log("this is the state of the server waiting room", this.state)
     };this.startingAGame = this.startingAGame.bind(this);
   }
   startingAGame(event) {
-    const clientInfo = { id: this.state.id
+    const clientInfo = { id: this.state.id, playing: true
       //here I want to emit and event to the server that changes the gamestate to "starting!" 
     };Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
       console.log("starting the game!", serverState);
@@ -610,7 +603,11 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         { onClick: this.startingAGame },
         'Start the game'
       ),
-      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], { to: `/{this.state.id}/maze` })
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
+        { to: `/{this.state.id}/maze` },
+        'click here to move on'
+      )
     );
   }
 }

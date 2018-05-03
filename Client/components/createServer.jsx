@@ -13,7 +13,7 @@ export default class createServer extends Component{
         //hash the cookie id here
         this.setState({id:serverCookieID})
     })
-    this.state = {id:null,status: 'open', name: 'lost', capacity:2};
+    this.state = {id:null,status: 'open', name: 'lost', capacity:2, gameState: {playing: false}, connectedPlayers:[]};
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
     this.handleCapacityChange = this.handleCapacityChange.bind(this);
@@ -41,6 +41,7 @@ export default class createServer extends Component{
     .catch((err)=>{console.log(err)})
     event.preventDefault();
     console.log("id to join!!!!!!", this.state.id)
+    
     const tempid = this.state.id
     axios.post('/joinServer',{serverToJoin:tempid})
     .then((res)=>{console.log("this player joined the server(which they made)")})

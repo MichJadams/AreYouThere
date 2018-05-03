@@ -9,13 +9,11 @@ function subscribeToTimer(cb){
 function subscribeToWaitingPlayers(cb){
     socket.on('waitingPlayerList', waitingPlayerList => cb(null, waitingPlayerList));
     socket.emit("subscribeToWaitingPlayers")
-    
 }
 function subscribeToServers(cb){
     socket.on('serversList', serversList => cb(null, serversList));
     socket.emit("subscribeToServers")
 }
-
 //createServer sockets 
 function subscribeToServerCookieID(cb){
     socket.on('serverCookieID', cookieID=> cb(null,cookieID));
@@ -25,7 +23,13 @@ function subscribeToServerCookieID(cb){
 function subscribeToServerState(serverID,cb){
     // console.log("fromt he socket function", cb)
     socket.on('serverState', serverState=> cb(null,serverState));
-    //now I only want to emit to players in that room/view....eeek.
+    //now I only want to emit to players in that room/view....eeek, figured this outttt.
     socket.emit("subscribeToServerState",serverID)
 }
-export { subscribeToTimer,subscribeToWaitingPlayers, subscribeToServers,subscribeToServerCookieID, subscribeToServerState }
+export { 
+    subscribeToTimer,
+    subscribeToWaitingPlayers, 
+    subscribeToServers,
+    subscribeToServerCookieID, 
+    subscribeToServerState 
+}

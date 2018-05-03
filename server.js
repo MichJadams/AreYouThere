@@ -43,8 +43,6 @@ app.post('/name',(req,res,next)=>{
     next()
 })
 app.post('/createServer',(req,res,next)=>{ 
-    req.body.gameState ={}
-    req.body.connectedPlayers=[]
     badwayMasterGameState.servers.push(req.body)
     console.log("the server being created!", req.body)
     res.sendStatus(201)
@@ -53,7 +51,7 @@ app.post('/createServer',(req,res,next)=>{
 app.post('/joinServer',(req,res,next)=>{
     //remove this player form the waiting players 
     const playerToMove = badwayMasterGameState.waitingPlayers.find((player)=>{return player.id === req.cookies.io})
-    console.log("this is the player we are removeing from the waiting player list",playerToMove)
+    // console.log("this is the player we are removeing from the waiting player list",playerToMove)
     const indexOfPlayerToMove = badwayMasterGameState.waitingPlayers.indexOf(playerToMove)
     // console.log("this is the index of the player to remove", badwayMasterGameState.waitingPlayers.indexOf(playerToMove))
     // console.log("this is the current list of waiting players BEFORE", badwayMasterGameState.waitingPlayers)
@@ -106,7 +104,22 @@ io.on('connection',(socket)=>{
     // })
 
     socket.on('subscribeToServerState', (clientInfo)=>{
-        const theServerInQuestion = badwayMasterGameState.servers.find((server)=>{return (server.id).toString() === (clientInfo.id).toString()})
+        
+        let theServerInQuestion = badwayMasterGameState.servers.find((server)=>{
+            return (server.id).toString() === (clientInfo.id).toString()})
+        if(clientInfo.playing == true){
+            console.log("Starting playing on this server the server in question,",theServerInQuestion)
+            theServerInQuestion.gameState.playing = true;
+            //remove from the servers list 
+            //I should do this by changing a setting, like, 'displayed' - false. 
+            // const indexOfServerToJoin = badwayMasterGameState.servers.indexOf(theServerInQuestion)
+            // badwayMasterGameState.servers.splice(indexOfServerToJoin,indexOfServerToJoin+1)
+
+            // console.log("new master state", badwayMasterGameState)
+            io.emit('serversList', badwayMasterGameState.servers)
+
+            
+        }
         for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
             // console.log("connected players socket ids are",theServerInQuestion.connectedPlayers[i].id)
             io.sockets.connected[theServerInQuestion.connectedPlayers[i].id].emit('serverState',theServerInQuestion);
@@ -119,8 +132,8 @@ io.on('connection',(socket)=>{
 
         //this should only go tho the connected players of the serverID
 
-        // console.log("the waiting players on the master state",badwayMasterGameState.waitingPlayers)
-        // console.log("the waiting servers on the master state",badwayMasterGameState.servers)
+        console.log("the waiting players on the master state",badwayMasterGameState.waitingPlayers)
+        console.log("the waiting servers on the master state",badwayMasterGameState.servers)
         //these have to emitted to everyone
         
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)

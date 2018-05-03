@@ -36,11 +36,6 @@ export default class Landing extends Component{
     <div className="welcomeContainer">
       <div className="welcomeText">
         <h1>who are you there?</h1>
-        <div className="App">
-        <p className="App-intro">
-        This is the timer value: {this.state.timestamp}
-        </p>
-      </div>
       </div>
             <form onSubmit={this.handleSubmit}>
               <label>
