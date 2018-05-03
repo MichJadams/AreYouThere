@@ -108,17 +108,15 @@ io.on('connection',(socket)=>{
         let theServerInQuestion = badwayMasterGameState.servers.find((server)=>{
             return (server.id).toString() === (clientInfo.id).toString()})
         if(clientInfo.playing == true){
-            console.log("Starting playing on this server the server in question,",theServerInQuestion)
             theServerInQuestion.gameState.playing = true;
-            //remove from the servers list 
-            //I should do this by changing a setting, like, 'displayed' - false. 
-            // const indexOfServerToJoin = badwayMasterGameState.servers.indexOf(theServerInQuestion)
-            // badwayMasterGameState.servers.splice(indexOfServerToJoin,indexOfServerToJoin+1)
-
-            // console.log("new master state", badwayMasterGameState)
             io.emit('serversList', badwayMasterGameState.servers)
-
+            //assign each player a astarting position
             
+            theServerInQuestion.connectedPlayers.map((player)=>{
+                return player.loc={x:0,y:0,z:0}
+            })
+            console.log("Starting playing on this server the server in question,",theServerInQuestion)
+            //also generate a map? who knows....
         }
         for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
             // console.log("connected players socket ids are",theServerInQuestion.connectedPlayers[i].id)
@@ -129,7 +127,6 @@ io.on('connection',(socket)=>{
         // console.log("sending back this info for this server", theServerInQuestion)
         // console.log("fjdkslajfldksa",socket.id)
         // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
-
         //this should only go tho the connected players of the serverID
 
         console.log("the waiting players on the master state",badwayMasterGameState.waitingPlayers)
