@@ -105,23 +105,24 @@ io.on('connection',(socket)=>{
     //     // io.emit('serverCookieID', socket.id);
     // })
 
-    socket.on('subscribeToServerState', (serverID)=>{
+    socket.on('subscribeToServerState', (clientInfo)=>{
+        const theServerInQuestion = badwayMasterGameState.servers.find((server)=>{return (server.id).toString() === (clientInfo.id).toString()})
+        for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
+            // console.log("connected players socket ids are",theServerInQuestion.connectedPlayers[i].id)
+            io.sockets.connected[theServerInQuestion.connectedPlayers[i].id].emit('serverState',theServerInQuestion);
+        }
         // console.log("the server id is", serverID)
-        const theServerInQuestion = badwayMasterGameState.servers.find((server)=>{return (server.id).toString() === (serverID).toString()})
         //if this is a new socket for this server, add it
         // console.log("sending back this info for this server", theServerInQuestion)
         // console.log("fjdkslajfldksa",socket.id)
         // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
 
         //this should only go tho the connected players of the serverID
-        for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
-            // console.log("connected players socket ids are",theServerInQuestion.connectedPlayers[i].id)
-            io.sockets.connected[theServerInQuestion.connectedPlayers[i].id].emit('serverState',theServerInQuestion);
-        }
 
         // console.log("the waiting players on the master state",badwayMasterGameState.waitingPlayers)
         // console.log("the waiting servers on the master state",badwayMasterGameState.servers)
         //these have to emitted to everyone
+        
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
         io.emit('serversList', badwayMasterGameState.servers)
     })

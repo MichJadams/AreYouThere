@@ -6,13 +6,22 @@ export default class WaitingRoom extends Component{
   constructor(props){
     super(props)
     
-    const serverId = props.match.params.id
-    subscribeToServerState(serverId,(err,serverState)=>{
+    const clientInfo = {id:props.match.params.id}
+    subscribeToServerState(clientInfo,(err,serverState)=>{
       // console.log("this is the server state the server is sending and the client in recievning", serverState)
       this.setState(serverState)
     })
     this.state = {id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{}, name:'', capacity:5}
     // console.log("this is the state of the server waiting room", this.state)
+    this.startingAGame = this.startingAGame.bind(this)
+  }
+  startingAGame(event){
+    const clientInfo = {id:this.state.id}
+    //here I want to emit and event to the server that changes the gamestate to "starting!" 
+    subscribeToServerState(clientInfo,(err,serverState)=>{
+      console.log("starting the game!", serverState)
+      this.setState(serverState)
+    })
   }
   render(){
   return (<div>
@@ -22,14 +31,14 @@ export default class WaitingRoom extends Component{
         {
           this.state.connectedPlayers.map(player =>{
             return(
-              <div>
-                <li key={this.state.connectedPlayers.indexOf(player)}>{player.name} has the id of {player.id}</li>
+              <div key={this.state.connectedPlayers.indexOf(player)}>
+                <li >{player.name} has the id of {player.id}</li>
               </div>
             )
           })
         }
-        <button>Start the game</button>
-        <Link to={`this.state.id}/maze`}></Link>
+        <button onClick={this.startingAGame}>Start the game</button>
+        <Link to={`/{this.state.id}/maze`}></Link>
       </div>)
     }
   }

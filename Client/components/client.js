@@ -28,4 +28,4 @@ function subscribeToServerState(serverID,cb){
     //now I only want to emit to players in that room/view....eeek.
     socket.emit("subscribeToServerState",serverID)
 }
-export { subscribeToTimer,subscribeToWaitingPlayers, subscribeToServers,subscribeToServerCookieID,subscribeToServerWaitingRoomCapacity, subscribeToServerState }
+export { subscribeToTimer,subscribeToWaitingPlayers, subscribeToServers,subscribeToServerCookieID, subscribeToServerState }
