@@ -179,7 +179,15 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     console.log("this state is", this.state);
 
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/createServer', this.state).then(res => {
-      console.log(res);
+      console.log("send create server request");
+    }).catch(err => {
+      console.log(err);
+    });
+    event.preventDefault();
+    console.log("id to join!!!!!!", this.state.id);
+    const tempid = this.state.id;
+    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/joinServer', { serverToJoin: tempid }).then(res => {
+      console.log("this player joined the server(which they made)");
     }).catch(err => {
       console.log(err);
     });
@@ -382,7 +390,10 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       waitingPlayers: []
     };
     Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToWaitingPlayers"])((err, waitingPlayers) => {
+      console.log("waiting players on the server", waitingPlayers);
       this.setState({ waitingPlayers });
+      console.log("waiting players", this.state.waitingPlayers);
+      this.forceUpdate();
     });
     Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToServers"])((err, servers) => {
       this.setState({ servers });
@@ -403,9 +414,6 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   }
 
   render() {
-    const players = this.state.waitingPlayers;
-    const servers = this.state.servers;
-    // console.log("the players", players)
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
       { className: 'lobbyContainer' },
@@ -417,10 +425,10 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           null,
           'Theses are players waiting to join or start a maze'
         ),
-        players.map(player => {
+        this.state.waitingPlayers.map(player => {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'li',
-            { key: players.indexOf(player) },
+            { key: this.state.waitingPlayers.indexOf(player) },
             player.name
           );
         })
@@ -433,7 +441,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           null,
           'Theses are servers waiting for players'
         ),
-        servers.map(server => {
+        this.state.servers.map(server => {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'li',
             { key: server.id },
