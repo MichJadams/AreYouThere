@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import {subscribeToWaitingPlayers,subscribeToServers } from './client.js'
+import {subscribeToWaitingPlayers,subscribeToServers, subscribeToServerState } from './client.js'
 
 export default class Landing extends Component{
   constructor(){
@@ -30,6 +30,10 @@ export default class Landing extends Component{
     axios.post('/joinServer',{serverToJoin:event.target.id})
     .then(res=>{console.log("this player moved into a room")})
     .catch(err=>{console.log("err",err)})
+
+    // subscribeToServerState((err,serverState)=>{
+
+    // })
   }
 
   render(){
@@ -52,6 +56,7 @@ export default class Landing extends Component{
               return(
                 <li key={server.id}>
                 
+                <button onClick={this.goingToServer} id={server.id}>click me first</button>
                 <Link to={`/${server.id}/waitingRoom`} >
                 <div onClick={this.goingToServer} id={server.id}>{server.name}</div>
                 </Link>

@@ -346,13 +346,17 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'button',
           { type: 'submit' },
-          'submit'
+          'Pick this name'
         )
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"],
         { to: "/lobby", params: { userName: this.state.value } },
-        'link'
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'button',
+          { type: 'submit' },
+          'Proceed to the lobby (must first pick a name)'
+        )
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('div', null)
     );
@@ -411,6 +415,10 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     }).catch(err => {
       console.log("err", err);
     });
+
+    // subscribeToServerState((err,serverState)=>{
+
+    // })
   }
 
   render() {
@@ -445,6 +453,11 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'li',
             { key: server.id },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'button',
+              { onClick: this.goingToServer, id: server.id },
+              'click me first'
+            ),
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
               { to: `/${server.id}/waitingRoom` },
@@ -496,7 +509,7 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     const serverId = props.match.params.id;
     Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(serverId, (err, serverState) => {
-      // console.log("this is the server state the server is receivening", serverState)
+      console.log("this is the server state the server is receivening", serverState);
       this.setState(serverState);
     });
     this.state = { id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: {}, name: '' };

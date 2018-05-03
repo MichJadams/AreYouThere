@@ -8,7 +8,7 @@ export default class WaitingRoom extends Component{
     
     const serverId = props.match.params.id
     subscribeToServerState(serverId,(err,serverState)=>{
-      // console.log("this is the server state the server is receivening", serverState)
+      console.log("this is the server state the server is receivening", serverState)
       this.setState(serverState)
     })
     this.state = {id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{}, name:'',}

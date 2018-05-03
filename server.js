@@ -53,7 +53,7 @@ app.post('/createServer',(req,res,next)=>{
 app.post('/joinServer',(req,res,next)=>{
     //remove this player form the waiting players 
     const playerToMove = badwayMasterGameState.waitingPlayers.find((player)=>{return player.id === req.cookies.io})
-    // console.log("this is the player we are removeing from the waiting player list",playerToMove)
+    console.log("this is the player we are removeing from the waiting player list",playerToMove)
     const indexOfPlayerToMove = badwayMasterGameState.waitingPlayers.indexOf(playerToMove)
     // console.log("this is the index of the player to remove", badwayMasterGameState.waitingPlayers.indexOf(playerToMove))
     // console.log("this is the current list of waiting players BEFORE", badwayMasterGameState.waitingPlayers)
@@ -80,8 +80,8 @@ io.on('connection',(socket)=>{
             socket.emit('timer', new Date());
       }, interval);
     })
-    socket.on('subscribeToWaitingPlayers', (playerName)=>{
-        console.log("client is subscribing to player list", playerName)
+    socket.on('subscribeToWaitingPlayers', ()=>{
+        // console.log("client is subscribing to player list")
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
         
     })
@@ -103,6 +103,7 @@ io.on('connection',(socket)=>{
     //     // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
     //     // io.emit('serverCookieID', socket.id);
     // })
+
     socket.on('subscribeToServerState', (serverID)=>{
         // console.log("the server id is", serverID)
         const theServerInQuestion = badwayMasterGameState.servers.find((server)=>{return server.id === serverID})
@@ -113,6 +114,7 @@ io.on('connection',(socket)=>{
 
         socket.emit('serverState',theServerInQuestion);
         console.log("the waiting players on the master state",badwayMasterGameState.waitingPlayers)
+        console.log("the waiting servers on the master state",badwayMasterGameState.servers)
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
         io.emit('serversList', badwayMasterGameState.servers)
     })

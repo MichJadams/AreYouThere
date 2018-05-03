@@ -47,9 +47,9 @@ export default class Landing extends Component{
                 Name:
                 <input type="text" value={this.state.value} onChange={this.handleChange} />
               </label>
-              <button type="submit">submit</button>
+              <button type="submit">Pick this name</button>
               </form>
-              <Link to={"/lobby"} params={{userName:this.state.value}}>link</Link>
+              <Link to={"/lobby"} params={{userName:this.state.value}}><button type="submit">Proceed to the lobby (must first pick a name)</button></Link>
         <div>
         </div>
     </div>
