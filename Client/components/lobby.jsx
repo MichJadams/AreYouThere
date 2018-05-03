@@ -58,7 +58,7 @@ export default class Landing extends Component{
                 
                 <button onClick={this.goingToServer} id={server.id}>click me first</button>
                 <Link to={`/${server.id}/waitingRoom`} >
-                <div onClick={this.goingToServer} id={server.id}>{server.name}</div>
+                {server.name}
                 </Link>
                 
                 

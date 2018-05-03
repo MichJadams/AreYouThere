@@ -15,6 +15,7 @@ export default class Landing extends Component{
     this.state = {timestamp:'no timestamp yet', value: ''}; 
   }
 
+  
   render(){
         return (
         <div className="App">
