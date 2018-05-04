@@ -8,13 +8,14 @@ export default class Landing extends Component{
     super()
     this.state={
       servers:[],
-      waitingPlayers:[]
+      waitingPlayers:[],
+      serverJoinable: false
     }
     subscribeToWaitingPlayers((err,waitingPlayers)=>{
       console.log("waiting players on the server", waitingPlayers)
       this.setState({waitingPlayers})
       console.log("waiting players", this.state.waitingPlayers)
-      this.forceUpdate()
+      // this.forceUpdate()
     })
     subscribeToServers((err,servers)=>{
       this.setState({servers})
@@ -27,6 +28,7 @@ export default class Landing extends Component{
     // console.log("jkfdlsajflds",event.target.id)
     // console.log("these are the waiting players and thier ids", this.state.waitingPlayers)
     //add the player that cliked to the server they clicked on. 
+    this.setState(servers:{serverJoinable:true})
     axios.post('/joinServer',{serverToJoin:event.target.id})
     .then(res=>{console.log("this player moved into a room")})
     .catch(err=>{console.log("err",err)})
@@ -57,11 +59,8 @@ export default class Landing extends Component{
               if(server.gameState.playing === false){
                 return(
                   <li key={server.id}>
-                  
-                  <button onClick={this.goingToServer} id={server.id}>click me first</button>
-                  <Link to={`/${server.id}/waitingRoom`} >
-                  {server.name}
-                  </Link>
+                  {this.state.servers.serverJoinable?<Link to={`/${server.id}/waitingRoom`}>{server.name}</Link>:
+                  <div>{server.name}<button onClick={this.goingToServer} id={server.id}>Join Server</button></div>}
                   </li>)
               }
             })

@@ -13,7 +13,7 @@ export default class createServer extends Component{
         //hash the cookie id here
         this.setState({id:serverCookieID})
     })
-    this.state = {id:null,status: 'open', name: 'lost', capacity:2, gameState: {playing: false}, connectedPlayers:[]};
+    this.state = {id:null,status: 'open', name: 'lost', capacity:2, gameState: {playing: false}, connectedPlayers:[], serverSubmitted: false};
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
     this.handleCapacityChange = this.handleCapacityChange.bind(this);
@@ -34,13 +34,13 @@ export default class createServer extends Component{
 }
 
   handleSubmit(event) {
-    console.log("this state is", this.state)
-
+    // console.log("this state is", this.state)
+    this.setState({serverSubmitted:true})
     axios.post('/createServer',this.state)
     .then((res)=>{console.log("send create server request")})
     .catch((err)=>{console.log(err)})
     event.preventDefault();
-    console.log("id to join!!!!!!", this.state.id)
+    // console.log("id to join!!!!!!", this.state.id)
     
     const tempid = this.state.id
     axios.post('/joinServer',{serverToJoin:tempid})
@@ -71,9 +71,13 @@ export default class createServer extends Component{
                     number of people you want to host:
                   <input type="number" value={this.state.capacity} onChange={this.handleCapacityChange} />
                 </label>
-                <button type="submit">submit</button>
+                {this.state.serverSubmitted?
+                  <Link to={`/${this.state.id}/waitingRoom`}>Create Server</Link>
+                  :<button type="submit">submit</button>
+                }
+                
               </form>
-              <Link to={`/${this.state.id}/waitingRoom`}>Create Server</Link>
+              
         <div>
         </div>
     </div>

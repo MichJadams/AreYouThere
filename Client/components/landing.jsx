@@ -8,7 +8,7 @@ export default class Landing extends Component{
 
   constructor(props) {
     super(props);
-    this.state = {timestamp:'no timestamp yet', value: ''};
+    this.state = {timestamp:'no timestamp yet', value: '', nameSelected: false};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -21,14 +21,11 @@ export default class Landing extends Component{
   handleSubmit(event) {
     // console.log("this state is", this.state)
     // Client.playerJoined()
-
+    this.setState({nameSelected:true})
     axios.post('/name',{name: this.state.value})
     .then((res)=>{console.log(res)})
     .catch((err)=>{console.log(err)})
     event.preventDefault();
-//I want something like this to work
-
-
   }
 
   render(){
@@ -42,9 +39,12 @@ export default class Landing extends Component{
                 Name:
                 <input type="text" value={this.state.value} onChange={this.handleChange} />
               </label>
-              <button type="submit">Pick this name</button>
+              {
+                this.state.nameSelected?
+                (<div><h5>That name is available!</h5><Link to={"/lobby"} params={{userName:this.state.value}}>Proceed to the Lobby</Link></div>)
+                :<button type="submit">Pick name</button>
+              }
               </form>
-              <Link to={"/lobby"} params={{userName:this.state.value}}><button type="submit">Proceed to the lobby (must first pick a name)</button></Link>
         <div>
         </div>
     </div>

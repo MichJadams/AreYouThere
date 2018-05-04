@@ -11,7 +11,7 @@ export default class WaitingRoom extends Component{
       console.log("this is the server state the server is sending and the client in recievning", serverState)
       this.setState(serverState)
     })
-    this.state = {id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{ playing: false}, name:'', capacity:5}
+    this.state = {id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{ playing: false}, name:'', capacity:5, proceedToMaze:false}
     // console.log("this is the state of the server waiting room", this.state)
     this.startingAGame = this.startingAGame.bind(this)
   }
@@ -20,6 +20,7 @@ export default class WaitingRoom extends Component{
     //here I want to emit and event to the server that changes the gamestate to "starting!" 
     subscribeToServerState(clientInfo,(err,serverState)=>{
       console.log("starting the game!", serverState)
+      serverState.proceedToMaze = true
       this.setState(serverState)
     })
   }
@@ -37,8 +38,11 @@ export default class WaitingRoom extends Component{
             )
           })
         }
-        <button onClick={this.startingAGame}>Start the game</button>
-        <Link to={`/{this.state.id}/maze`}>click here to move on</Link>
+        {
+          this.state.proceedToMaze?
+          <Link to={`/{this.state.id}/maze`}>Continue into the maze</Link>
+          :<button onClick={this.startingAGame}>Start the Game</button>
+        }
       </div>)
     }
   }
