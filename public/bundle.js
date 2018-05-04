@@ -182,11 +182,10 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       console.log(err);
     });
     event.preventDefault();
-    // console.log("id to join!!!!!!", this.state.id)
 
     const tempid = this.state.id;
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/joinServer', { serverToJoin: tempid }).then(res => {
-      console.log("this player joined the server(which they made)");
+      console.log("this player joined the server(which they made)", tempid);
     }).catch(err => {
       console.log(err);
     });
@@ -401,7 +400,8 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     // console.log("jkfdlsajflds",event.target.id)
     // console.log("these are the waiting players and thier ids", this.state.waitingPlayers)
     //add the player that cliked to the server they clicked on. 
-    this.setState(servers);
+    // this.setState({servers:{serverJoinable:true}})
+    console.log("the event", event);
     axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/joinServer', { serverToJoin: event.target.id }).then(res => {
       console.log("this player moved into a room");
     }).catch(err => {
@@ -447,19 +447,15 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               'li',
               { key: server.id },
-              this.state.servers.serverJoinable ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
                 react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
                 { to: `/${server.id}/waitingRoom` },
                 server.name
-              ) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-                'div',
-                null,
-                server.name,
-                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-                  'button',
-                  { onClick: this.goingToServer, id: server.id },
-                  'Join Server'
-                )
+              ),
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+                'button',
+                { onClick: this.goingToServer, id: server.id },
+                'Join Server'
               )
             );
           }
@@ -497,6 +493,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 /* harmony import */ var _lobby_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./lobby.jsx */ "./Client/components/lobby.jsx");
 /* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
+
+
 
 
 
@@ -545,6 +543,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 /* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
+/* harmony import */ var _maze_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./maze.jsx */ "./Client/components/maze.jsx");
 
 
 
@@ -557,10 +556,14 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
       console.log("this is the server state the server is sending and the client in recievning", serverState);
       this.setState(serverState);
+
+      if (this.state.proceedToMaze) {
+        //start the maze 
+
+      }
     });
-    this.state = { id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5, proceedToMaze: false
-      // console.log("this is the state of the server waiting room", this.state)
-    };this.startingAGame = this.startingAGame.bind(this);
+    this.state = { id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5, proceedToMaze: false };
+    this.startingAGame = this.startingAGame.bind(this);
   }
   startingAGame(event) {
     const clientInfo = { id: this.state.id, playing: true
@@ -572,6 +575,8 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     });
   }
   render() {
+    console.log("this is the id", this.state.id);
+    const id = this.state.id;
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
       null,
@@ -608,7 +613,7 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       }),
       this.state.proceedToMaze ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
-        { to: `/{this.state.id}/maze` },
+        { to: `/${this.state.id}/maze` },
         'Continue into the maze'
       ) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'button',

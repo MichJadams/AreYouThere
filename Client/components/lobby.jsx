@@ -28,7 +28,8 @@ export default class Landing extends Component{
     // console.log("jkfdlsajflds",event.target.id)
     // console.log("these are the waiting players and thier ids", this.state.waitingPlayers)
     //add the player that cliked to the server they clicked on. 
-    this.setState(servers:{serverJoinable:true})
+    // this.setState({servers:{serverJoinable:true}})
+    console.log("the event", event)
     axios.post('/joinServer',{serverToJoin:event.target.id})
     .then(res=>{console.log("this player moved into a room")})
     .catch(err=>{console.log("err",err)})
@@ -59,8 +60,8 @@ export default class Landing extends Component{
               if(server.gameState.playing === false){
                 return(
                   <li key={server.id}>
-                  {this.state.servers.serverJoinable?<Link to={`/${server.id}/waitingRoom`}>{server.name}</Link>:
-                  <div>{server.name}<button onClick={this.goingToServer} id={server.id}>Join Server</button></div>}
+                  <Link to={`/${server.id}/waitingRoom`}>{server.name}</Link>
+                  <button onClick={this.goingToServer} id={server.id}>Join Server</button>
                   </li>)
               }
             })

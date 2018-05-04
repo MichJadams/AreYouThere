@@ -67,7 +67,7 @@ app.post('/joinServer',(req,res,next)=>{
     // console.log("the SERVERS BEFORE", badwayMasterGameState.servers)
     badwayMasterGameState.servers[indexOfServerToJoin].connectedPlayers.push(playerToMove)
     // console.log("the SERVERS AFTER", badwayMasterGameState.servers)
-    res.sendStatus(201)
+    res.sendStatus(200)
     next()
 })
 
@@ -119,7 +119,7 @@ io.on('connection',(socket)=>{
             //also generate a map? who knows....
         }
         for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
-            // console.log("connected players socket ids are",theServerInQuestion.connectedPlayers[i].id)
+            console.log("connected players socket ids are",theServerInQuestion.connectedPlayers[i].id)
             io.sockets.connected[theServerInQuestion.connectedPlayers[i].id].emit('serverState',theServerInQuestion);
         }
         // console.log("the server id is", serverID)

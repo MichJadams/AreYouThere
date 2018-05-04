@@ -40,11 +40,11 @@ export default class createServer extends Component{
     .then((res)=>{console.log("send create server request")})
     .catch((err)=>{console.log(err)})
     event.preventDefault();
-    // console.log("id to join!!!!!!", this.state.id)
+    
     
     const tempid = this.state.id
     axios.post('/joinServer',{serverToJoin:tempid})
-    .then((res)=>{console.log("this player joined the server(which they made)")})
+    .then((res)=>{console.log("this player joined the server(which they made)", tempid)})
     .catch((err)=>{console.log(err)})
     event.preventDefault();
   }

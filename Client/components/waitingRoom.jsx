@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {subscribeToServerState } from './client.js'
-
+import maze from './maze.jsx'
 export default class WaitingRoom extends Component{
   constructor(props){
     super(props)
@@ -10,9 +10,13 @@ export default class WaitingRoom extends Component{
     subscribeToServerState(clientInfo,(err,serverState)=>{
       console.log("this is the server state the server is sending and the client in recievning", serverState)
       this.setState(serverState)
+
+      if(this.state.proceedToMaze){
+        //start the maze 
+
+      }
     })
     this.state = {id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{ playing: false}, name:'', capacity:5, proceedToMaze:false}
-    // console.log("this is the state of the server waiting room", this.state)
     this.startingAGame = this.startingAGame.bind(this)
   }
   startingAGame(event){
@@ -22,9 +26,12 @@ export default class WaitingRoom extends Component{
       console.log("starting the game!", serverState)
       serverState.proceedToMaze = true
       this.setState(serverState)
-    })
+      
+      })
   }
   render(){
+    console.log("this is the id", this.state.id)
+    const id = this.state.id
   return (<div>
         <h1 >This is the waitingRoom</h1>
         <div>Theses are the players in the waiting room</div>
@@ -40,7 +47,7 @@ export default class WaitingRoom extends Component{
         }
         {
           this.state.proceedToMaze?
-          <Link to={`/{this.state.id}/maze`}>Continue into the maze</Link>
+          <Link to={`/${this.state.id}/maze`}>Continue into the maze</Link>
           :<button onClick={this.startingAGame}>Start the Game</button>
         }
       </div>)

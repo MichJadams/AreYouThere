@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import ReactDom from 'react-dom'
+
+import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import { render, Link } from 'react-router-dom';
 import lobby from './lobby.jsx'
 import Client, { subscribeToTimer } from './client.js'
