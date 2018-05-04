@@ -162,15 +162,15 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   handleNameChange(event) {
     this.setState({ name: event.target.value });
-    console.log("this is the name", event.target.value);
+    // console.log("this is the name", event.target.value)
   }
   handleStatusChange(event) {
     this.setState({ status: event.target.value });
-    console.log("this is the status", event.target.value);
+    // console.log("this is the status", event.target.value)
   }
   handleCapacityChange(event) {
     this.setState({ capacity: event.target.value });
-    console.log("this capacity", event.target.value);
+    // console.log("this capacity", event.target.value)
   }
 
   handleSubmit(event) {
@@ -384,9 +384,9 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       serverJoinable: false
     };
     Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToWaitingPlayers"])((err, waitingPlayers) => {
-      console.log("waiting players on the server", waitingPlayers);
+      // console.log("waiting players on the server", waitingPlayers)
       this.setState({ waitingPlayers });
-      console.log("waiting players", this.state.waitingPlayers);
+      // console.log("waiting players", this.state.waitingPlayers)
       // this.forceUpdate()
     });
     Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToServers"])((err, servers) => {
@@ -401,7 +401,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     // console.log("these are the waiting players and thier ids", this.state.waitingPlayers)
     //add the player that cliked to the server they clicked on. 
     // this.setState({servers:{serverJoinable:true}})
-    console.log("the event", event);
+    // console.log("the event", event)
     axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/joinServer', { serverToJoin: event.target.id }).then(res => {
       console.log("this player moved into a room");
     }).catch(err => {
@@ -442,7 +442,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           'Theses are servers waiting for players'
         ),
         this.state.servers.map(server => {
-          console.log(server.gameState.playing);
+          // console.log("server.gamestate.player",server.gameState.playing)
           if (server.gameState.playing === false) {
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               'li',
@@ -554,12 +554,13 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     const clientInfo = { id: props.match.params.id, playing: false };
     Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
-      console.log("this is the server state the server is sending and the client in recievning", serverState);
+      // console.log("this is the server state the server is sending and the client in recievning", serverState)
       this.setState(serverState);
-
-      if (this.state.proceedToMaze) {
-        //start the maze 
-
+      let passingState = this.state;
+      if (this.state.gameState.playing) {
+        // console.log("THE GAME IS A FOOT")
+        // console.log(`going here /${this.state.id}/maze`)
+        this.props.history.push({ pathname: `/${this.state.id}/maze`, state: { state: passingState } });
       }
     });
     this.state = { id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5, proceedToMaze: false };
@@ -569,13 +570,12 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     const clientInfo = { id: this.state.id, playing: true
       //here I want to emit and event to the server that changes the gamestate to "starting!" 
     };Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
-      console.log("starting the game!", serverState);
+      // console.log("starting the game!", serverState)
       serverState.proceedToMaze = true;
       this.setState(serverState);
     });
   }
   render() {
-    console.log("this is the id", this.state.id);
     const id = this.state.id;
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
@@ -619,6 +619,15 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         'button',
         { onClick: this.startingAGame },
         'Start the Game'
+      ),
+      this.state.gameState.playing ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        'h1',
+        null,
+        'PLAYING'
+      ) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        'h1',
+        null,
+        'not playing'
       )
     );
   }

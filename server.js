@@ -118,9 +118,14 @@ io.on('connection',(socket)=>{
             console.log("Starting playing on this server the server in question,",theServerInQuestion)
             //also generate a map? who knows....
         }
+        console.log("overall array of connected players",theServerInQuestion)
         for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
-            console.log("connected players socket ids are",theServerInQuestion.connectedPlayers[i].id)
-            io.sockets.connected[theServerInQuestion.connectedPlayers[i].id].emit('serverState',theServerInQuestion);
+
+            if(theServerInQuestion.connectedPlayers[i]){
+
+                console.log("connected players socket ids are",theServerInQuestion.connectedPlayers[i].id)
+                io.sockets.connected[theServerInQuestion.connectedPlayers[i].id].emit('serverState',theServerInQuestion);
+            }
         }
         // console.log("the server id is", serverID)
         //if this is a new socket for this server, add it

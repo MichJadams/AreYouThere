@@ -22,15 +22,15 @@ export default class createServer extends Component{
 
   handleNameChange(event) {
       this.setState({name: event.target.value});
-      console.log("this is the name", event.target.value)
+      // console.log("this is the name", event.target.value)
   }
   handleStatusChange(event) {
     this.setState({status: event.target.value});
-    console.log("this is the status", event.target.value)
+    // console.log("this is the status", event.target.value)
 }
   handleCapacityChange(event) {
   this.setState({capacity: event.target.value});
-  console.log("this capacity", event.target.value)
+  // console.log("this capacity", event.target.value)
 }
 
   handleSubmit(event) {

@@ -8,11 +8,13 @@ export default class WaitingRoom extends Component{
     
     const clientInfo = {id:props.match.params.id, playing: false}
     subscribeToServerState(clientInfo,(err,serverState)=>{
-      console.log("this is the server state the server is sending and the client in recievning", serverState)
+      // console.log("this is the server state the server is sending and the client in recievning", serverState)
       this.setState(serverState)
-
-      if(this.state.proceedToMaze){
-        //start the maze 
+      let passingState = this.state
+      if(this.state.gameState.playing){
+        // console.log("THE GAME IS A FOOT")
+        // console.log(`going here /${this.state.id}/maze`)
+        this.props.history.push({pathname:`/${this.state.id}/maze`, state:{state:passingState}})
 
       }
     })
@@ -23,14 +25,13 @@ export default class WaitingRoom extends Component{
     const clientInfo = {id:this.state.id, playing: true}
     //here I want to emit and event to the server that changes the gamestate to "starting!" 
     subscribeToServerState(clientInfo,(err,serverState)=>{
-      console.log("starting the game!", serverState)
+      // console.log("starting the game!", serverState)
       serverState.proceedToMaze = true
       this.setState(serverState)
       
       })
   }
   render(){
-    console.log("this is the id", this.state.id)
     const id = this.state.id
   return (<div>
         <h1 >This is the waitingRoom</h1>
@@ -49,6 +50,9 @@ export default class WaitingRoom extends Component{
           this.state.proceedToMaze?
           <Link to={`/${this.state.id}/maze`}>Continue into the maze</Link>
           :<button onClick={this.startingAGame}>Start the Game</button>
+        }
+        {
+          this.state.gameState.playing?<h1>PLAYING</h1>: <h1>not playing</h1>
         }
       </div>)
     }

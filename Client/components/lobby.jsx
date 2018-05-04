@@ -12,9 +12,9 @@ export default class Landing extends Component{
       serverJoinable: false
     }
     subscribeToWaitingPlayers((err,waitingPlayers)=>{
-      console.log("waiting players on the server", waitingPlayers)
+      // console.log("waiting players on the server", waitingPlayers)
       this.setState({waitingPlayers})
-      console.log("waiting players", this.state.waitingPlayers)
+      // console.log("waiting players", this.state.waitingPlayers)
       // this.forceUpdate()
     })
     subscribeToServers((err,servers)=>{
@@ -29,7 +29,7 @@ export default class Landing extends Component{
     // console.log("these are the waiting players and thier ids", this.state.waitingPlayers)
     //add the player that cliked to the server they clicked on. 
     // this.setState({servers:{serverJoinable:true}})
-    console.log("the event", event)
+    // console.log("the event", event)
     axios.post('/joinServer',{serverToJoin:event.target.id})
     .then(res=>{console.log("this player moved into a room")})
     .catch(err=>{console.log("err",err)})
@@ -56,7 +56,7 @@ export default class Landing extends Component{
           <h4>Theses are servers waiting for players</h4>
           {
             this.state.servers.map(server =>{
-              console.log(server.gameState.playing)
+              // console.log("server.gamestate.player",server.gameState.playing)
               if(server.gameState.playing === false){
                 return(
                   <li key={server.id}>
