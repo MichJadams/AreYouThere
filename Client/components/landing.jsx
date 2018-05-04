@@ -41,7 +41,7 @@ export default class Landing extends Component{
               </label>
               {
                 this.state.nameSelected?
-                (<div><h5>That name is available!</h5><Link to={"/lobby"} params={{userName:this.state.value}}>Proceed to the Lobby</Link></div>)
+                (<div><h5>That name is available!</h5><Link to={"/lobby"}>Proceed to the Lobby</Link></div>)
                 :<button type="submit">Pick name</button>
               }
               </form>
