@@ -12,10 +12,10 @@ const path = require('path')
 // app.use('/assests', express.static(__dirname+'/assests'))
 // app.use('/js', express.static(__dirname+'/js'))
 
-app.use(cookieParser());
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
+app.use(cookieParser());
 
 app.use('/',express.static(path.join(__dirname, 'public')) )
 
@@ -51,22 +51,24 @@ app.post('/createServer',(req,res,next)=>{
 app.post('/joinServer',(req,res,next)=>{
     //remove this player form the waiting players 
     const playerToMove = badwayMasterGameState.waitingPlayers.find((player)=>{return player.id === req.cookies.io})
-    // console.log("this is the player we are removeing from the waiting player list",playerToMove)
+    console.log("this is the player we are removeing from the waiting player list",playerToMove)
     const indexOfPlayerToMove = badwayMasterGameState.waitingPlayers.indexOf(playerToMove)
-    // console.log("this is the index of the player to remove", badwayMasterGameState.waitingPlayers.indexOf(playerToMove))
-    // console.log("this is the current list of waiting players BEFORE", badwayMasterGameState.waitingPlayers)
+    console.log("this is the index of the player to remove", badwayMasterGameState.waitingPlayers.indexOf(playerToMove))
+    console.log("this is the current list of waiting players BEFORE", badwayMasterGameState.waitingPlayers)
     badwayMasterGameState.waitingPlayers.splice(indexOfPlayerToMove,indexOfPlayerToMove+1)
-    // console.log("this is the current list of waiting players AFTER", badwayMasterGameState.waitingPlayers)
+    console.log("this is the current list of waiting players AFTER", badwayMasterGameState.waitingPlayers)
 
     //add this player to the game state server player
-    // console.log("this is the id of the server they want to join", req.body.serverToJoin)
+    console.log("this is the id of the server they want to join", req.body.serverToJoin)
     const theServerInQuestion = badwayMasterGameState.servers.find((server)=>{return (server.id).toString() === (req.body.serverToJoin).toString()})
-    // console.log("the server in question", theServerInQuestion)
+    console.log("the server in question", theServerInQuestion)
     const indexOfServerToJoin = badwayMasterGameState.servers.indexOf(theServerInQuestion)
-    // console.log("index of the server they want to join", indexOfServerToJoin)
-    // console.log("the SERVERS BEFORE", badwayMasterGameState.servers)
+    console.log("index of the server they want to join", indexOfServerToJoin)
+    console.log("the SERVERS BEFORE", badwayMasterGameState.servers)
     badwayMasterGameState.servers[indexOfServerToJoin].connectedPlayers.push(playerToMove)
-    // console.log("the SERVERS AFTER", badwayMasterGameState.servers)
+    console.log("-----------------------")
+    console.log("the SERVERS AFTER", badwayMasterGameState.servers)
+    console.log("THE PLAYERS CONNECTed",badwayMasterGameState.servers.map(server=>{console.log(server.connectedPlayers)}))
     res.sendStatus(200)
     next()
 })
@@ -118,13 +120,15 @@ io.on('connection',(socket)=>{
             console.log("Starting playing on this server the server in question,",theServerInQuestion)
             //also generate a map? who knows....
         }
-        console.log("overall array of connected players",theServerInQuestion)
+        // console.log("overall array of connected players")
         for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
 
             if(theServerInQuestion.connectedPlayers[i]){
-
-                console.log("connected players socket ids are",theServerInQuestion.connectedPlayers[i].id)
-                io.sockets.connected[theServerInQuestion.connectedPlayers[i].id].emit('serverState',theServerInQuestion);
+                const playerSocket =theServerInQuestion.connectedPlayers[i].id
+                console.log("an string of the id of the sockets we want to emit events to", playerSocket)
+                
+                console.log("connected players socket ids are, here", theServerInQuestion.connectedPlayers)
+                io.to(playerSocket).emit('serverState',theServerInQuestion);
             }
         }
         // console.log("the server id is", serverID)
@@ -134,8 +138,8 @@ io.on('connection',(socket)=>{
         // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
         //this should only go tho the connected players of the serverID
 
-        console.log("the waiting players on the master state",badwayMasterGameState.waitingPlayers)
-        console.log("the waiting servers on the master state",badwayMasterGameState.servers)
+        // console.log("the waiting players on the master state",badwayMasterGameState.waitingPlayers)
+        // console.log("the waiting servers on the master state",badwayMasterGameState.servers)
         //these have to emitted to everyone
         
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)

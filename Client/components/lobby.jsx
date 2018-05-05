@@ -60,9 +60,8 @@ export default class Landing extends Component{
               // console.log("server.gamestate.player",server.gameState.playing)
               if(server.gameState.playing === false){
                 return(
-                  <li key={server.id}>
-                  <Link to={`/${server.id}/waitingRoom`}>{server.name}</Link>
-                  <button onClick={this.goingToServer} id={server.id}>Join Server</button>
+                  <li key={server.id}>{server.name}
+                  <button onClick={this.goingToServer} id={server.id}> Join Server</button>
                   </li>)
               }
             })
@@ -72,6 +71,9 @@ export default class Landing extends Component{
       </div>)
   } 
 }
+
+// <Link to={`/${server.id}/waitingRoom`}>{server.name}</Link>
+
 
 
 

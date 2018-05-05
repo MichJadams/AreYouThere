@@ -12,7 +12,7 @@ export default class WaitingRoom extends Component{
       this.setState(serverState)
       let passingState = this.state
       if(this.state.gameState.playing){
-        // console.log("THE GAME IS A FOOT")
+        console.log("THE GAME IS A FOOT")
         // console.log(`going here /${this.state.id}/maze`)
         this.props.history.push({pathname:`/${this.state.id}/maze`, state:{state:passingState}})
 

@@ -22,27 +22,30 @@ export default class createServer extends Component{
 
   handleNameChange(event) {
       this.setState({name: event.target.value});
-      // console.log("this is the name", event.target.value)
+      console.log("this is the name", event.target.value)
   }
   handleStatusChange(event) {
     this.setState({status: event.target.value});
-    // console.log("this is the status", event.target.value)
+    console.log("this is the status", event.target.value)
 }
   handleCapacityChange(event) {
   this.setState({capacity: event.target.value});
-  // console.log("this capacity", event.target.value)
+  console.log("this capacity", event.target.value)
 }
 
   handleSubmit(event) {
     // console.log("this state is", this.state)
     // this.setState({serverSubmitted:true})
-    const tempid = this.state.id
     axios.post('/createServer',this.state)
     .then((res)=>{
-        axios.post('/joinServer',{serverToJoin:tempid})
-        .then((res)=>{this.props.history.push({pathname:`/${tempid}/waitingRoom`})})
+      
     })
     .catch((err)=>{console.log(err)})
+    const tempid = this.state.id
+    axios.post('/joinServer',{serverToJoin:tempid})
+      .then((res)=>{
+        this.props.history.push({pathname:`/${tempid}/waitingRoom`})
+      })
   }
 
   render(){
@@ -67,13 +70,18 @@ export default class createServer extends Component{
                     number of people you want to host:
                   <input type="number" value={this.state.capacity} onChange={this.handleCapacityChange} />
                 </label>
-                <button type="submit">submit</button>
                 
-              </form>
-              
-        <div>
-        </div>
-    </div>
-  )
-  }
-}
+                <button type="button" onClick={this.handleSubmit}>Create Server</button>
+                </form>
+                
+                <div>
+                </div>
+                </div>
+              )
+            }
+          }
+          
+          // {this.state.serverSubmitted?
+          //   <Link to={`/${this.state.id}/waitingRoom`}>Create Server</Link>
+          //   :<button type="submit">submit</button>
+          // }

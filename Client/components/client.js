@@ -1,5 +1,5 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:8081');
+const socket = openSocket('http://172.16.25.156:8081');
 
 //lobby sockets 
 function subscribeToTimer(cb){

@@ -88,7 +88,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
 
-const socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('http://localhost:8081');
+const socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('http://172.16.25.156:8081');
 
 //lobby sockets 
 function subscribeToTimer(cb) {
@@ -162,27 +162,26 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   handleNameChange(event) {
     this.setState({ name: event.target.value });
-    // console.log("this is the name", event.target.value)
+    console.log("this is the name", event.target.value);
   }
   handleStatusChange(event) {
     this.setState({ status: event.target.value });
-    // console.log("this is the status", event.target.value)
+    console.log("this is the status", event.target.value);
   }
   handleCapacityChange(event) {
     this.setState({ capacity: event.target.value });
-    // console.log("this capacity", event.target.value)
+    console.log("this capacity", event.target.value);
   }
 
   handleSubmit(event) {
     // console.log("this state is", this.state)
     // this.setState({serverSubmitted:true})
-    const tempid = this.state.id;
-    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/createServer', this.state).then(res => {
-      axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/joinServer', { serverToJoin: tempid }).then(res => {
-        this.props.history.push({ pathname: `/${tempid}/waitingRoom` });
-      });
-    }).catch(err => {
+    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/createServer', this.state).then(res => {}).catch(err => {
       console.log(err);
+    });
+    const tempid = this.state.id;
+    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/joinServer', { serverToJoin: tempid }).then(res => {
+      this.props.history.push({ pathname: `/${tempid}/waitingRoom` });
     });
   }
 
@@ -235,14 +234,19 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         ),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'button',
-          { type: 'submit' },
-          'submit'
+          { type: 'button', onClick: this.handleSubmit },
+          'Create Server'
         )
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('div', null)
     );
   }
 }
+
+// {this.state.serverSubmitted?
+//   <Link to={`/${this.state.id}/waitingRoom`}>Create Server</Link>
+//   :<button type="submit">submit</button>
+// }
 
 /***/ }),
 
@@ -421,15 +425,11 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               'li',
               { key: server.id },
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-                react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"],
-                { to: `/${server.id}/waitingRoom` },
-                server.name
-              ),
+              server.name,
               react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
                 'button',
                 { onClick: this.goingToServer, id: server.id },
-                'Join Server'
+                ' Join Server'
               )
             );
           }
@@ -447,6 +447,8 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     );
   }
 }
+
+// <Link to={`/${server.id}/waitingRoom`}>{server.name}</Link>
 
 /***/ }),
 
@@ -591,7 +593,7 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       this.setState(serverState);
       let passingState = this.state;
       if (this.state.gameState.playing) {
-        // console.log("THE GAME IS A FOOT")
+        console.log("THE GAME IS A FOOT");
         // console.log(`going here /${this.state.id}/maze`)
         this.props.history.push({ pathname: `/${this.state.id}/maze`, state: { state: passingState } });
       }
