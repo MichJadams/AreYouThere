@@ -4,8 +4,8 @@ import axios from 'axios';
 import {subscribeToWaitingPlayers,subscribeToServers, subscribeToServerState } from './client.js'
 
 export default class Landing extends Component{
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
     this.state={
       servers:[],
       waitingPlayers:[],
@@ -30,13 +30,14 @@ export default class Landing extends Component{
     //add the player that cliked to the server they clicked on. 
     // this.setState({servers:{serverJoinable:true}})
     // console.log("the event", event)
-    axios.post('/joinServer',{serverToJoin:event.target.id})
-    .then(res=>{console.log("this player moved into a room")})
+    const serverID = event.target.id
+    axios.post('/joinServer',{serverToJoin:serverID})
+    .then(()=>{
+      console.log("here?")
+      this.props.history.push({pathname:`/${serverID}/waitingRoom`})
+    })
     .catch(err=>{console.log("err",err)})
 
-    // subscribeToServerState((err,serverState)=>{
-
-    // })
   }
 
   render(){

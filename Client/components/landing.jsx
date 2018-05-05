@@ -14,18 +14,19 @@ export default class Landing extends Component{
   }
 
   handleChange(event) {
-    // console.log("this is the state", this.state)
     this.setState({value: event.target.value});
   }
 
   handleSubmit(event) {
-    // console.log("this state is", this.state)
-    // Client.playerJoined()
     this.setState({nameSelected:true})
     axios.post('/name',{name: this.state.value})
     .then((res)=>{console.log(res)})
+    .then(()=>{
+      this.props.history.push({pathname:`/lobby`})
+    })
     .catch((err)=>{console.log(err)})
     event.preventDefault();
+
   }
 
   render(){
@@ -39,11 +40,7 @@ export default class Landing extends Component{
                 Name:
                 <input type="text" value={this.state.value} onChange={this.handleChange} />
               </label>
-              {
-                this.state.nameSelected?
-                (<div><h5>That name is available!</h5><Link to={"/lobby"}>Proceed to the Lobby</Link></div>)
-                :<button type="submit">Pick name</button>
-              }
+              <button type="submit">Pick name</button>
               </form>
         <div>
         </div>

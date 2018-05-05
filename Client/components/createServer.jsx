@@ -35,18 +35,14 @@ export default class createServer extends Component{
 
   handleSubmit(event) {
     // console.log("this state is", this.state)
-    this.setState({serverSubmitted:true})
-    axios.post('/createServer',this.state)
-    .then((res)=>{console.log("send create server request")})
-    .catch((err)=>{console.log(err)})
-    event.preventDefault();
-    
-    
+    // this.setState({serverSubmitted:true})
     const tempid = this.state.id
-    axios.post('/joinServer',{serverToJoin:tempid})
-    .then((res)=>{console.log("this player joined the server(which they made)", tempid)})
+    axios.post('/createServer',this.state)
+    .then((res)=>{
+        axios.post('/joinServer',{serverToJoin:tempid})
+        .then((res)=>{this.props.history.push({pathname:`/${tempid}/waitingRoom`})})
+    })
     .catch((err)=>{console.log(err)})
-    event.preventDefault();
   }
 
   render(){
@@ -71,10 +67,7 @@ export default class createServer extends Component{
                     number of people you want to host:
                   <input type="number" value={this.state.capacity} onChange={this.handleCapacityChange} />
                 </label>
-                {this.state.serverSubmitted?
-                  <Link to={`/${this.state.id}/waitingRoom`}>Create Server</Link>
-                  :<button type="submit">submit</button>
-                }
+                <button type="submit">submit</button>
                 
               </form>
               
