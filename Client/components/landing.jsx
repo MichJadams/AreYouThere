@@ -15,18 +15,17 @@ export default class Landing extends Component{
 
   handleChange(event) {
     this.setState({value: event.target.value});
+    // console.log("this is the state", this.state)
   }
 
   handleSubmit(event) {
-    this.setState({nameSelected:true})
+    // this.setState({nameSelected:true})
     axios.post('/name',{name: this.state.value})
-    .then((res)=>{console.log(res)})
     .then(()=>{
       this.props.history.push({pathname:`/lobby`})
     })
     .catch((err)=>{console.log(err)})
     event.preventDefault();
-
   }
 
   render(){

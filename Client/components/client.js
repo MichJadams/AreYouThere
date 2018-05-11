@@ -1,5 +1,5 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://172.16.25.156:8081');
+const socket = openSocket('http://localhost:8081');
 
 //lobby sockets 
 function subscribeToTimer(cb){
@@ -20,16 +20,31 @@ function subscribeToServerCookieID(cb){
     socket.emit("subscribeToServerCookieID")
 }
 //waiting room sockets 
-function subscribeToServerState(serverID,cb){
-    // console.log("fromt he socket function", cb)
+function subscribeToServerState(clientData,cb){
+    console.log("fromt the socket function", clientData)
     socket.on('serverState', serverState=> cb(null,serverState));
+    if(clientData.serverId.id){
+        const objout = {serverId:clientData.serverId.id,playing:clientData.playing}
+        console.log("obejc out", objout)
+        socket.emit("subscribeToServerState",objout)
+    }else{
+
+        socket.emit("subscribeToServerState",clientData)
+    }
     //now I only want to emit to players in that room/view....eeek, figured this outttt.
-    socket.emit("subscribeToServerState",serverID)
 }
+//maze game state update functions 
+function subscribeToGameState(clientData,cb){
+    // console.log("are we getting here?")
+    socket.on('gameState', gameState=> cb(null,gameState));
+    socket.emit("subscribeToGameState",clientData)
+}
+
 export { 
     subscribeToTimer,
     subscribeToWaitingPlayers, 
     subscribeToServers,
     subscribeToServerCookieID, 
-    subscribeToServerState 
+    subscribeToServerState,
+    subscribeToGameState 
 }

@@ -33,7 +33,7 @@ export default class Landing extends Component{
     const serverID = event.target.id
     axios.post('/joinServer',{serverToJoin:serverID})
     .then(()=>{
-      console.log("here?")
+      // console.log("here?")
       this.props.history.push({pathname:`/${serverID}/waitingRoom`})
     })
     .catch(err=>{console.log("err",err)})

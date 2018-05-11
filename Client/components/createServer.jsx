@@ -7,8 +7,8 @@ import { subscribeToServerCookieID } from './client.js';
 
 export default class createServer extends Component{
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     subscribeToServerCookieID((err,serverCookieID)=>{
         //hash the cookie id here
         this.setState({id:serverCookieID})
@@ -34,7 +34,7 @@ export default class createServer extends Component{
 }
 
   handleSubmit(event) {
-    // console.log("this state is", this.state)
+    console.log("this state is", this.state)
     // this.setState({serverSubmitted:true})
     axios.post('/createServer',this.state)
     .then((res)=>{
@@ -42,8 +42,10 @@ export default class createServer extends Component{
     })
     .catch((err)=>{console.log(err)})
     const tempid = this.state.id
+    // console.log("this is the id on line 45", tempid)
     axios.post('/joinServer',{serverToJoin:tempid})
       .then((res)=>{
+        // console.log("this player is attempting to join the server")
         this.props.history.push({pathname:`/${tempid}/waitingRoom`})
       })
   }

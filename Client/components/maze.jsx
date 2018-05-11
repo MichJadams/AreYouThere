@@ -3,7 +3,8 @@ import { render, Link } from 'react-router-dom';
 import Client, { subscribeToTimer } from './client.js'
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
-
+import {subscribeToGameState } from './client.js'
+import axios from 'axios'
 export default class Landing extends Component{
 
   constructor(props) {
@@ -12,24 +13,84 @@ export default class Landing extends Component{
       timestamp
     })})
     this.cameraPosition = new THREE.Vector3(0, 0, 5);
-    this.state = {timestamp:'no timestamp yet', value: '',cubeRotation: new THREE.Euler()}; 
+    console.log("this is the props",this.props.history.location.state.connectedPlayers)
+    
+    this.state = {connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
+    // this.state.connectedPlayers.map((Player)=>{
+    //   player.cubeRotation = new THREE.Euler()
+    //   this.setState(player.)
+    // })
 
+    let connectedPlayers = []
+        this.state.connectedPlayers.map((player)=>{
+          const nextPlayer = player
+          nextPlayer.rot = new THREE.Euler()
+          nextPlayer.loc = new THREE.Vector3(1,1,0)
+          connectedPlayers.push(nextPlayer)
+        })
+        console.log("the connected player state initially ", this.state.connectedPlayers)
+        this.setState({connectedPlayers})
+    const clientData = this.state
+    // console.log("this is the state", this.state)
+    axios.get('/mazeOne')
+    .then((res)=>{
+      console.log("the maze looks like this", res.data)
+      const maze = res.data
+      this.setState({maze})
+      console.log("this is the state of the maze", this.state.maze)
+    })
+    // subscribeToGameState(clientData,(err, gameState)=>{
+    //   console.log("shouting out from the playing game state updates function",gameState)
+    // })
+
+  //calculate movement
+    const newCoords=(oldCoords, type)=>{  
+      
+      if(type == 'rotation'){
+        oldCoords.x += 0.1
+        oldCoords.y += 0.1
+        oldCoords.z += 0.1
+        // console.log("these are the old cords", oldCoords)
+        return oldCoords
+      }else if (type == 'location'){
+        return oldCoords
+      }
+    }
     this._onAnimate = () => {
       // we will get this callback every frame
 
       // pretend cubeRotation is immutable.
       // this helps with updates and pure rendering.
       // React will be sure that the rotation has now updated.
-      this.setState({
-        cubeRotation: new THREE.Euler(
-          this.state.cubeRotation.x + 0.1,
-          this.state.cubeRotation.y + 0.1,
-          0
-        ),
-      });
-    }
-  }
+      // if(this.state.isMounted){
+      //   this.state.connectedPlayers.map((player)=>{
+      //     const nextPlayer = player
+      //     player.cubeRotation = new THREE.Euler( this.state.connectedPlayers[i].loc.x + 0.5, this.state.connectedPlayers[i].loc.y + 0.5,0)
+      //   })
+      let connectedPlayers = []
+      for(let i =0; i< this.state.connectedPlayers.length; i ++){
+        const nextplayer = this.state.connectedPlayers[i]
+        // const rotx = nextplayer.rot.x + 0.1
+        // nextplayer.rot.x += 0.1
+        // const roty = nextplayer.rot.y + 0.1
+        // nextplayer.rot.y += 0.1
 
+        const newRotation = newCoords(nextplayer.rot, 'rotation') //takes an object and spits out a new obejct with keys x,y,z. uses the string to determin which coords to mutate
+        nextplayer.rot = newRotation
+        const newLocation = newCoords(nextplayer.loc, 'location') //takes an object and spits out a new obejct with keys x,y,z
+        nextplayer.loc = newLocation
+        nextplayer.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)  
+        nextplayer.loc = new THREE.Vector3(newLocation.x,newLocation.y,newLocation.z)
+
+        connectedPlayers.push(nextplayer)
+      }
+      this.setState({connectedPlayers})
+    }
+    
+  }
+ componentDidMount(){
+   this.setState({isMounted: true})
+ }
 
   
   render(){
@@ -50,9 +111,7 @@ export default class Landing extends Component{
       mainCamera="camera" // this points to the perspectiveCamera which has the name set to "camera" below
       width={width}
       height={height}
-
-      onAnimate={this._onAnimate}
-    >
+      onAnimate={this._onAnimate}>
       <scene>
         <perspectiveCamera
           name="camera"
@@ -63,18 +122,23 @@ export default class Landing extends Component{
 
           position={this.cameraPosition}
         />
-        <mesh
-          rotation={this.state.cubeRotation}
-        >
-          <boxGeometry
-            width={1}
-            height={1}
-            depth={1}
-          />
-          <meshBasicMaterial
-            color={0x00ff00}
-          />
-        </mesh>
+        {this.state.maze && <mesh
+              rotation={this.state.maze.rotation} position={this.state.maze.location} >
+              <boxGeometry width={3} height={1} depth={3} />
+              <meshBasicMaterial transparent={true} opacity ={0.5} color={this.state.maze.color}/>
+            </mesh>
+          }
+
+        {
+          this.state.connectedPlayers.map((player)=>{
+            // console.log("this is the player location", player.color)
+            return(<mesh
+              rotation={player.rot} position={player.loc} >
+              <boxGeometry width={1} height={2} depth={1} />
+              <meshBasicMaterial color={player.color}/>
+            </mesh>)
+          })
+        }
       </scene>
     </React3>
 </div>

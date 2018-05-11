@@ -75,7 +75,7 @@
 /*!*************************************!*\
   !*** ./Client/components/client.js ***!
   \*************************************/
-/*! exports provided: subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerState */
+/*! exports provided: subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerState, subscribeToGameState */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -85,10 +85,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServers", function() { return subscribeToServers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerCookieID", function() { return subscribeToServerCookieID; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerState", function() { return subscribeToServerState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToGameState", function() { return subscribeToGameState; });
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
 
-const socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('http://172.16.25.156:8081');
+const socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('http://localhost:8081');
 
 //lobby sockets 
 function subscribeToTimer(cb) {
@@ -109,12 +110,26 @@ function subscribeToServerCookieID(cb) {
     socket.emit("subscribeToServerCookieID");
 }
 //waiting room sockets 
-function subscribeToServerState(serverID, cb) {
-    // console.log("fromt he socket function", cb)
+function subscribeToServerState(clientData, cb) {
+    console.log("fromt the socket function", clientData);
     socket.on('serverState', serverState => cb(null, serverState));
+    if (clientData.serverId.id) {
+        const objout = { serverId: clientData.serverId.id, playing: clientData.playing };
+        console.log("obejc out", objout);
+        socket.emit("subscribeToServerState", objout);
+    } else {
+
+        socket.emit("subscribeToServerState", clientData);
+    }
     //now I only want to emit to players in that room/view....eeek, figured this outttt.
-    socket.emit("subscribeToServerState", serverID);
 }
+//maze game state update functions 
+function subscribeToGameState(clientData, cb) {
+    // console.log("are we getting here?")
+    socket.on('gameState', gameState => cb(null, gameState));
+    socket.emit("subscribeToGameState", clientData);
+}
+
 
 
 /***/ }),
@@ -147,8 +162,8 @@ __webpack_require__.r(__webpack_exports__);
 
 class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     Object(_client_js__WEBPACK_IMPORTED_MODULE_5__["subscribeToServerCookieID"])((err, serverCookieID) => {
       //hash the cookie id here
       this.setState({ id: serverCookieID });
@@ -174,13 +189,15 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   }
 
   handleSubmit(event) {
-    // console.log("this state is", this.state)
+    console.log("this state is", this.state);
     // this.setState({serverSubmitted:true})
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/createServer', this.state).then(res => {}).catch(err => {
       console.log(err);
     });
     const tempid = this.state.id;
+    // console.log("this is the id on line 45", tempid)
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/joinServer', { serverToJoin: tempid }).then(res => {
+      // console.log("this player is attempting to join the server")
       this.props.history.push({ pathname: `/${tempid}/waitingRoom` });
     });
   }
@@ -285,13 +302,12 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   handleChange(event) {
     this.setState({ value: event.target.value });
+    // console.log("this is the state", this.state)
   }
 
   handleSubmit(event) {
-    this.setState({ nameSelected: true });
-    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/name', { name: this.state.value }).then(res => {
-      console.log(res);
-    }).then(() => {
+    // this.setState({nameSelected:true})
+    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/name', { name: this.state.value }).then(() => {
       this.props.history.push({ pathname: `/lobby` });
     }).catch(err => {
       console.log(err);
@@ -384,7 +400,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     // console.log("the event", event)
     const serverID = event.target.id;
     axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/joinServer', { serverToJoin: serverID }).then(() => {
-      console.log("here?");
+      // console.log("here?")
       this.props.history.push({ pathname: `/${serverID}/waitingRoom` });
     }).catch(err => {
       console.log("err", err);
@@ -469,6 +485,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_three_renderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-three-renderer */ "./node_modules/react-three-renderer/lib/React3.js");
 /* harmony import */ var react_three_renderer__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_three_renderer__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
+
 
 
 
@@ -485,18 +504,81 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       });
     });
     this.cameraPosition = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5);
-    this.state = { timestamp: 'no timestamp yet', value: '', cubeRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"]() };
+    console.log("this is the props", this.props.history.location.state.connectedPlayers);
 
+    this.state = { connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
+    // this.state.connectedPlayers.map((Player)=>{
+    //   player.cubeRotation = new THREE.Euler()
+    //   this.setState(player.)
+    // })
+
+    let connectedPlayers = [];
+    this.state.connectedPlayers.map(player => {
+      const nextPlayer = player;
+      nextPlayer.rot = new three__WEBPACK_IMPORTED_MODULE_4__["Euler"]();
+      nextPlayer.loc = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](1, 1, 0);
+      connectedPlayers.push(nextPlayer);
+    });
+    console.log("the connected player state initially ", this.state.connectedPlayers);
+    this.setState({ connectedPlayers });
+    const clientData = this.state;
+    // console.log("this is the state", this.state)
+    axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('/mazeOne').then(res => {
+      console.log("the maze looks like this", res.data);
+      const maze = res.data;
+      this.setState({ maze });
+      console.log("this is the state of the maze", this.state.maze);
+    });
+    // subscribeToGameState(clientData,(err, gameState)=>{
+    //   console.log("shouting out from the playing game state updates function",gameState)
+    // })
+
+    //calculate movement
+    const newCoords = (oldCoords, type) => {
+
+      if (type == 'rotation') {
+        oldCoords.x += 0.1;
+        oldCoords.y += 0.1;
+        oldCoords.z += 0.1;
+        // console.log("these are the old cords", oldCoords)
+        return oldCoords;
+      } else if (type == 'location') {
+        return oldCoords;
+      }
+    };
     this._onAnimate = () => {
       // we will get this callback every frame
 
       // pretend cubeRotation is immutable.
       // this helps with updates and pure rendering.
       // React will be sure that the rotation has now updated.
-      this.setState({
-        cubeRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](this.state.cubeRotation.x + 0.1, this.state.cubeRotation.y + 0.1, 0)
-      });
+      // if(this.state.isMounted){
+      //   this.state.connectedPlayers.map((player)=>{
+      //     const nextPlayer = player
+      //     player.cubeRotation = new THREE.Euler( this.state.connectedPlayers[i].loc.x + 0.5, this.state.connectedPlayers[i].loc.y + 0.5,0)
+      //   })
+      let connectedPlayers = [];
+      for (let i = 0; i < this.state.connectedPlayers.length; i++) {
+        const nextplayer = this.state.connectedPlayers[i];
+        // const rotx = nextplayer.rot.x + 0.1
+        // nextplayer.rot.x += 0.1
+        // const roty = nextplayer.rot.y + 0.1
+        // nextplayer.rot.y += 0.1
+
+        const newRotation = newCoords(nextplayer.rot, 'rotation'); //takes an object and spits out a new obejct with keys x,y,z. uses the string to determin which coords to mutate
+        nextplayer.rot = newRotation;
+        const newLocation = newCoords(nextplayer.loc, 'location'); //takes an object and spits out a new obejct with keys x,y,z
+        nextplayer.loc = newLocation;
+        nextplayer.rot = new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](newRotation.x, newRotation.y, newRotation.z);
+        nextplayer.loc = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](newLocation.x, newLocation.y, newLocation.z);
+
+        connectedPlayers.push(nextplayer);
+      }
+      this.setState({ connectedPlayers });
     };
+  }
+  componentDidMount() {
+    this.setState({ isMounted: true });
   }
 
   render() {
@@ -527,9 +609,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           mainCamera: 'camera' // this points to the perspectiveCamera which has the name set to "camera" below
           , width: width,
           height: height,
-
-          onAnimate: this._onAnimate
-        },
+          onAnimate: this._onAnimate },
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'scene',
           null,
@@ -542,20 +622,23 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
             position: this.cameraPosition
           }),
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          this.state.maze && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
-              rotation: this.state.cubeRotation
-            },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', {
-              width: 1,
-              height: 1,
-              depth: 1
-            }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', {
-              color: 0x00ff00
-            })
-          )
+              rotation: this.state.maze.rotation, position: this.state.maze.location },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 3, height: 1, depth: 3 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { transparent: true, opacity: 0.5, color: this.state.maze.color })
+          ),
+          this.state.connectedPlayers.map(player => {
+            // console.log("this is the player location", player.color)
+            return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'mesh',
+              {
+                rotation: player.rot, position: player.loc },
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 1, height: 2, depth: 1 }),
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { color: player.color })
+            );
+          })
         )
       )
     );
@@ -587,29 +670,54 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor(props) {
     super(props);
 
-    const clientInfo = { id: props.match.params.id, playing: false };
-    Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
-      // console.log("this is the server state the server is sending and the client in recievning", serverState)
-      this.setState(serverState);
-      let passingState = this.state;
-      if (this.state.gameState.playing) {
-        console.log("THE GAME IS A FOOT");
-        // console.log(`going here /${this.state.id}/maze`)
-        this.props.history.push({ pathname: `/${this.state.id}/maze`, state: { state: passingState } });
-      }
-    });
-    this.state = { id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5, proceedToMaze: false };
+    const clientInfo = { serverId: props.match.params.id, playing: false };
+    this.state = { isMounted: false, id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5, proceedToMaze: false };
+    if (this.state.isMounted) {
+      console.log("this is the server state the server is sending and the client in recievning", clientInfo);
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
+        this.setState(serverState);
+        // let passingState = this.state
+        if (this.state.gameState.playing) {
+          console.log("THE GAME IS A FOOT");
+          // console.log(`going here /${this.state.id}/maze`)
+          this.props.history.push({ pathname: `/${this.state.id}/maze` });
+        }
+      });
+    }
     this.startingAGame = this.startingAGame.bind(this);
   }
-  startingAGame(event) {
-    const clientInfo = { id: this.state.id, playing: true
-      //here I want to emit and event to the server that changes the gamestate to "starting!" 
-    };Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
-      // console.log("starting the game!", serverState)
-      serverState.proceedToMaze = true;
+  componentDidMount() {
+    this.setState({ isMounted: true });
+    const clientInfo = { serverId: this.state.id, playing: this.state.gameState.playing };
+
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
+      console.log("this is the server state the server is sending and the client in recievning", clientInfo);
       this.setState(serverState);
+      // let passingState = this.state
+      if (this.state.gameState.playing) {
+        console.log("THE GAME IS A FOOT");
+        // this.props.match.params.connectedPlayers = this.state.connectedPlayers
+        // console.log("the params", this.props.match.params)
+        const connectedPlayers = this.state.connectedPlayers;
+        this.props.history.push({ pathname: `/${this.state.id}/maze`, state: { connectedPlayers } });
+      }
     });
   }
+  componentWillUnmount() {
+    this.setState({ isMounted: false });
+  }
+  startingAGame(event) {
+    if (this.state.isMounted) {
+      const clientInfo = { serverId: this.state.id, playing: true
+        //here I want to emit and event to the server that changes the gamestate to "starting!" 
+      };Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
+        // console.log("starting the game!", serverState)
+        // serverState.proceedToMaze = true
+        this.setState(serverState);
+      });
+    }
+  }
+
   render() {
     const id = this.state.id;
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
