@@ -126,7 +126,7 @@ io.on('connection',(socket)=>{
                 player.color = 0x00ff00
                 // player.loc= new Euler 
                 // console.log("this is the rotation assined to the player", player)
-                // player.rot= new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)  
+                player.rot= new THREE.Euler(0, 0,0)  
                 
 
                 // return player
@@ -161,19 +161,15 @@ io.on('connection',(socket)=>{
         io.emit('serversList', badwayMasterGameState.servers)
     })
     socket.on('subscribeToGameState',(clientData)=>{
-        console.log("this is the cilent data", clientData)
+        // console.log("this is the cilent data", clientData)
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
             // console.log("this is the client state", clientData)
-            clientData.connectedPlayers.map((player)=>{
-                // console.log("I would like to set this value"+player.rot+"to be a new euler object")
-                console.log("")
-                player.rot = new THREE.Euler(0,0,0)
-                // const block = {
-                //     rotation: new THREE.Euler(0,0,0),
-                //     location: new THREE.Vector3(0,0,0),
-                //     color: 0xff0000
-                // }
-
+            theServerInQuestion.connectedPlayers.map((player)=>{
+                // console.log("are there coords", player.rot)
+                const newRotation = newCoords(player.rot, 'rotation')
+                // player.rot = newRotation
+                player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
+                player.loc = new THREE.Vector3(1,2,0)
                 return player 
             })
         // console.log("and this is the server id and information stored on the sever side",theServerInQuestion)
@@ -191,7 +187,18 @@ io.on('connection',(socket)=>{
 server.listen(process.env.PORT || 8081, ()=>{
     console.log("listening on port", server.address().port)
 })
-
+function newCoords(oldCoords, type){  
+      
+    if(type == 'rotation'){
+      oldCoords.x += 0.1
+      oldCoords.y += 0.1
+      oldCoords.z += 0.1
+      // console.log("these are the old cords", oldCoords)
+      return oldCoords
+    }else if (type == 'location'){
+      return oldCoords
+    }
+  }
 function randomLocation (max){
     location = {x:0,y:0,z:0}
     for(var value in location){

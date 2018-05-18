@@ -548,25 +548,25 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         // console.log("Is this firing?", clientInfo)
         console.log("this is the information the server is sending back", gameState.connectedPlayers);
         console.log("this is the current connected players state", this.state.connectedPlayers);
-        console.log("hopefully one day I can jsut set one to the other");
-        // this.setState({connectedPlayers:gameState.connectedPlayers})
+        // console.log("hopefully one day I can jsut set one to the other")
+        this.setState({ connectedPlayers: gameState.connectedPlayers });
       });
-      let connectedPlayers = [];
-      for (let i = 0; i < this.state.connectedPlayers.length; i++) {
-        //send out a socket request for informationregarding this player
-        //update the client state with the information sent back
+      // let connectedPlayers = []
+      // for(let i =0; i< this.state.connectedPlayers.length; i ++){
+      //   //send out a socket request for informationregarding this player
+      //   //update the client state with the information sent back
 
 
-        const nextplayer = this.state.connectedPlayers[i];
-        const newRotation = newCoords(nextplayer.rot, 'rotation'); //takes an object and spits out a new obejct with keys x,y,z. uses the string to determin which coords to mutate
-        nextplayer.rot = newRotation;
-        const newLocation = newCoords(nextplayer.loc, 'location'); //takes an object and spits out a new obejct with keys x,y,z
-        nextplayer.loc = newLocation;
-        nextplayer.rot = new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](newRotation.x, newRotation.y, newRotation.z);
-        // nextplayer.loc = new THREE.Vector3(newLocation.x,newLocation.y,newLocation.z)
-        connectedPlayers.push(nextplayer);
-      }
-      this.setState({ connectedPlayers });
+      //   const nextplayer = this.state.connectedPlayers[i]
+      //   const newRotation = newCoords(nextplayer.rot, 'rotation') //takes an object and spits out a new obejct with keys x,y,z. uses the string to determin which coords to mutate
+      //   nextplayer.rot = newRotation
+      //   const newLocation = newCoords(nextplayer.loc, 'location') //takes an object and spits out a new obejct with keys x,y,z
+      //   nextplayer.loc = newLocation
+      //   nextplayer.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)  
+      //   // nextplayer.loc = new THREE.Vector3(newLocation.x,newLocation.y,newLocation.z)
+      //   connectedPlayers.push(nextplayer)
+      // }
+      // this.setState({connectedPlayers})
     };
   }
   componentDidMount() {
