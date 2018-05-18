@@ -23,17 +23,11 @@ app.use(session({  secret: '34SDgsdgspxxxxxxxdfsG', // just a long random string
 resave: false,
 saveUninitialized: true}))
 
-//hoooorible
+//hoooorible way of storing game state, there must be a better way. Perhapse redux on the backend? 
 let badwayMasterGameState = {
-    servers:[{ id: 1, name:"starterServer",status:'open',gameState:{}, connectedPlayers:[], capacity:3}],
-    waitingPlayers:[{name:'bill', id: '124u234fdsk932'}]
-
-} //this is not how I actually want to store game info. there is a better way, just can't think of it rn. 
-
-// app.get('/', (req,res,next)=>{
-//     console.log("first session id",req.session.id)
-//     res.sendFile(__dirname +'/Client/index.js')
-// })
+    servers:{},
+    waitingPlayers:[{name:'fakeplayer', id: '124u234fdsk932'}]
+} 
 
 app.post('/name',(req,res,next)=>{ 
     // console.log("a person has selected a name", req.body.name)
@@ -43,8 +37,8 @@ app.post('/name',(req,res,next)=>{
     next()
 })
 app.post('/createServer',(req,res,next)=>{ 
-    badwayMasterGameState.servers.push(req.body)
-    // console.log("the server being created!", req.body)
+    badwayMasterGameState.servers[req.body.id]=(req.body)
+    console.log("the server being created!", badwayMasterGameState)
     res.sendStatus(201)
     next()
 })
@@ -59,24 +53,24 @@ app.post('/joinServer',(req,res,next)=>{
     // console.log("this is the current list of waiting players AFTER", badwayMasterGameState.waitingPlayers)
 
     //add this player to the game state server player
-    // console.log("this is the id of the server they want to join", req.body.serverToJoin)
-    const theServerInQuestion = badwayMasterGameState.servers.find((server)=>{return (server.id).toString() === (req.body.serverToJoin).toString()})
+    console.log("this is the id of the server they want to join", req.body.serverToJoin)
+    // const theServerInQuestion = badwayMasterGameState.servers[req.body.serverToJoin] 
     // console.log("the server in question", theServerInQuestion)
-    const indexOfServerToJoin = badwayMasterGameState.servers.indexOf(theServerInQuestion)
+    // const indexOfServerToJoin = badwayMasterGameState.servers.indexOf(theServerInQuestion)
     // console.log("index of the server they want to join", indexOfServerToJoin)
     // console.log("the SERVERS BEFORE", badwayMasterGameState.servers)
-    badwayMasterGameState.servers[indexOfServerToJoin].connectedPlayers.push(playerToMove)
+    badwayMasterGameState.servers[req.body.serverToJoin].connectedPlayers.push(playerToMove)
     // console.log("-----------------------")
-    // console.log("the SERVERS AFTER", badwayMasterGameState.servers)
-    // console.log("THE PLAYERS CONNECTed",badwayMasterGameState.servers.map(server=>{console.log(server.connectedPlayers)}))
+    console.log("the SERVERS AFTER", badwayMasterGameState.servers)
+    console.log("THE PLAYERS CONNECTed",badwayMasterGameState.servers[req.body.serverToJoin].connectedPlayers)
     res.sendStatus(200)
     next()
 })
 app.get('/mazeOne',(req,res,next)=>{
 //send back a red cube for testing
     const block = {
-        rotation: new THREE.Euler(90,35,0),
-        location: new THREE.Vector3(-1,-2,0),
+        rotation: new THREE.Euler(0,0,0),
+        location: new THREE.Vector3(0,0,0),
         color: 0xff0000
     }
     res.send(block)
@@ -119,23 +113,23 @@ io.on('connection',(socket)=>{
         // console.log("this is the game state", badwayMasterGameState)
         // console.log("-------------------")
         // console.log("client information", clientInfo)
-        let theServerInQuestion = badwayMasterGameState.servers.find((server)=>{
-            return (server.id) == (clientInfo.serverId)})
+        let theServerInQuestion = badwayMasterGameState.servers[clientInfo.serverId]
             // console.log("this is the server in question", theServerInQuestion)
         if(clientInfo.playing == true){
             theServerInQuestion.gameState.playing = true;
             io.emit('serversList', badwayMasterGameState.servers)
             //assign each player a astarting position
             
+            // console.log("Are we getting here?  is this the server asking for information?", theServerInQuestion)
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //have the players start at a random location
                 player.color = 0x00ff00
-                player.loc=randomLocation(2)
-                // console.log("this is the location assined to the player", player.loc)
-                player.rot=randomLocation(5)
-                // console.log("this is the rotation assined to the player", player.rot)
+                // player.loc= new Euler 
+                // console.log("this is the rotation assined to the player", player)
+                // player.rot= new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)  
+                
 
-                return player
+                // return player
             })
             // console.log("Starting playing on this server the server in question,",theServerInQuestion)
             // console.log("this is the client infor we first receive, eventually we want to put something like a scene on the server", clientInfo)
@@ -167,9 +161,21 @@ io.on('connection',(socket)=>{
         io.emit('serversList', badwayMasterGameState.servers)
     })
     socket.on('subscribeToGameState',(clientData)=>{
-        let theServerInQuestion = badwayMasterGameState.servers.find((server)=>{
-            return (server.id).toString() === (clientData.serverId).toString()})
+        console.log("this is the cilent data", clientData)
+        let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
             // console.log("this is the client state", clientData)
+            clientData.connectedPlayers.map((player)=>{
+                // console.log("I would like to set this value"+player.rot+"to be a new euler object")
+                console.log("")
+                player.rot = new THREE.Euler(0,0,0)
+                // const block = {
+                //     rotation: new THREE.Euler(0,0,0),
+                //     location: new THREE.Vector3(0,0,0),
+                //     color: 0xff0000
+                // }
+
+                return player 
+            })
         // console.log("and this is the server id and information stored on the sever side",theServerInQuestion)
         io.emit('gameState',theServerInQuestion)
     })

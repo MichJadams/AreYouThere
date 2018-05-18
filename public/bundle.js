@@ -125,7 +125,7 @@ function subscribeToServerState(clientData, cb) {
 }
 //maze game state update functions 
 function subscribeToGameState(clientData, cb) {
-    // console.log("are we getting here?")
+    // console.log("are we getting here?, sending", clientData)
     socket.on('gameState', gameState => cb(null, gameState));
     socket.emit("subscribeToGameState", clientData);
 }
@@ -375,7 +375,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor(props) {
     super(props);
     this.state = {
-      servers: [],
+      servers: {},
       waitingPlayers: [],
       serverJoinable: false
     };
@@ -392,12 +392,6 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   }
 
   goingToServer(event) {
-    //sending out a socket call where the usered socket it is stuck to the server with the matching name
-    // console.log("jkfdlsajflds",event.target.id)
-    // console.log("these are the waiting players and thier ids", this.state.waitingPlayers)
-    //add the player that cliked to the server they clicked on. 
-    // this.setState({servers:{serverJoinable:true}})
-    // console.log("the event", event)
     const serverID = event.target.id;
     axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/joinServer', { serverToJoin: serverID }).then(() => {
       // console.log("here?")
@@ -435,16 +429,16 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           null,
           'Theses are servers waiting for players'
         ),
-        this.state.servers.map(server => {
-          // console.log("server.gamestate.player",server.gameState.playing)
-          if (server.gameState.playing === false) {
+        Object.keys(this.state.servers).map(server => {
+          console.log("server.gamestate.player", this.state.servers);
+          if (this.state.servers[server].gameState.playing === false) {
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               'li',
-              { key: server.id },
-              server.name,
+              { key: this.state.servers[server].id },
+              this.state.servers[server].name,
               react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
                 'button',
-                { onClick: this.goingToServer, id: server.id },
+                { onClick: this.goingToServer, id: this.state.servers[server].id },
                 ' Join Server'
               )
             );
@@ -494,6 +488,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   constructor(props) {
@@ -504,7 +499,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       });
     });
     this.cameraPosition = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5);
-    console.log("this is the props", this.props.history.location.state.connectedPlayers);
+    // console.log("this is the props",this.props.history.location.state.connectedPlayers)
 
     this.state = { connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
     // this.state.connectedPlayers.map((Player)=>{
@@ -547,31 +542,28 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       }
     };
     this._onAnimate = () => {
-      // we will get this callback every frame
 
-      // pretend cubeRotation is immutable.
-      // this helps with updates and pure rendering.
-      // React will be sure that the rotation has now updated.
-      // if(this.state.isMounted){
-      //   this.state.connectedPlayers.map((player)=>{
-      //     const nextPlayer = player
-      //     player.cubeRotation = new THREE.Euler( this.state.connectedPlayers[i].loc.x + 0.5, this.state.connectedPlayers[i].loc.y + 0.5,0)
-      //   })
+      const clientInfo = this.state;
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToGameState"])(clientInfo, (err, gameState) => {
+        // console.log("Is this firing?", clientInfo)
+        console.log("this is the information the server is sending back", gameState.connectedPlayers);
+        console.log("this is the current connected players state", this.state.connectedPlayers);
+        console.log("hopefully one day I can jsut set one to the other");
+        // this.setState({connectedPlayers:gameState.connectedPlayers})
+      });
       let connectedPlayers = [];
       for (let i = 0; i < this.state.connectedPlayers.length; i++) {
-        const nextplayer = this.state.connectedPlayers[i];
-        // const rotx = nextplayer.rot.x + 0.1
-        // nextplayer.rot.x += 0.1
-        // const roty = nextplayer.rot.y + 0.1
-        // nextplayer.rot.y += 0.1
+        //send out a socket request for informationregarding this player
+        //update the client state with the information sent back
 
+
+        const nextplayer = this.state.connectedPlayers[i];
         const newRotation = newCoords(nextplayer.rot, 'rotation'); //takes an object and spits out a new obejct with keys x,y,z. uses the string to determin which coords to mutate
         nextplayer.rot = newRotation;
         const newLocation = newCoords(nextplayer.loc, 'location'); //takes an object and spits out a new obejct with keys x,y,z
         nextplayer.loc = newLocation;
         nextplayer.rot = new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](newRotation.x, newRotation.y, newRotation.z);
-        nextplayer.loc = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](newLocation.x, newLocation.y, newLocation.z);
-
+        // nextplayer.loc = new THREE.Vector3(newLocation.x,newLocation.y,newLocation.z)
         connectedPlayers.push(nextplayer);
       }
       this.setState({ connectedPlayers });
@@ -622,12 +614,19 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
             position: this.cameraPosition
           }),
+          this.state.mazze && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            null,
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('bufferGeometry', { position: new three__WEBPACK_IMPORTED_MODULE_4__["bufferAttribute"]([-1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0], 3) }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: true, opacity: 0.2, color: 0xfff000 })
+          ),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4, 3, 0) }),
           this.state.maze && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
               rotation: this.state.maze.rotation, position: this.state.maze.location },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 3, height: 1, depth: 3 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { transparent: true, opacity: 0.5, color: this.state.maze.color })
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 6, height: 6, depth: 3 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: true, opacity: 0.2, color: this.state.maze.color })
           ),
           this.state.connectedPlayers.map(player => {
             // console.log("this is the player location", player.color)

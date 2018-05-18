@@ -7,7 +7,7 @@ export default class Landing extends Component{
   constructor(props){
     super(props)
     this.state={
-      servers:[],
+      servers:{},
       waitingPlayers:[],
       serverJoinable: false
     }
@@ -20,16 +20,10 @@ export default class Landing extends Component{
     subscribeToServers((err,servers)=>{
       this.setState({servers})
     })
-    this.goingToServer =this.goingToServer.bind(this)
+    this.goingToServer = this.goingToServer.bind(this)
   }
  
   goingToServer(event){
-    //sending out a socket call where the usered socket it is stuck to the server with the matching name
-    // console.log("jkfdlsajflds",event.target.id)
-    // console.log("these are the waiting players and thier ids", this.state.waitingPlayers)
-    //add the player that cliked to the server they clicked on. 
-    // this.setState({servers:{serverJoinable:true}})
-    // console.log("the event", event)
     const serverID = event.target.id
     axios.post('/joinServer',{serverToJoin:serverID})
     .then(()=>{
@@ -56,12 +50,12 @@ export default class Landing extends Component{
           <div className ="waitingServers">
           <h4>Theses are servers waiting for players</h4>
           {
-            this.state.servers.map(server =>{
-              // console.log("server.gamestate.player",server.gameState.playing)
-              if(server.gameState.playing === false){
+            Object.keys(this.state.servers).map(server =>{
+              console.log("server.gamestate.player",this.state.servers)
+              if(this.state.servers[server].gameState.playing === false){
                 return(
-                  <li key={server.id}>{server.name}
-                  <button onClick={this.goingToServer} id={server.id}> Join Server</button>
+                  <li key={this.state.servers[server].id}>{this.state.servers[server].name}
+                  <button onClick={this.goingToServer} id={this.state.servers[server].id}> Join Server</button>
                   </li>)
               }
             })

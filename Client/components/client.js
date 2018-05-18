@@ -35,10 +35,11 @@ function subscribeToServerState(clientData,cb){
 }
 //maze game state update functions 
 function subscribeToGameState(clientData,cb){
-    // console.log("are we getting here?")
+    // console.log("are we getting here?, sending", clientData)
     socket.on('gameState', gameState=> cb(null,gameState));
     socket.emit("subscribeToGameState",clientData)
 }
+
 
 export { 
     subscribeToTimer,
