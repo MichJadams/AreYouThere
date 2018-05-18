@@ -23,15 +23,14 @@ app.use(session({  secret: '34SDgsdgspxxxxxxxdfsG', // just a long random string
 resave: false,
 saveUninitialized: true}))
 
-//hoooorible way of storing game state, there must be a better way. Perhapse redux on the backend? 
+//hoooorible way of storing game state, there must be a better way. Perhapse redux on the backend? not sure
+//bu bsacially this object just gets really big holding everything together
 let badwayMasterGameState = {
     servers:{},
     waitingPlayers:[{name:'fakeplayer', id: '124u234fdsk932'}]
 } 
 
 app.post('/name',(req,res,next)=>{ 
-    // console.log("a person has selected a name", req.body.name)
-    // console.log("this is the socket id?", req.cookies.io)
     badwayMasterGameState.waitingPlayers.push({name: req.body.name,id:req.cookies.io})
     res.sendStatus(201)
     next()
@@ -43,28 +42,20 @@ app.post('/createServer',(req,res,next)=>{
     next()
 })
 app.post('/joinServer',(req,res,next)=>{
-    //remove this player form the waiting players 
-    const playerToMove = badwayMasterGameState.waitingPlayers.find((player)=>{return player.id === req.cookies.io})
-    // console.log("this is the player we are removeing from the waiting player list",playerToMove)
-    const indexOfPlayerToMove = badwayMasterGameState.waitingPlayers.indexOf(playerToMove)
-    // console.log("this is the index of the player to remove", badwayMasterGameState.waitingPlayers.indexOf(playerToMove))
-    // console.log("this is the current list of waiting players BEFORE", badwayMasterGameState.waitingPlayers)
-    badwayMasterGameState.waitingPlayers.splice(indexOfPlayerToMove,indexOfPlayerToMove+1)
-    // console.log("this is the current list of waiting players AFTER", badwayMasterGameState.waitingPlayers)
-
-    //add this player to the game state server player
-    console.log("this is the id of the server they want to join", req.body.serverToJoin)
-    // const theServerInQuestion = badwayMasterGameState.servers[req.body.serverToJoin] 
-    // console.log("the server in question", theServerInQuestion)
-    // const indexOfServerToJoin = badwayMasterGameState.servers.indexOf(theServerInQuestion)
-    // console.log("index of the server they want to join", indexOfServerToJoin)
-    // console.log("the SERVERS BEFORE", badwayMasterGameState.servers)
-    badwayMasterGameState.servers[req.body.serverToJoin].connectedPlayers.push(playerToMove)
+    // //remove this player form the waiting players 
+    // console.log("this is the request", req.body)
+    // console.log("but this is the name of the reqeusting player", req)
+    // const playerToMove = badwayMasterGameState.waitingPlayers.find((player)=>{return player.id === req.cookies.io})
+    // console.log("player to move", playerToMove)
+    // const indexOfPlayerToMove = badwayMasterGameState.waitingPlayers.indexOf(playerToMove)
+    // badwayMasterGameState.waitingPlayers.splice(indexOfPlayerToMove,indexOfPlayerToMove+1)
+    // //add this player to the game state server player
+    // badwayMasterGameState.servers[req.body.serverToJoin].connectedPlayers.push(playerToMove)
     // console.log("-----------------------")
-    console.log("the SERVERS AFTER", badwayMasterGameState.servers)
-    console.log("THE PLAYERS CONNECTed",badwayMasterGameState.servers[req.body.serverToJoin].connectedPlayers)
-    res.sendStatus(200)
-    next()
+    // console.log("the SERVERS AFTER", badwayMasterGameState.servers)
+    // console.log("THE PLAYERS CONNECTed",badwayMasterGameState.servers[req.body.serverToJoin].connectedPlayers)
+    // res.sendStatus(200)
+    // next()
 })
 app.get('/mazeOne',(req,res,next)=>{
 //send back a red cube for testing
@@ -79,121 +70,75 @@ app.get('/mazeOne',(req,res,next)=>{
 io.use(cookierParser('hello there',{}))
 io.on('connection',(socket)=>{
     socket.on('subscribeToTimer', (interval)=>{
-        // console.log("client is subscribing to timer with interval,", interval)
         setInterval(() => {
             socket.emit('timer', new Date());
       }, interval);
     })
     socket.on('subscribeToWaitingPlayers', ()=>{
-        // console.log("client is subscribing to player list")
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
-        
     })
     socket.on('subscribeToServers', ()=>{
-        // console.log("client is subscribing to server list,")
         io.emit('serversList', badwayMasterGameState.servers);
-      
     })
-    //createserver sockets
     socket.on('subscribeToServerCookieID', ()=>{
-        // console.log("fjdkslajfldksa",socket.id)
-        // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
         socket.emit('serverCookieID', socket.id);
     })
-    //waiting room sockets
-    // socket.on('subscribeToServerWaitingRoomCapacity', ()=>{
-    //     // console.log("looking for the connected players of this server",socket.id)
-    //     //var obj = objArray.find(function (obj) { return obj.id === 3; })
-    //     // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
-    //     // io.emit('serverCookieID', socket.id);
-    // })
-
+    socket.on('subscribeToJoinServer', (serverId)=>{
+       //do the join stuff
+       const playerToMove = badwayMasterGameState.waitingPlayers.find((player)=>{return socket.id === serverId})
+       console.log("this is player ot move", playerToMove)
+       const indexOfPlayerToMove = badwayMasterGameState.waitingPlayers.indexOf(playerToMove)
+       badwayMasterGameState.waitingPlayers.splice(indexOfPlayerToMove,indexOfPlayerToMove+1)
+       badwayMasterGameState.servers[serverId].connectedPlayers.push(playerToMove)
+       console.log('this is the state afer the player has joined',badwayMasterGameState )
+    })
     socket.on('subscribeToServerState', (clientInfo)=>{
-        // console.log("-------------------")
-        // console.log("this is the game state", badwayMasterGameState)
-        // console.log("-------------------")
-        // console.log("client information", clientInfo)
         let theServerInQuestion = badwayMasterGameState.servers[clientInfo.serverId]
-            // console.log("this is the server in question", theServerInQuestion)
         if(clientInfo.playing == true){
             theServerInQuestion.gameState.playing = true;
             io.emit('serversList', badwayMasterGameState.servers)
-            //assign each player a astarting position
-            
-            // console.log("Are we getting here?  is this the server asking for information?", theServerInQuestion)
             theServerInQuestion.connectedPlayers.map((player)=>{
-                //have the players start at a random location
+                //this is where you can set the initial state of the play, such as color or location ect. 
                 player.color = 0x00ff00
-                // player.loc= new Euler 
-                // console.log("this is the rotation assined to the player", player)
-                player.rot= new THREE.Euler(0, 0,0)  
-                
-
-                // return player
+                player.rot= new THREE.Euler(0, 0,0) 
             })
-            // console.log("Starting playing on this server the server in question,",theServerInQuestion)
-            // console.log("this is the client infor we first receive, eventually we want to put something like a scene on the server", clientInfo)
-            // console.log("this is the player conneting, thier socket id = ",socket.id )
             //also generate a map? who knows....
         }
-        // console.log("overall array of connected players")
         for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
             if(theServerInQuestion.connectedPlayers[i]){
                 const playerSocket =theServerInQuestion.connectedPlayers[i].id
-                // console.log("an string of the id of the sockets we want to emit events to", playerSocket)
-                
-                // console.log("connected players socket ids are, here", theServerInQuestion.connectedPlayers)
                 io.to(playerSocket).emit('serverState',theServerInQuestion);
             }
         }
-        // console.log("the server id is", serverID)
-        //if this is a new socket for this server, add it
-        // console.log("sending back this info for this server", theServerInQuestion)
-        // console.log("fjdkslajfldksa",socket.id)
-        // console.log("client is subscribing to server cookie id,", Object.keys(io.sockets.connected))
-        //this should only go tho the connected players of the serverID
-
-        // console.log("the waiting players on the master state",badwayMasterGameState.waitingPlayers)
-        // console.log("the waiting servers on the master state",badwayMasterGameState.servers)
-        //these have to emitted to everyone
-        
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
         io.emit('serversList', badwayMasterGameState.servers)
     })
     socket.on('subscribeToGameState',(clientData)=>{
-        // console.log("this is the cilent data", clientData)
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
-            // console.log("this is the client state", clientData)
             theServerInQuestion.connectedPlayers.map((player)=>{
-                // console.log("are there coords", player.rot)
+                //this is where each plays state can be updated
                 const newRotation = newCoords(player.rot, 'rotation')
-                // player.rot = newRotation
                 player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
                 player.loc = new THREE.Vector3(1,2,0)
                 return player 
             })
-        // console.log("and this is the server id and information stored on the sever side",theServerInQuestion)
         io.emit('gameState',theServerInQuestion)
     })
-
-
     socket.on('connection name',function(user){
-        // console.log("hitting here")
       io.sockets.emit('new user', user.name + " has joined.");
     })
     const gameLogic = require('./gameLogic.js')(app,io,socket)
 })
-
 server.listen(process.env.PORT || 8081, ()=>{
     console.log("listening on port", server.address().port)
 })
+//helper functions 
 function newCoords(oldCoords, type){  
       
     if(type == 'rotation'){
       oldCoords.x += 0.1
       oldCoords.y += 0.1
       oldCoords.z += 0.1
-      // console.log("these are the old cords", oldCoords)
       return oldCoords
     }else if (type == 'location'){
       return oldCoords

@@ -75,7 +75,7 @@
 /*!*************************************!*\
   !*** ./Client/components/client.js ***!
   \*************************************/
-/*! exports provided: subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerState, subscribeToGameState */
+/*! exports provided: subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerState, subscribeToGameState, subscribeToJoinServer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -86,6 +86,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerCookieID", function() { return subscribeToServerCookieID; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerState", function() { return subscribeToServerState; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToGameState", function() { return subscribeToGameState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToJoinServer", function() { return subscribeToJoinServer; });
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -104,6 +105,9 @@ function subscribeToServers(cb) {
     socket.on('serversList', serversList => cb(null, serversList));
     socket.emit("subscribeToServers");
 }
+function subscribeToJoinServer(serverId) {
+    socket.emit("subscribeToJoinServer", serverId);
+}
 //createServer sockets 
 function subscribeToServerCookieID(cb) {
     socket.on('serverCookieID', cookieID => cb(null, cookieID));
@@ -111,12 +115,12 @@ function subscribeToServerCookieID(cb) {
 }
 //waiting room sockets 
 function subscribeToServerState(clientData, cb) {
-    console.log("fromt the socket function", clientData);
+    // console.log("fromt the socket function", clientData)
     socket.on('serverState', serverState => cb(null, serverState));
     if (clientData.serverId.id) {
-        const objout = { serverId: clientData.serverId.id, playing: clientData.playing };
-        console.log("obejc out", objout);
-        socket.emit("subscribeToServerState", objout);
+        const objout = { serverId: clientData.serverId.id, playing: clientData.playing
+            // console.log("obejc out", objout)
+        };socket.emit("subscribeToServerState", objout);
     } else {
 
         socket.emit("subscribeToServerState", clientData);
@@ -191,15 +195,19 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   handleSubmit(event) {
     console.log("this state is", this.state);
     // this.setState({serverSubmitted:true})
-    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/createServer', this.state).then(res => {}).catch(err => {
+    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/createServer', this.state).then(res => {
+
+      const tempid = this.state.id;
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_5__["subscribeToJoinServer"])(tempid);
+      this.props.history.push({ pathname: `/${tempid}/waitingRoom` });
+    }).catch(err => {
       console.log(err);
     });
-    const tempid = this.state.id;
     // console.log("this is the id on line 45", tempid)
-    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/joinServer', { serverToJoin: tempid }).then(res => {
-      // console.log("this player is attempting to join the server")
-      this.props.history.push({ pathname: `/${tempid}/waitingRoom` });
-    });
+    // axios.post('/joinServer',{serverToJoin:tempid})
+    // .then((res)=>{
+    // console.log("this player is attempting to join the server")
+    // })
   }
 
   render() {
@@ -393,12 +401,14 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   goingToServer(event) {
     const serverID = event.target.id;
-    axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/joinServer', { serverToJoin: serverID }).then(() => {
-      // console.log("here?")
-      this.props.history.push({ pathname: `/${serverID}/waitingRoom` });
-    }).catch(err => {
-      console.log("err", err);
-    });
+    //try and implement using socket, 
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToJoinServer"])(serverID);
+    // axios.post('/joinServer',{serverToJoin:serverID})
+    // .then(()=>{
+    // console.log("here?")
+    this.props.history.push({ pathname: `/${serverID}/waitingRoom` });
+    // })
+    // .catch(err=>{console.log("err",err)})
   }
 
   render() {
@@ -529,18 +539,18 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     // })
 
     //calculate movement
-    const newCoords = (oldCoords, type) => {
+    // const newCoords=(oldCoords, type)=>{  
 
-      if (type == 'rotation') {
-        oldCoords.x += 0.1;
-        oldCoords.y += 0.1;
-        oldCoords.z += 0.1;
-        // console.log("these are the old cords", oldCoords)
-        return oldCoords;
-      } else if (type == 'location') {
-        return oldCoords;
-      }
-    };
+    //   if(type == 'rotation'){
+    //     oldCoords.x += 0.1
+    //     oldCoords.y += 0.1
+    //     oldCoords.z += 0.1
+    //     // console.log("these are the old cords", oldCoords)
+    //     return oldCoords
+    //   }else if (type == 'location'){
+    //     return oldCoords
+    //   }
+    // }
     this._onAnimate = () => {
 
       const clientInfo = this.state;
@@ -672,8 +682,9 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     const clientInfo = { serverId: props.match.params.id, playing: false };
     this.state = { isMounted: false, id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5, proceedToMaze: false };
     if (this.state.isMounted) {
-      console.log("this is the server state the server is sending and the client in recievning", clientInfo);
+      // console.log("this is the server state the server is sending and the client in recievning", clientInfo)
       Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
+        // console.log("")
         this.setState(serverState);
         // let passingState = this.state
         if (this.state.gameState.playing) {

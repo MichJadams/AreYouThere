@@ -46,18 +46,18 @@ export default class Landing extends Component{
     // })
 
   //calculate movement
-    const newCoords=(oldCoords, type)=>{  
+    // const newCoords=(oldCoords, type)=>{  
       
-      if(type == 'rotation'){
-        oldCoords.x += 0.1
-        oldCoords.y += 0.1
-        oldCoords.z += 0.1
-        // console.log("these are the old cords", oldCoords)
-        return oldCoords
-      }else if (type == 'location'){
-        return oldCoords
-      }
-    }
+    //   if(type == 'rotation'){
+    //     oldCoords.x += 0.1
+    //     oldCoords.y += 0.1
+    //     oldCoords.z += 0.1
+    //     // console.log("these are the old cords", oldCoords)
+    //     return oldCoords
+    //   }else if (type == 'location'){
+    //     return oldCoords
+    //   }
+    // }
     this._onAnimate = () => {
 
       const clientInfo = this.state

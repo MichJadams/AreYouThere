@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {subscribeToServerState } from './client.js'
+import {subscribeToServerState, subscribeToServerCookieID } from './client.js'
 import maze from './maze.jsx'
 export default class WaitingRoom extends Component{
   constructor(props){
@@ -9,8 +9,9 @@ export default class WaitingRoom extends Component{
     const clientInfo = {serverId:props.match.params.id, playing: false}
     this.state = {isMounted: false,id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{ playing: false}, name:'', capacity:5, proceedToMaze:false}
       if(this.state.isMounted){
-        console.log("this is the server state the server is sending and the client in recievning", clientInfo)
+        // console.log("this is the server state the server is sending and the client in recievning", clientInfo)
         subscribeToServerState(clientInfo,(err,serverState)=>{
+          // console.log("")
         this.setState(serverState)
         // let passingState = this.state
         if(this.state.gameState.playing){

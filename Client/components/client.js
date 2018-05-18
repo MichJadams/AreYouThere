@@ -14,6 +14,9 @@ function subscribeToServers(cb){
     socket.on('serversList', serversList => cb(null, serversList));
     socket.emit("subscribeToServers")
 }
+function subscribeToJoinServer(serverId){
+    socket.emit("subscribeToJoinServer", serverId)
+}
 //createServer sockets 
 function subscribeToServerCookieID(cb){
     socket.on('serverCookieID', cookieID=> cb(null,cookieID));
@@ -21,11 +24,11 @@ function subscribeToServerCookieID(cb){
 }
 //waiting room sockets 
 function subscribeToServerState(clientData,cb){
-    console.log("fromt the socket function", clientData)
+    // console.log("fromt the socket function", clientData)
     socket.on('serverState', serverState=> cb(null,serverState));
     if(clientData.serverId.id){
         const objout = {serverId:clientData.serverId.id,playing:clientData.playing}
-        console.log("obejc out", objout)
+        // console.log("obejc out", objout)
         socket.emit("subscribeToServerState",objout)
     }else{
 
@@ -47,5 +50,6 @@ export {
     subscribeToServers,
     subscribeToServerCookieID, 
     subscribeToServerState,
-    subscribeToGameState 
+    subscribeToGameState,
+    subscribeToJoinServer 
 }

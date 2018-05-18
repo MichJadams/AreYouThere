@@ -3,7 +3,7 @@ import ReactDom from 'react-dom'
 import { render, Link } from 'react-router-dom';
 import lobby from './lobby.jsx'
 import axios from 'axios';
-import { subscribeToServerCookieID } from './client.js';
+import { subscribeToServerCookieID,subscribeToJoinServer } from './client.js';
 
 export default class createServer extends Component{
 
@@ -39,15 +39,16 @@ export default class createServer extends Component{
     axios.post('/createServer',this.state)
     .then((res)=>{
       
+      const tempid = this.state.id
+      subscribeToJoinServer(tempid)
+      this.props.history.push({pathname:`/${tempid}/waitingRoom`})
     })
     .catch((err)=>{console.log(err)})
-    const tempid = this.state.id
     // console.log("this is the id on line 45", tempid)
-    axios.post('/joinServer',{serverToJoin:tempid})
-      .then((res)=>{
+    // axios.post('/joinServer',{serverToJoin:tempid})
+      // .then((res)=>{
         // console.log("this player is attempting to join the server")
-        this.props.history.push({pathname:`/${tempid}/waitingRoom`})
-      })
+      // })
   }
 
   render(){

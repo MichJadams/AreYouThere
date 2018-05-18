@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import {subscribeToWaitingPlayers,subscribeToServers, subscribeToServerState } from './client.js'
+import {subscribeToWaitingPlayers,subscribeToServers, subscribeToServerState, subscribeToJoinServer } from './client.js'
 
 export default class Landing extends Component{
   constructor(props){
@@ -25,12 +25,14 @@ export default class Landing extends Component{
  
   goingToServer(event){
     const serverID = event.target.id
-    axios.post('/joinServer',{serverToJoin:serverID})
-    .then(()=>{
+    //try and implement using socket, 
+    subscribeToJoinServer(serverID)
+    // axios.post('/joinServer',{serverToJoin:serverID})
+    // .then(()=>{
       // console.log("here?")
       this.props.history.push({pathname:`/${serverID}/waitingRoom`})
-    })
-    .catch(err=>{console.log("err",err)})
+    // })
+    // .catch(err=>{console.log("err",err)})
 
   }
 
