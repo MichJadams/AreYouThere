@@ -675,22 +675,18 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           }),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4, 3, 0) }),
           this.state.maze && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'div',
-            null,
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-              'mesh',
-              {
-                rotation: this.state.maze.rotation, position: this.state.maze.location },
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: this.state.maze.color })
-            ),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-              'mesh',
-              {
-                rotation: this.state.maze.rotation, position: this.state.maze.location },
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: this.state.maze.color })
-            )
+            'mesh',
+            {
+              rotation: this.state.maze.rotation, position: this.state.maze.location },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: this.state.maze.color })
+          ),
+          this.state.maze && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: this.state.maze.rotation, position: this.state.maze.location },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: this.state.maze.color })
           ),
           this.state.connectedPlayers.map(player => {
             // console.log("this is the player location", player.color)

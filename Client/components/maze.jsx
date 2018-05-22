@@ -79,18 +79,18 @@ export default class Landing extends Component{
           position={this.cameraPosition}
         />
         <axisHelper position ={new THREE.Vector3(-4,3,0)}/>
-        {this.state.maze && <div><mesh
+        {this.state.maze && <mesh
               rotation={this.state.maze.rotation} position={this.state.maze.location} >
               <boxGeometry width={20} height={2} depth={20} />
               <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={this.state.maze.color}/>
             </mesh>
-            <mesh
-              rotation={this.state.maze.rotation} position={this.state.maze.location} >
-              <boxGeometry width={20} height={2} depth={20} />
-              <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.2} color={this.state.maze.color}/>
-            </mesh>
-            </div>
+            
           }
+          {this.state.maze&&<mesh
+            rotation={this.state.maze.rotation} position={this.state.maze.location} >
+            <boxGeometry width={20} height={2} depth={20} />
+            <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.2} color={this.state.maze.color}/>
+          </mesh>}
 
         {
           this.state.connectedPlayers.map((player)=>{

@@ -114,6 +114,8 @@ io.on('connection',(socket)=>{
     })
     socket.on('subscribeToGameState',(clientData)=>{
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
+        if(theServerInQuestion.connectedPlayers){
+
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //this is where each plays state can be updated
                 const newRotation = newCoords(player.rot, 'rotation')
@@ -121,6 +123,7 @@ io.on('connection',(socket)=>{
                 player.loc = new THREE.Vector3(1,2,0)
                 return player 
             })
+        }
         io.emit('gameState',theServerInQuestion)
     })
     socket.on('connection name',function(user){
