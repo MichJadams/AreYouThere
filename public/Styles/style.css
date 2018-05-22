@@ -5,13 +5,31 @@
     justify-content: center;
     flex-direction: column;
     text-align: center;
+    z-index: 2;
+    position: absolute;
+    left: 30vw;
 }
 .welcomeText{
     color:purple;
     font-size: 30px;
     font-family: 'Gamja Flower', cursive;
 }
+.reactScene{
+    position: absolute;
+    top: 0px; left: 0px;
+    z-index: 1
+}
+.nameInput{
+    background: transparent;
+    border: none;
+    color:purple;
+    font-size: 30px;
+    font-family: 'Gamja Flower', cursive;
+    outline:none;
+}
 .nameForm{
+    border: none;
+    border-bottom: 5px solid red;
     padding: 10px;
     text-align: center;
 }

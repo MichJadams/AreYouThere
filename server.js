@@ -27,45 +27,36 @@ saveUninitialized: true}))
 //bu bsacially this object just gets really big holding everything together
 let badwayMasterGameState = {
     servers:{},
-    waitingPlayers:[{name:'fakeplayer', id: '124u234fdsk932'}]
+    waitingPlayers:[{name:'fakeplayer', id: '124u234fdsk932', inGame: false}]
 } 
 
-app.post('/name',(req,res,next)=>{ 
-    badwayMasterGameState.waitingPlayers.push({name: req.body.name,id:req.cookies.io})
-    res.sendStatus(201)
-    next()
-})
+// app.post('/name',(req,res,next)=>{ 
+//     badwayMasterGameState.waitingPlayers.push({name: req.body.name,id:req.cookies.io, inGame:false})
+//     res.sendStatus(201)
+//     next()
+// })
 app.post('/createServer',(req,res,next)=>{ 
     badwayMasterGameState.servers[req.body.id]=(req.body)
     console.log("the server being created!", badwayMasterGameState)
     res.sendStatus(201)
     next()
 })
-app.post('/joinServer',(req,res,next)=>{
-    // //remove this player form the waiting players 
-    // console.log("this is the request", req.body)
-    // console.log("but this is the name of the reqeusting player", req)
-    // const playerToMove = badwayMasterGameState.waitingPlayers.find((player)=>{return player.id === req.cookies.io})
-    // console.log("player to move", playerToMove)
-    // const indexOfPlayerToMove = badwayMasterGameState.waitingPlayers.indexOf(playerToMove)
-    // badwayMasterGameState.waitingPlayers.splice(indexOfPlayerToMove,indexOfPlayerToMove+1)
-    // //add this player to the game state server player
-    // badwayMasterGameState.servers[req.body.serverToJoin].connectedPlayers.push(playerToMove)
-    // console.log("-----------------------")
-    // console.log("the SERVERS AFTER", badwayMasterGameState.servers)
-    // console.log("THE PLAYERS CONNECTed",badwayMasterGameState.servers[req.body.serverToJoin].connectedPlayers)
-    // res.sendStatus(200)
-    // next()
-})
 app.get('/mazeOne',(req,res,next)=>{
 //send back a red cube for testing
     const block = {
         rotation: new THREE.Euler(0,0,0),
-        location: new THREE.Vector3(0,0,0),
+        location: new THREE.Vector3(0,-5,0),
         color: 0xff0000
     }
     res.send(block)
 })
+
+
+// <mesh
+//       rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0, -5, 0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//     </mesh>
 
 io.use(cookierParser('hello there',{}))
 io.on('connection',(socket)=>{
@@ -83,14 +74,22 @@ io.on('connection',(socket)=>{
     socket.on('subscribeToServerCookieID', ()=>{
         socket.emit('serverCookieID', socket.id);
     })
+    socket.on('subscribeToName',(name)=>{
+        // app.post('/name',(req,res,next)=>{ 
+            //     res.sendStatus(201)
+            //     next()
+            //     badwayMasterGameState.waitingPlayers.push({name: req.body.name,id:req.cookies.io, inGame:false})
+        // })
+        badwayMasterGameState.waitingPlayers.push({name: name,id:socket.id, inGame:false})
+
+    })
     socket.on('subscribeToJoinServer', (serverId)=>{
-       //do the join stuff
-       const playerToMove = badwayMasterGameState.waitingPlayers.find((player)=>{return socket.id === serverId})
-       console.log("this is player ot move", playerToMove)
-       const indexOfPlayerToMove = badwayMasterGameState.waitingPlayers.indexOf(playerToMove)
-       badwayMasterGameState.waitingPlayers.splice(indexOfPlayerToMove,indexOfPlayerToMove+1)
-       badwayMasterGameState.servers[serverId].connectedPlayers.push(playerToMove)
-       console.log('this is the state afer the player has joined',badwayMasterGameState )
+    const playerToMove = badwayMasterGameState.waitingPlayers.find(player=> {console.log("player id", player.id, "server id", socket.id)
+    return player.id ==socket.id})
+    playerToMove.inGame = true;
+    badwayMasterGameState.servers[serverId].connectedPlayers.push(playerToMove)
+    //    console.log("this is the players in the servers", badwayMasterGameState.servers[serverId].connectedPlayers)
+    //    console.log('this is the state afer the player has joined',badwayMasterGameState )
     })
     socket.on('subscribeToServerState', (clientInfo)=>{
         let theServerInQuestion = badwayMasterGameState.servers[clientInfo.serverId]

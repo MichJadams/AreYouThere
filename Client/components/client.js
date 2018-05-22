@@ -1,6 +1,11 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:8081');
+const socket = openSocket('172.16.23.0:8081');
+// const socket = openSocket('http://localhost:8081');
 
+//landing sockets
+function subscribeToName(name){
+    socket.emit("subscribeToName",name)
+}
 //lobby sockets 
 function subscribeToTimer(cb){
     socket.on('timer', timestamp => cb(null, timestamp));
@@ -45,6 +50,7 @@ function subscribeToGameState(clientData,cb){
 
 
 export { 
+    subscribeToName,
     subscribeToTimer,
     subscribeToWaitingPlayers, 
     subscribeToServers,

@@ -22,18 +22,10 @@ export default class Landing extends Component{
     })
     this.goingToServer = this.goingToServer.bind(this)
   }
- 
   goingToServer(event){
     const serverID = event.target.id
-    //try and implement using socket, 
     subscribeToJoinServer(serverID)
-    // axios.post('/joinServer',{serverToJoin:serverID})
-    // .then(()=>{
-      // console.log("here?")
       this.props.history.push({pathname:`/${serverID}/waitingRoom`})
-    // })
-    // .catch(err=>{console.log("err",err)})
-
   }
 
   render(){
@@ -43,9 +35,12 @@ export default class Landing extends Component{
         <h4>Theses are players waiting to join or start a maze</h4>
           {
             this.state.waitingPlayers.map(player =>{
-              return(
-                  <li key={this.state.waitingPlayers.indexOf(player)}>{player.name}</li>
-              )
+              
+                if(player.inGame === false){
+
+                  return <li key={this.state.waitingPlayers.indexOf(player)}>{player.name}</li>
+                }
+              
             })
           }
           </div>

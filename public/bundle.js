@@ -75,11 +75,12 @@
 /*!*************************************!*\
   !*** ./Client/components/client.js ***!
   \*************************************/
-/*! exports provided: subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerState, subscribeToGameState, subscribeToJoinServer */
+/*! exports provided: subscribeToName, subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerState, subscribeToGameState, subscribeToJoinServer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToName", function() { return subscribeToName; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToTimer", function() { return subscribeToTimer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToWaitingPlayers", function() { return subscribeToWaitingPlayers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServers", function() { return subscribeToServers; });
@@ -90,8 +91,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
 
-const socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('http://localhost:8081');
+const socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0___default()('172.16.23.0:8081');
+// const socket = openSocket('http://localhost:8081');
 
+//landing sockets
+function subscribeToName(name) {
+    socket.emit("subscribeToName", name);
+}
 //lobby sockets 
 function subscribeToTimer(cb) {
     socket.on('timer', timestamp => cb(null, timestamp));
@@ -293,6 +299,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lobby_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./lobby.jsx */ "./Client/components/lobby.jsx");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_three_renderer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-three-renderer */ "./node_modules/react-three-renderer/lib/React3.js");
+/* harmony import */ var react_three_renderer__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_three_renderer__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
+
+
 
 
 
@@ -310,48 +322,129 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   handleChange(event) {
     this.setState({ value: event.target.value });
-    // console.log("this is the state", this.state)
+    console.log("this is the state", this.state);
   }
 
   handleSubmit(event) {
-    // this.setState({nameSelected:true})
-    axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/name', { name: this.state.value }).then(() => {
-      this.props.history.push({ pathname: `/lobby` });
-    }).catch(err => {
-      console.log(err);
-    });
-    event.preventDefault();
+    this.setState({ nameSelected: true });
+    const name = this.state.value;
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_7__["subscribeToName"])(name);
+    this.props.history.push({ pathname: `/lobby` });
+
+    // axios.post('/name',{name: this.state.value})
+    // .then(()=>{
+    // })
+    // .catch((err)=>{console.log(err)})
+    // event.preventDefault();
   }
 
   render() {
+    const width = window.innerWidth - 10; // canvas width
+    const height = window.innerHeight - 10; // canvas height
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
-      { className: 'welcomeContainer' },
+      null,
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'div',
-        { className: 'welcomeText' },
+        { className: 'welcomeContainer' },
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-          'h1',
-          null,
-          'who are you there?'
+          'div',
+          { className: 'welcomeText' },
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'h1',
+            null,
+            'Who\'s there?'
+          )
+        ),
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'form',
+          { onSubmit: this.handleSubmit },
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'label',
+            { className: 'nameForm' },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { className: 'nameInput', type: 'text', autoFocus: true, value: this.state.value, onChange: this.handleChange })
+          ),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'button',
+            { type: 'submit' },
+            'Pick name'
+          )
         )
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-        'form',
-        { onSubmit: this.handleSubmit },
+        react_three_renderer__WEBPACK_IMPORTED_MODULE_5___default.a,
+        { className: 'reactScene',
+          mainCamera: 'camera' // this points to the perspectiveCamera which has the name set to "camera" below
+          , width: width,
+          height: height },
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-          'label',
+          'scene',
           null,
-          'Name:',
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'text', value: this.state.value, onChange: this.handleChange })
-        ),
-        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-          'button',
-          { type: 'submit' },
-          'Pick name'
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('perspectiveCamera', { name: 'camera',
+            fov: 75,
+            aspect: width / height,
+            near: 0.1,
+            far: 1000,
+            position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](0, 0, 10)
+          }),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](20, 0, 15), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-5, -2, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 6, depth: 2 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: 0xff0000 })
+          ),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](-20, 0, -15), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](3, -2, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 6, depth: 2 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.3, color: 0xff0000 })
+          ),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-10, 0, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 9, depth: 3 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.5, color: 0xa82f10 })
+          ),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-13, -3, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 6, depth: 3 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.5, color: 0xa82f10 })
+          ),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-13, -3, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 6, depth: 3 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.5, color: 0xa82f10 })
+          ),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-15, -6, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 3, depth: 3 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: false, opacity: 0.5, color: 0xa82f10 })
+          ),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](0, -5, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: 0xff0000 })
+          ),
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](0, -5, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
+          )
         )
-      ),
-      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('div', null)
+      )
     );
   }
 }
@@ -398,17 +491,10 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     });
     this.goingToServer = this.goingToServer.bind(this);
   }
-
   goingToServer(event) {
     const serverID = event.target.id;
-    //try and implement using socket, 
     Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToJoinServer"])(serverID);
-    // axios.post('/joinServer',{serverToJoin:serverID})
-    // .then(()=>{
-    // console.log("here?")
     this.props.history.push({ pathname: `/${serverID}/waitingRoom` });
-    // })
-    // .catch(err=>{console.log("err",err)})
   }
 
   render() {
@@ -424,11 +510,15 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           'Theses are players waiting to join or start a maze'
         ),
         this.state.waitingPlayers.map(player => {
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'li',
-            { key: this.state.waitingPlayers.indexOf(player) },
-            player.name
-          );
+
+          if (player.inGame === false) {
+
+            return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'li',
+              { key: this.state.waitingPlayers.indexOf(player) },
+              player.name
+            );
+          }
         })
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
@@ -509,14 +599,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       });
     });
     this.cameraPosition = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5);
-    // console.log("this is the props",this.props.history.location.state.connectedPlayers)
-
     this.state = { connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
-    // this.state.connectedPlayers.map((Player)=>{
-    //   player.cubeRotation = new THREE.Euler()
-    //   this.setState(player.)
-    // })
-
     let connectedPlayers = [];
     this.state.connectedPlayers.map(player => {
       const nextPlayer = player;
@@ -527,30 +610,12 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     console.log("the connected player state initially ", this.state.connectedPlayers);
     this.setState({ connectedPlayers });
     const clientData = this.state;
-    // console.log("this is the state", this.state)
     axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('/mazeOne').then(res => {
       console.log("the maze looks like this", res.data);
       const maze = res.data;
       this.setState({ maze });
       console.log("this is the state of the maze", this.state.maze);
     });
-    // subscribeToGameState(clientData,(err, gameState)=>{
-    //   console.log("shouting out from the playing game state updates function",gameState)
-    // })
-
-    //calculate movement
-    // const newCoords=(oldCoords, type)=>{  
-
-    //   if(type == 'rotation'){
-    //     oldCoords.x += 0.1
-    //     oldCoords.y += 0.1
-    //     oldCoords.z += 0.1
-    //     // console.log("these are the old cords", oldCoords)
-    //     return oldCoords
-    //   }else if (type == 'location'){
-    //     return oldCoords
-    //   }
-    // }
     this._onAnimate = () => {
 
       const clientInfo = this.state;
@@ -561,22 +626,6 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         // console.log("hopefully one day I can jsut set one to the other")
         this.setState({ connectedPlayers: gameState.connectedPlayers });
       });
-      // let connectedPlayers = []
-      // for(let i =0; i< this.state.connectedPlayers.length; i ++){
-      //   //send out a socket request for informationregarding this player
-      //   //update the client state with the information sent back
-
-
-      //   const nextplayer = this.state.connectedPlayers[i]
-      //   const newRotation = newCoords(nextplayer.rot, 'rotation') //takes an object and spits out a new obejct with keys x,y,z. uses the string to determin which coords to mutate
-      //   nextplayer.rot = newRotation
-      //   const newLocation = newCoords(nextplayer.loc, 'location') //takes an object and spits out a new obejct with keys x,y,z
-      //   nextplayer.loc = newLocation
-      //   nextplayer.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)  
-      //   // nextplayer.loc = new THREE.Vector3(newLocation.x,newLocation.y,newLocation.z)
-      //   connectedPlayers.push(nextplayer)
-      // }
-      // this.setState({connectedPlayers})
     };
   }
   componentDidMount() {
@@ -624,19 +673,24 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
             position: this.cameraPosition
           }),
-          this.state.mazze && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'mesh',
-            null,
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('bufferGeometry', { position: new three__WEBPACK_IMPORTED_MODULE_4__["bufferAttribute"]([-1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0], 3) }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: true, opacity: 0.2, color: 0xfff000 })
-          ),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4, 3, 0) }),
           this.state.maze && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'mesh',
-            {
-              rotation: this.state.maze.rotation, position: this.state.maze.location },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 6, height: 6, depth: 3 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: true, opacity: 0.2, color: this.state.maze.color })
+            'div',
+            null,
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'mesh',
+              {
+                rotation: this.state.maze.rotation, position: this.state.maze.location },
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: this.state.maze.color })
+            ),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'mesh',
+              {
+                rotation: this.state.maze.rotation, position: this.state.maze.location },
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: this.state.maze.color })
+            )
           ),
           this.state.connectedPlayers.map(player => {
             // console.log("this is the player location", player.color)
@@ -653,6 +707,19 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     );
   }
 }
+
+//other ideas
+// {
+//   this.state.mazze && <mesh>
+//   <bufferGeometry position={new THREE.bufferAttribute([-1.0, -1.0,  1.0,
+//     1.0, -1.0,  1.0,
+//     1.0,  1.0,  1.0,
+//     1.0,  1.0,  1.0,
+//    -1.0,  1.0,  1.0,
+//    -1.0, -1.0,  1.0],3)} />
+//   <meshBasicMaterial wireframe={true} transparent={true} opacity ={0.2} color={0xfff000}/>
+// </mesh>
+// }
 
 /***/ }),
 

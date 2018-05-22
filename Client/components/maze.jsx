@@ -15,14 +15,7 @@ export default class Landing extends Component{
       timestamp
     })})
     this.cameraPosition = new THREE.Vector3(0, 0, 5);
-    // console.log("this is the props",this.props.history.location.state.connectedPlayers)
-    
     this.state = {connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
-    // this.state.connectedPlayers.map((Player)=>{
-    //   player.cubeRotation = new THREE.Euler()
-    //   this.setState(player.)
-    // })
-
     let connectedPlayers = []
         this.state.connectedPlayers.map((player)=>{
           const nextPlayer = player
@@ -33,7 +26,6 @@ export default class Landing extends Component{
         console.log("the connected player state initially ", this.state.connectedPlayers)
         this.setState({connectedPlayers})
     const clientData = this.state
-    // console.log("this is the state", this.state)
     axios.get('/mazeOne')
     .then((res)=>{
       console.log("the maze looks like this", res.data)
@@ -41,23 +33,6 @@ export default class Landing extends Component{
       this.setState({maze})
       console.log("this is the state of the maze", this.state.maze)
     })
-    // subscribeToGameState(clientData,(err, gameState)=>{
-    //   console.log("shouting out from the playing game state updates function",gameState)
-    // })
-
-  //calculate movement
-    // const newCoords=(oldCoords, type)=>{  
-      
-    //   if(type == 'rotation'){
-    //     oldCoords.x += 0.1
-    //     oldCoords.y += 0.1
-    //     oldCoords.z += 0.1
-    //     // console.log("these are the old cords", oldCoords)
-    //     return oldCoords
-    //   }else if (type == 'location'){
-    //     return oldCoords
-    //   }
-    // }
     this._onAnimate = () => {
 
       const clientInfo = this.state
@@ -68,31 +43,12 @@ export default class Landing extends Component{
         // console.log("hopefully one day I can jsut set one to the other")
         this.setState({connectedPlayers:gameState.connectedPlayers})
       })
-      // let connectedPlayers = []
-      // for(let i =0; i< this.state.connectedPlayers.length; i ++){
-      //   //send out a socket request for informationregarding this player
-      //   //update the client state with the information sent back
-
-
-      //   const nextplayer = this.state.connectedPlayers[i]
-      //   const newRotation = newCoords(nextplayer.rot, 'rotation') //takes an object and spits out a new obejct with keys x,y,z. uses the string to determin which coords to mutate
-      //   nextplayer.rot = newRotation
-      //   const newLocation = newCoords(nextplayer.loc, 'location') //takes an object and spits out a new obejct with keys x,y,z
-      //   nextplayer.loc = newLocation
-      //   nextplayer.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)  
-      //   // nextplayer.loc = new THREE.Vector3(newLocation.x,newLocation.y,newLocation.z)
-      //   connectedPlayers.push(nextplayer)
-      // }
-      // this.setState({connectedPlayers})
     }
-    
   }
  componentDidMount(){
    this.setState({isMounted: true})
  }
 
-
-  
   render(){
     const width = window.innerWidth; // canvas width
     const height = window.innerHeight; // canvas height
@@ -122,23 +78,18 @@ export default class Landing extends Component{
 
           position={this.cameraPosition}
         />
-        {
-          this.state.mazze && <mesh>
-          <bufferGeometry position={new THREE.bufferAttribute([-1.0, -1.0,  1.0,
-            1.0, -1.0,  1.0,
-            1.0,  1.0,  1.0,
-            1.0,  1.0,  1.0,
-           -1.0,  1.0,  1.0,
-           -1.0, -1.0,  1.0],3)} />
-          <meshBasicMaterial wireframe={true} transparent={true} opacity ={0.2} color={0xfff000}/>
-        </mesh>
-        }
         <axisHelper position ={new THREE.Vector3(-4,3,0)}/>
-        {this.state.maze && <mesh
+        {this.state.maze && <div><mesh
               rotation={this.state.maze.rotation} position={this.state.maze.location} >
-              <boxGeometry width={6} height={6} depth={3} />
-              <meshBasicMaterial wireframe={true} transparent={true} opacity ={0.2} color={this.state.maze.color}/>
+              <boxGeometry width={20} height={2} depth={20} />
+              <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={this.state.maze.color}/>
             </mesh>
+            <mesh
+              rotation={this.state.maze.rotation} position={this.state.maze.location} >
+              <boxGeometry width={20} height={2} depth={20} />
+              <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.2} color={this.state.maze.color}/>
+            </mesh>
+            </div>
           }
 
         {
@@ -158,3 +109,17 @@ export default class Landing extends Component{
   )}
 }
 
+
+
+//other ideas
+// {
+//   this.state.mazze && <mesh>
+//   <bufferGeometry position={new THREE.bufferAttribute([-1.0, -1.0,  1.0,
+//     1.0, -1.0,  1.0,
+//     1.0,  1.0,  1.0,
+//     1.0,  1.0,  1.0,
+//    -1.0,  1.0,  1.0,
+//    -1.0, -1.0,  1.0],3)} />
+//   <meshBasicMaterial wireframe={true} transparent={true} opacity ={0.2} color={0xfff000}/>
+// </mesh>
+// }
