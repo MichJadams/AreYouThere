@@ -103,13 +103,14 @@ io.on('connection',(socket)=>{
     })
     socket.on('subscribeToGameState',(clientData)=>{
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
+        console.log("this player:", socket.id, "is pressing this button", clientData.keyDown)
         if(theServerInQuestion){
-
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //this is where each plays state can be updated
                 const newRotation = newCoords(player.rot, 'rotation')
-                player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
-                player.loc = new THREE.Vector3(0,0,0)
+                // console.log("key down?d", player.loc)
+                // player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
+                // player.loc = new THREE.Vector3(0,0,0)
                 return player 
             })
         }

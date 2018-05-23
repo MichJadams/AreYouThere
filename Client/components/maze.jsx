@@ -16,7 +16,7 @@ export default class Landing extends Component{
       timestamp
     })})
     this.cameraPosition = new THREE.Vector3(0, 0, 5);
-    this.state = {connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
+    this.state = {keydown:'',connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
     let connectedPlayers = []
         this.state.connectedPlayers.map((player)=>{
           const nextPlayer = player
@@ -35,7 +35,6 @@ export default class Landing extends Component{
       // console.log("this is the state of the maze", this.state.maze)
     })
     this._onAnimate = () => {
-
       const clientInfo = this.state
       subscribeToGameState(clientInfo,(err,gameState)=>{
         // console.log("Is this firing?", clientInfo)
@@ -46,9 +45,19 @@ export default class Landing extends Component{
       })
     }
   }
- componentDidMount(){
-   this.setState({isMounted: true})
- }
+  componentDidMount(){
+    this.setState({isMounted: true})
+    document.addEventListener("keydown", this.handleKeyDown.bind(this))
+  }
+  // componentWillUnmount() {
+  //   document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+  // }
+  handleKeyDown (event){
+    console.log("this is the key being pressed", event.keyCode)
+    console.log("this is the stae?", this.state.keydown)
+    //I want to send this data back to the server, then the server will respond with new location for the player moving.
+    this.setState({keydown:event.keyCode})
+  }
 
   render(){
     const width = window.innerWidth; // canvas width
