@@ -5,6 +5,7 @@ import React3 from 'react-three-renderer';
 import * as THREE from 'three';
 import {subscribeToGameState } from './client.js'
 import axios from 'axios'
+import Tunnel from './tunnel.js'
 
 
 export default class Landing extends Component{
@@ -28,18 +29,18 @@ export default class Landing extends Component{
     const clientData = this.state
     axios.get('/mazeOne')
     .then((res)=>{
-      console.log("the maze looks like this", res.data)
+      // console.log("the maze looks like this", res.data)
       const maze = res.data
       this.setState({maze})
-      console.log("this is the state of the maze", this.state.maze)
+      // console.log("this is the state of the maze", this.state.maze)
     })
     this._onAnimate = () => {
 
       const clientInfo = this.state
       subscribeToGameState(clientInfo,(err,gameState)=>{
         // console.log("Is this firing?", clientInfo)
-        console.log("this is the information the server is sending back", gameState.connectedPlayers)
-        console.log("this is the current connected players state", this.state.connectedPlayers)
+        // console.log("this is the information the server is sending back", gameState.connectedPlayers)
+        // console.log("this is the current connected players state", this.state.connectedPlayers)
         // console.log("hopefully one day I can jsut set one to the other")
         this.setState({connectedPlayers:gameState.connectedPlayers})
       })
@@ -79,19 +80,52 @@ export default class Landing extends Component{
           position={this.cameraPosition}
         />
         <axisHelper position ={new THREE.Vector3(-4,3,0)}/>
-        {this.state.maze && <mesh
-              rotation={this.state.maze.rotation} position={this.state.maze.location} >
-              <boxGeometry width={20} height={2} depth={20} />
-              <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={this.state.maze.color}/>
+        {
+          //bottom
+          <mesh
+            rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0,-5,0)} >
+            <boxGeometry width={10} height={2} depth={10} />
+            <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
             </mesh>
-            
-          }
-          {this.state.maze&&<mesh
-            rotation={this.state.maze.rotation} position={this.state.maze.location} >
-            <boxGeometry width={20} height={2} depth={20} />
-            <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.2} color={this.state.maze.color}/>
-          </mesh>}
-
+        }
+        {
+          //back
+          // <mesh
+          //   rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0,0,-4.5)} >
+          //   <boxGeometry width={5} height={5} depth={2} />
+          //   <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+          //   </mesh>
+        }
+        {//front
+          // <mesh
+          //   rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0,0,0)} >
+          //   <boxGeometry width={5} height={5} depth={2} />
+          //   <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+          //   </mesh>
+        }
+        {//left
+          <mesh
+            rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(-4.8,0,0)} >
+            <boxGeometry width={2} height={5} depth={5} />
+            <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+            </mesh>
+        }
+        {
+          //right
+        <mesh
+        rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(4.8,0,0)} >
+        <boxGeometry width={2} height={5} depth={5} />
+        <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+        </mesh>
+    }
+    {
+      //top
+      <mesh
+        rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0,5,0)} >
+        <boxGeometry width={10} height={2} depth={10} />
+        <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+        </mesh>
+    }
         {
           this.state.connectedPlayers.map((player)=>{
             // console.log("this is the player location", player.color)
@@ -123,3 +157,61 @@ export default class Landing extends Component{
 //   <meshBasicMaterial wireframe={true} transparent={true} opacity ={0.2} color={0xfff000}/>
 // </mesh>
 // }
+
+// {this.state.maze && this.state.maze.map((block)=>{
+//   for(let i =1; i<=6;i++){
+//     // console.log("adding this bit", block)
+//     if(block.openSides.indexOf(i) != -1){
+      
+//       //return nothing, no side 
+//     }
+//     else if(i == 1){
+//       // <Tunnel position={new THREE.Vector3(0,-5,0)} rotation={new THREE.Euler(90,0,0)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 2){
+//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(0,0,90)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 3){
+//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(90,0,0)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 4){
+//       // <Tunnel position={new THREE.Vector3(-5,0,0)} rotation={new THREE.Euler(0,0,90)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 5){
+//       // <Tunnel position={new THREE.Vector3(0,-5,0)} rotation={new THREE.Euler(0,0,0)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 6){
+//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(0,0,0)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//   }
+// })}

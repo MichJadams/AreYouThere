@@ -74,7 +74,7 @@ export default class createServer extends Component{
                   <input type="number" value={this.state.capacity} onChange={this.handleCapacityChange} />
                 </label>
                 
-                <button type="button" onClick={this.handleSubmit}>Create Server</button>
+                <button autoFocus type="button" onClick={this.handleSubmit}>Create Server</button>
                 </form>
                 
                 <div>

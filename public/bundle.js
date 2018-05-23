@@ -265,7 +265,7 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         ),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'button',
-          { type: 'button', onClick: this.handleSubmit },
+          { autoFocus: true, type: 'button', onClick: this.handleSubmit },
           'Create Server'
         )
       ),
@@ -549,7 +549,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           { to: "/server/createServer" },
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'button',
-            null,
+            { autoFocus: true },
             'Create a Server'
           )
         )
@@ -581,6 +581,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _tunnel_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./tunnel.js */ "./Client/components/tunnel.js");
+
 
 
 
@@ -611,18 +613,18 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.setState({ connectedPlayers });
     const clientData = this.state;
     axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('/mazeOne').then(res => {
-      console.log("the maze looks like this", res.data);
+      // console.log("the maze looks like this", res.data)
       const maze = res.data;
       this.setState({ maze });
-      console.log("this is the state of the maze", this.state.maze);
+      // console.log("this is the state of the maze", this.state.maze)
     });
     this._onAnimate = () => {
 
       const clientInfo = this.state;
       Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToGameState"])(clientInfo, (err, gameState) => {
         // console.log("Is this firing?", clientInfo)
-        console.log("this is the information the server is sending back", gameState.connectedPlayers);
-        console.log("this is the current connected players state", this.state.connectedPlayers);
+        // console.log("this is the information the server is sending back", gameState.connectedPlayers)
+        // console.log("this is the current connected players state", this.state.connectedPlayers)
         // console.log("hopefully one day I can jsut set one to the other")
         this.setState({ connectedPlayers: gameState.connectedPlayers });
       });
@@ -674,19 +676,40 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             position: this.cameraPosition
           }),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4, 3, 0) }),
-          this.state.maze && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+
+          //bottom
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
-              rotation: this.state.maze.rotation, position: this.state.maze.location },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: this.state.maze.color })
+              rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, -5, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 10, height: 2, depth: 10 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
           ),
-          this.state.maze && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          //left
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
-              rotation: this.state.maze.rotation, position: this.state.maze.location },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: this.state.maze.color })
+              rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4.8, 0, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 5, depth: 5 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
+          ),
+
+          //right
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](4.8, 0, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 5, depth: 5 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
+          ),
+
+          //top
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+              rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 5, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 10, height: 2, depth: 10 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
           ),
           this.state.connectedPlayers.map(player => {
             // console.log("this is the player location", player.color)
@@ -716,6 +739,113 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 //   <meshBasicMaterial wireframe={true} transparent={true} opacity ={0.2} color={0xfff000}/>
 // </mesh>
 // }
+
+// {this.state.maze && this.state.maze.map((block)=>{
+//   for(let i =1; i<=6;i++){
+//     // console.log("adding this bit", block)
+//     if(block.openSides.indexOf(i) != -1){
+
+//       //return nothing, no side 
+//     }
+//     else if(i == 1){
+//       // <Tunnel position={new THREE.Vector3(0,-5,0)} rotation={new THREE.Euler(90,0,0)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 2){
+//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(0,0,90)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 3){
+//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(90,0,0)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 4){
+//       // <Tunnel position={new THREE.Vector3(-5,0,0)} rotation={new THREE.Euler(0,0,90)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 5){
+//       // <Tunnel position={new THREE.Vector3(0,-5,0)} rotation={new THREE.Euler(0,0,0)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//     else if(i == 6){
+//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(0,0,0)} />
+//       <mesh
+//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
+//       <boxGeometry width={20} height={2} depth={20} />
+//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+//       </mesh>
+//     }
+//   }
+// })}
+
+/***/ }),
+
+/***/ "./Client/components/tunnel.js":
+/*!*************************************!*\
+  !*** ./Client/components/tunnel.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Tunnel; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/react.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_three_renderer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-three-renderer */ "./node_modules/react-three-renderer/lib/React3.js");
+/* harmony import */ var react_three_renderer__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_three_renderer__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
+
+
+class Tunnel extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+    constructor(props) {
+        super(props);
+        // this.state ={
+        //     position: new THREE.Vector3(0,-5,0),
+        //     rotation: new THREE.Euler(props.location)
+        // }
+        console.log("in here, making a block", props.location);
+    }
+
+    render() {
+
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            {
+                rotation: new three__WEBPACK_IMPORTED_MODULE_2__["Euler"](90, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_2__["Vector3"](0, -5, 0) },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
+        );
+    }
+}
+
+// <mesh
+// rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0, -5, 0)} >
+// <boxGeometry width={20} height={2} depth={20} />
+// <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+// </mesh>
 
 /***/ }),
 
@@ -833,7 +963,7 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         'Continue into the maze'
       ) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'button',
-        { onClick: this.startingAGame },
+        { onClick: this.startingAGame, autoFocus: true },
         'Start the Game'
       ),
       this.state.gameState.playing ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(

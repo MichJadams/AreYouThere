@@ -76,7 +76,7 @@ export default class WaitingRoom extends Component{
         {
           this.state.proceedToMaze?
           <Link to={`/${this.state.id}/maze`}>Continue into the maze</Link>
-          :<button onClick={this.startingAGame}>Start the Game</button>
+          :<button onClick={this.startingAGame} autoFocus>Start the Game</button>
         }
         {
           this.state.gameState.playing?<h1>PLAYING</h1>: <h1>not playing</h1>

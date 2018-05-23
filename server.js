@@ -29,12 +29,6 @@ let badwayMasterGameState = {
     servers:{},
     waitingPlayers:[{name:'fakeplayer', id: '124u234fdsk932', inGame: false}]
 } 
-
-// app.post('/name',(req,res,next)=>{ 
-//     badwayMasterGameState.waitingPlayers.push({name: req.body.name,id:req.cookies.io, inGame:false})
-//     res.sendStatus(201)
-//     next()
-// })
 app.post('/createServer',(req,res,next)=>{ 
     badwayMasterGameState.servers[req.body.id]=(req.body)
     console.log("the server being created!", badwayMasterGameState)
@@ -43,20 +37,15 @@ app.post('/createServer',(req,res,next)=>{
 })
 app.get('/mazeOne',(req,res,next)=>{
 //send back a red cube for testing
-    const block = {
-        rotation: new THREE.Euler(0,0,0),
-        location: new THREE.Vector3(0,-5,0),
-        color: 0xff0000
-    }
-    res.send(block)
+const mazeArray = buildMaze([]) 
+
+    // const block = {
+    //     rotation: new THREE.Euler(0,0,0),
+    //     location: new THREE.Vector3(0,-5,0),
+    //     color: 0xff0000
+    // }
+    res.send(mazeArray)
 })
-
-
-// <mesh
-//       rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0, -5, 0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//     </mesh>
 
 io.use(cookierParser('hello there',{}))
 io.on('connection',(socket)=>{
@@ -114,13 +103,13 @@ io.on('connection',(socket)=>{
     })
     socket.on('subscribeToGameState',(clientData)=>{
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
-        if(theServerInQuestion.connectedPlayers){
+        if(theServerInQuestion){
 
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //this is where each plays state can be updated
                 const newRotation = newCoords(player.rot, 'rotation')
                 player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
-                player.loc = new THREE.Vector3(1,2,0)
+                player.loc = new THREE.Vector3(0,0,0)
                 return player 
             })
         }
@@ -152,4 +141,23 @@ function randomLocation (max){
         location[value] = Math.floor(Math.random() * Math.floor(max));
     }
     return location
+}
+function buildMaze(mazeArray){
+//open sides is an array with a max of 6 numbers, each representing the side that is missing from the block
+//btmrcoords is an array of three numbers representing the btm right coords of the block, each block is 5 long
+
+    mazeArray.push({
+        openSides:[1,3],
+        btmRCoords:[0,0,0] //origin
+    })
+    // mazeArray.push({
+    //     openSides:[1,3],
+    //     btmRCoords:[0,0,5]
+    // })
+    // mazeArray.push({
+    //     openSides:[1,3],
+    //     btmRCoords:[0,0,10]
+    // })
+
+    return mazeArray
 }

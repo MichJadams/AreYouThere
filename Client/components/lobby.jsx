@@ -57,7 +57,7 @@ export default class Landing extends Component{
               }
             })
           }
-          <Link to={"/server/createServer"}><button>Create a Server</button></Link>
+          <Link to={"/server/createServer"}><button autoFocus>Create a Server</button></Link>
         </div>
       </div>)
   } 
