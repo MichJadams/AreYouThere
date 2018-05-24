@@ -88,7 +88,7 @@ io.on('connection',(socket)=>{
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //this is where you can set the initial state of the play, such as color or location ect. 
                 player.color = 0x00ff00
-                player.rot= new THREE.Euler(0, 0,0) 
+                player.rot= new THREE.Euler(0,0,0) 
             })
             //also generate a map? who knows....
         }
@@ -103,17 +103,27 @@ io.on('connection',(socket)=>{
     })
     socket.on('subscribeToGameState',(clientData)=>{
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
-        console.log("this player:", socket.id, "is pressing this button", clientData.keyDown)
         if(theServerInQuestion){
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //this is where each plays state can be updated
-                const newRotation = newCoords(player.rot, 'rotation')
-                // console.log("key down?d", player.loc)
+                // const newRotation = newCoords(player.rot, 'rotation') //uncomment this for rotation
+                console.log("key down?", clientData.keydown)
                 // player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
+                if(player.loc == false|| player.loc == undefined){
+                    //this line means when a player stops pressing a key they snap back to the middle?
+                    player.loc = new THREE.Vector3(0,0,0)
+                }else{
+                    player.loc = movement(clientData.keydown,player.loc)
+                }
+
+                // console.log("this is what the movement thing is returning",movement(clientData.keydown,player.loc) )
                 // player.loc = new THREE.Vector3(0,0,0)
+                console.log("this player:", socket.id, "is pressing this button", clientData.keydown," and thier new location is", player.loc )
                 return player 
             })
         }
+        theServerInQuestion.keydown = undefined
+        // console.log("this is the new player location",theServerInQuestion.connectedPlayers[0].loc)
         io.emit('gameState',theServerInQuestion)
     })
     socket.on('connection name',function(user){
@@ -142,6 +152,36 @@ function randomLocation (max){
         location[value] = Math.floor(Math.random() * Math.floor(max));
     }
     return location
+}
+function movement(keycode,playerlocation){
+    //check for collision?? somehow....
+    if(keycode == 87){
+        //forward
+        // console.log("old player location in terms of z", playerlocation.z)
+        // console.log("forward, returning:",new THREE.Vector3(0,0,playerlocation.z+5))
+        return new THREE.Vector3(0,0,playerlocation.z+1)
+    }
+    if(keycode == 65){
+        //left
+        // console.log("left")
+
+        return new THREE.Vector3(playerlocation.x-1,0,0)
+    }
+    if(keycode == 83){
+        //backwards
+        // console.log("backwards")
+
+        return new THREE.Vector3(0,0,playerlocation.z-1)
+    }
+    if(keycode == 68){
+        //right
+        // console.log("right")
+
+        return new THREE.Vector3(playerlocation.x+1,0,0)
+    }
+    // if(keycode == undefined){
+    //     return 
+    // }
 }
 function buildMaze(mazeArray){
 //open sides is an array with a max of 6 numbers, each representing the side that is missing from the block

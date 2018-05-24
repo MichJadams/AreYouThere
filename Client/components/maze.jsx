@@ -14,9 +14,17 @@ export default class Landing extends Component{
     super(props);
     subscribeToTimer((err,timestamp)=>{this.setState({
       timestamp
-    })})
+    })
+        subscribeToGameState(this.state,(err,gameState)=>{
+      // console.log("Is this firing?", clientInfo)
+      console.log("this is the information the server is sending back", gameState.connectedPlayers[0].loc)
+      // console.log("this is the current connected players state", this.state.connectedPlayers)
+      // console.log("hopefully one day I can jsut set one to the other")
+      this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
+    })
+  })
     this.cameraPosition = new THREE.Vector3(0, 0, 5);
-    this.state = {keydown:'',connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
+    this.state = {keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
     let connectedPlayers = []
         this.state.connectedPlayers.map((player)=>{
           const nextPlayer = player
@@ -24,7 +32,7 @@ export default class Landing extends Component{
           nextPlayer.loc = new THREE.Vector3(1,1,0)
           connectedPlayers.push(nextPlayer)
         })
-        console.log("the connected player state initially ", this.state.connectedPlayers)
+        // console.log("the connected player state initially ", this.state.connectedPlayers)
         this.setState({connectedPlayers})
     const clientData = this.state
     axios.get('/mazeOne')
@@ -35,14 +43,14 @@ export default class Landing extends Component{
       // console.log("this is the state of the maze", this.state.maze)
     })
     this._onAnimate = () => {
-      const clientInfo = this.state
-      subscribeToGameState(clientInfo,(err,gameState)=>{
-        // console.log("Is this firing?", clientInfo)
-        // console.log("this is the information the server is sending back", gameState.connectedPlayers)
-        // console.log("this is the current connected players state", this.state.connectedPlayers)
-        // console.log("hopefully one day I can jsut set one to the other")
-        this.setState({connectedPlayers:gameState.connectedPlayers})
-      })
+      // const clientInfo = this.state
+      // subscribeToGameState(clientInfo,(err,gameState)=>{
+      //   // console.log("Is this firing?", clientInfo)
+      //   // console.log("this is the information the server is sending back", gameState.connectedPlayers)
+      //   // console.log("this is the current connected players state", this.state.connectedPlayers)
+      //   // console.log("hopefully one day I can jsut set one to the other")
+      //   this.setState({connectedPlayers:gameState.connectedPlayers})
+      // })
     }
   }
   componentDidMount(){
@@ -53,10 +61,11 @@ export default class Landing extends Component{
   //   document.removeEventListener("keydown", this.handleKeyDown.bind(this));
   // }
   handleKeyDown (event){
-    console.log("this is the key being pressed", event.keyCode)
-    console.log("this is the stae?", this.state.keydown)
+    // console.log("this is the key being pressed", event.keyCode)
+    // console.log("this is the stae?", this.state.keydown)
     //I want to send this data back to the server, then the server will respond with new location for the player moving.
     this.setState({keydown:event.keyCode})
+
   }
 
   render(){
