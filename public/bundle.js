@@ -632,6 +632,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         // console.log("this is the information the server is sending back", gameState.connectedPlayers)
         // console.log("this is the current connected players state", this.state.connectedPlayers)
         // console.log("hopefully one day I can jsut set one to the other")
+        //update the camera location for a specific socket.
         this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
       });
     };
@@ -728,7 +729,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
           ),
           this.state.connectedPlayers.map(player => {
-            // console.log("this is the player location", player.color)
+            console.log("this is the player id", player.id, "and this is thier location", player.loc);
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               'mesh',
               {

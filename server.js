@@ -104,16 +104,20 @@ io.on('connection',(socket)=>{
     socket.on('subscribeToGameState',(clientData)=>{
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
         if(theServerInQuestion){
+
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //this is where each plays state can be updated
                 // const newRotation = newCoords(player.rot, 'rotation') //uncomment this for rotation
                 // console.log("key down?", clientData.keydown)
                 // player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
-                if(player.loc == undefined){
-                    //this line means when a player stops pressing a key they snap back to the middle?
-                    player.loc = new THREE.Vector3(0,0,0)
-                }else if(clientData.keydown != false){
-                    player.loc = movement(clientData.keydown,player.loc)
+                if(player.id == socket.id){
+                    console.log("this player is moving", player)
+                    if(player.loc == undefined){
+                        //this line means when a player stops pressing a key they snap back to the middle?
+                        player.loc = new THREE.Vector3(0,0,0)
+                    }else if(clientData.keydown != false){
+                        player.loc = movement(clientData.keydown,player.loc)
+                    }
                 }
 
                 // console.log("this is what the movement thing is returning",movement(clientData.keydown,player.loc) )
@@ -164,24 +168,18 @@ function movement(keycode,playerlocation){
     if(keycode == 65){
         //left
         // console.log("left")
-        
         return new THREE.Vector3(playerlocation.x-1,playerlocation.y,playerlocation.z)
     }
     if(keycode == 83){
         //backwards
         // console.log("backwards")
         return new THREE.Vector3(playerlocation.x,playerlocation.y,playerlocation.z+1)
-
     }
     if(keycode == 68){
         //right
         // console.log("right")
-
         return new THREE.Vector3(playerlocation.x+1,playerlocation.y,playerlocation.z)
     }
-    // if(keycode == undefined){
-    //     return 
-    // }
 }
 function buildMaze(mazeArray){
 //open sides is an array with a max of 6 numbers, each representing the side that is missing from the block

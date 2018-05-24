@@ -49,6 +49,7 @@ export default class Landing extends Component{
         // console.log("this is the information the server is sending back", gameState.connectedPlayers)
         // console.log("this is the current connected players state", this.state.connectedPlayers)
         // console.log("hopefully one day I can jsut set one to the other")
+        //update the camera location for a specific socket.
         this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
       })
     }
@@ -146,7 +147,7 @@ export default class Landing extends Component{
     }
         {
           this.state.connectedPlayers.map((player)=>{
-            // console.log("this is the player location", player.color)
+            console.log("this is the player id", player.id, "and this is thier location", player.loc)
             return(<mesh
               rotation={player.rot} position={player.loc} >
               <boxGeometry width={1} height={2} depth={1} />
