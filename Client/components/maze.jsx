@@ -3,7 +3,7 @@ import { render, Link } from 'react-router-dom';
 import Client, { subscribeToTimer } from './client.js'
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
-import {subscribeToGameState } from './client.js'
+import {subscribeToGameState, subscribeToCameraPosition } from './client.js'
 import axios from 'axios'
 import Tunnel from './tunnel.js'
 
@@ -23,8 +23,9 @@ export default class Landing extends Component{
     //   this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
     // })
   })
-    this.cameraPosition = new THREE.Vector3(0, 0, 5);
-    this.state = {keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
+  this.state = {cameraPostion:new THREE.Vector3(0, 0, 5),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
+  this.setState({cameraPostion:new THREE.Vector3(0, 0, 5)})
+  // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     let connectedPlayers = []
         this.state.connectedPlayers.map((player)=>{
           const nextPlayer = player
@@ -52,6 +53,12 @@ export default class Landing extends Component{
         //update the camera location for a specific socket.
         this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
       })
+
+      subscribeToCameraPosition(this.state.cameraPosition,(err,cameraPosition)=>{
+        // update the states camera position
+        
+        this.setState({cameraPosition})
+      })
     }
   }
   componentDidMount(){
@@ -66,7 +73,7 @@ export default class Landing extends Component{
     // console.log("this is the stae?", this.state.keydown)
     //I want to send this data back to the server, then the server will respond with new location for the player moving.
     this.setState({keydown:event.keyCode})
-
+    // this.cameraPosition = this.
   }
 
   render(){
@@ -95,8 +102,7 @@ export default class Landing extends Component{
           aspect={width / height}
           near={0.1}
           far={1000}
-
-          position={this.cameraPosition}
+          position={this.state.cameraPosition}
         />
         <axisHelper position ={new THREE.Vector3(-4,3,0)}/>
         {

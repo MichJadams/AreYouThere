@@ -47,6 +47,11 @@ function subscribeToGameState(clientData,cb){
     socket.on('gameState', gameState=> cb(null,gameState));
     socket.emit("subscribeToGameState",clientData)
 }
+function subscribeToCameraPosition(clientData,cb){
+    // console.log("are we getting here?, sending", clientData)
+    socket.on('gameState', cameraLocation=> cb(null,cameraLocation));
+    socket.emit("subscribeToCameraPosition",clientData)
+}
 
 
 export { 
@@ -57,5 +62,6 @@ export {
     subscribeToServerCookieID, 
     subscribeToServerState,
     subscribeToGameState,
-    subscribeToJoinServer 
+    subscribeToJoinServer,
+    subscribeToCameraPosition 
 }

@@ -75,7 +75,7 @@
 /*!*************************************!*\
   !*** ./Client/components/client.js ***!
   \*************************************/
-/*! exports provided: subscribeToName, subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerState, subscribeToGameState, subscribeToJoinServer */
+/*! exports provided: subscribeToName, subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerState, subscribeToGameState, subscribeToJoinServer, subscribeToCameraPosition */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88,6 +88,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerState", function() { return subscribeToServerState; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToGameState", function() { return subscribeToGameState; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToJoinServer", function() { return subscribeToJoinServer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToCameraPosition", function() { return subscribeToCameraPosition; });
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -138,6 +139,11 @@ function subscribeToGameState(clientData, cb) {
     // console.log("are we getting here?, sending", clientData)
     socket.on('gameState', gameState => cb(null, gameState));
     socket.emit("subscribeToGameState", clientData);
+}
+function subscribeToCameraPosition(clientData, cb) {
+    // console.log("are we getting here?, sending", clientData)
+    socket.on('gameState', cameraLocation => cb(null, cameraLocation));
+    socket.emit("subscribeToCameraPosition", clientData);
 }
 
 
@@ -607,8 +613,9 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       //   this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
       // })
     });
-    this.cameraPosition = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5);
-    this.state = { keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
+    this.state = { cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
+    this.setState({ cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5) });
+    // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     let connectedPlayers = [];
     this.state.connectedPlayers.map(player => {
       const nextPlayer = player;
@@ -635,6 +642,12 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         //update the camera location for a specific socket.
         this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
       });
+
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToCameraPosition"])(this.state.cameraPosition, (err, cameraPosition) => {
+        // update the states camera position
+
+        this.setState({ cameraPosition });
+      });
     };
   }
   componentDidMount() {
@@ -649,6 +662,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     // console.log("this is the stae?", this.state.keydown)
     //I want to send this data back to the server, then the server will respond with new location for the player moving.
     this.setState({ keydown: event.keyCode });
+    // this.cameraPosition = this.
   }
 
   render() {
@@ -689,8 +703,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             aspect: width / height,
             near: 0.1,
             far: 1000,
-
-            position: this.cameraPosition
+            position: this.state.cameraPosition
           }),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4, 3, 0) }),
 

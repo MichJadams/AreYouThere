@@ -115,6 +115,7 @@ io.on('connection',(socket)=>{
                     if(player.loc == undefined){
                         //this line means when a player stops pressing a key they snap back to the middle?
                         player.loc = new THREE.Vector3(0,0,0)
+                        //send back new camera coords as well....
                     }else if(clientData.keydown != false){
                         player.loc = movement(clientData.keydown,player.loc)
                     }
