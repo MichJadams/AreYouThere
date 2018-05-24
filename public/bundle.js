@@ -599,13 +599,13 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       this.setState({
         timestamp
       });
-      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToGameState"])(this.state, (err, gameState) => {
-        // console.log("Is this firing?", clientInfo)
-        console.log("this is the information the server is sending back", gameState.connectedPlayers[0].loc);
-        // console.log("this is the current connected players state", this.state.connectedPlayers)
-        // console.log("hopefully one day I can jsut set one to the other")
-        this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
-      });
+      //     subscribeToGameState(this.state,(err,gameState)=>{
+      //   // console.log("Is this firing?", clientInfo)
+      //   // console.log("this is the information the server is sending back", gameState.connectedPlayers[0].loc)
+      //   // console.log("this is the current connected players state", this.state.connectedPlayers)
+      //   // console.log("hopefully one day I can jsut set one to the other")
+      //   this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
+      // })
     });
     this.cameraPosition = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5);
     this.state = { keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
@@ -626,14 +626,14 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       // console.log("this is the state of the maze", this.state.maze)
     });
     this._onAnimate = () => {
-      // const clientInfo = this.state
-      // subscribeToGameState(clientInfo,(err,gameState)=>{
-      //   // console.log("Is this firing?", clientInfo)
-      //   // console.log("this is the information the server is sending back", gameState.connectedPlayers)
-      //   // console.log("this is the current connected players state", this.state.connectedPlayers)
-      //   // console.log("hopefully one day I can jsut set one to the other")
-      //   this.setState({connectedPlayers:gameState.connectedPlayers})
-      // })
+      const clientInfo = this.state;
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToGameState"])(clientInfo, (err, gameState) => {
+        // console.log("Is this firing?", clientInfo)
+        // console.log("this is the information the server is sending back", gameState.connectedPlayers)
+        // console.log("this is the current connected players state", this.state.connectedPlayers)
+        // console.log("hopefully one day I can jsut set one to the other")
+        this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
+      });
     };
   }
   componentDidMount() {

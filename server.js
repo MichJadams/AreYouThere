@@ -107,22 +107,22 @@ io.on('connection',(socket)=>{
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //this is where each plays state can be updated
                 // const newRotation = newCoords(player.rot, 'rotation') //uncomment this for rotation
-                console.log("key down?", clientData.keydown)
+                // console.log("key down?", clientData.keydown)
                 // player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
-                if(player.loc == false|| player.loc == undefined){
+                if(player.loc == undefined){
                     //this line means when a player stops pressing a key they snap back to the middle?
                     player.loc = new THREE.Vector3(0,0,0)
-                }else{
+                }else if(clientData.keydown != false){
                     player.loc = movement(clientData.keydown,player.loc)
                 }
 
                 // console.log("this is what the movement thing is returning",movement(clientData.keydown,player.loc) )
                 // player.loc = new THREE.Vector3(0,0,0)
-                console.log("this player:", socket.id, "is pressing this button", clientData.keydown," and thier new location is", player.loc )
+                // console.log("this player:", socket.id, "is pressing this button", clientData.keydown," and thier new location is", player.loc )
                 return player 
             })
+            theServerInQuestion.keydown = undefined
         }
-        theServerInQuestion.keydown = undefined
         // console.log("this is the new player location",theServerInQuestion.connectedPlayers[0].loc)
         io.emit('gameState',theServerInQuestion)
     })
@@ -159,25 +159,25 @@ function movement(keycode,playerlocation){
         //forward
         // console.log("old player location in terms of z", playerlocation.z)
         // console.log("forward, returning:",new THREE.Vector3(0,0,playerlocation.z+5))
-        return new THREE.Vector3(0,0,playerlocation.z+1)
+        return new THREE.Vector3(playerlocation.x,playerlocation.y,playerlocation.z-1)
     }
     if(keycode == 65){
         //left
         // console.log("left")
-
-        return new THREE.Vector3(playerlocation.x-1,0,0)
+        
+        return new THREE.Vector3(playerlocation.x-1,playerlocation.y,playerlocation.z)
     }
     if(keycode == 83){
         //backwards
         // console.log("backwards")
+        return new THREE.Vector3(playerlocation.x,playerlocation.y,playerlocation.z+1)
 
-        return new THREE.Vector3(0,0,playerlocation.z-1)
     }
     if(keycode == 68){
         //right
         // console.log("right")
 
-        return new THREE.Vector3(playerlocation.x+1,0,0)
+        return new THREE.Vector3(playerlocation.x+1,playerlocation.y,playerlocation.z)
     }
     // if(keycode == undefined){
     //     return 
