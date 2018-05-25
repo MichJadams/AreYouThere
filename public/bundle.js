@@ -637,8 +637,8 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
       });
       const camera = { position: this.state.cameraPostion, rotation: this.state.cameraRotation, cameraKey: this.state.cameraKey, serverId: this.state.serverId };
-      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToCameraPosition"])(camera, (err, cameraLocation) => {
-        this.setState({ cameraPosition: cameraLocation, cameraKey: false });
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToCameraPosition"])(camera, (err, camera) => {
+        this.setState({ cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey: false });
       });
     };
   }
