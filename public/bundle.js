@@ -140,10 +140,10 @@ function subscribeToGameState(clientData, cb) {
     socket.on('gameState', gameState => cb(null, gameState));
     socket.emit("subscribeToGameState", clientData);
 }
-function subscribeToCameraPosition(clientData, cb) {
-    // console.log("are we getting here?, sending", clientData)
-    socket.on('gameState', cameraLocation => cb(null, cameraLocation));
-    socket.emit("subscribeToCameraPosition", clientData);
+function subscribeToCameraPosition(camera, cb) {
+    // console.log("this is the camera object", camera)
+    socket.on('cameraPosition', cameraPosition => cb(null, cameraPosition));
+    socket.emit("subscribeToCameraPosition", camera);
 }
 
 
@@ -613,8 +613,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       //   this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
       // })
     });
-    this.state = { cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
-    this.setState({ cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5) });
+    this.state = { cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
     // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     let connectedPlayers = [];
     this.state.connectedPlayers.map(player => {
@@ -635,18 +634,11 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this._onAnimate = () => {
       const clientInfo = this.state;
       Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToGameState"])(clientInfo, (err, gameState) => {
-        // console.log("Is this firing?", clientInfo)
-        // console.log("this is the information the server is sending back", gameState.connectedPlayers)
-        // console.log("this is the current connected players state", this.state.connectedPlayers)
-        // console.log("hopefully one day I can jsut set one to the other")
-        //update the camera location for a specific socket.
         this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
       });
-
-      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToCameraPosition"])(this.state.cameraPosition, (err, cameraPosition) => {
-        // update the states camera position
-
-        this.setState({ cameraPosition });
+      const camera = { position: this.state.cameraPostion, rotation: this.state.cameraRotation, cameraKey: this.state.cameraKey, serverId: this.state.serverId };
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToCameraPosition"])(camera, (err, cameraLocation) => {
+        this.setState({ cameraPosition: cameraLocation, cameraKey: false });
       });
     };
   }
@@ -659,9 +651,14 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   // }
   handleKeyDown(event) {
     // console.log("this is the key being pressed", event.keyCode)
-    // console.log("this is the stae?", this.state.keydown)
+    // console.log("this is the keydown?", this.state.keydown)
     //I want to send this data back to the server, then the server will respond with new location for the player moving.
-    this.setState({ keydown: event.keyCode });
+    // if(event.keyCode)
+    if (event.keyCode >= 37 && event.keyCode <= 40) {
+      this.setState({ cameraKey: event.keyCode });
+    } else {
+      this.setState({ keydown: event.keyCode });
+    }
     // this.cameraPosition = this.
   }
 
@@ -742,7 +739,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
           ),
           this.state.connectedPlayers.map(player => {
-            console.log("this is the player id", player.id, "and this is thier location", player.loc);
+            // console.log("this is the player id", player.id, "and this is thier location", player.loc)
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               'mesh',
               {

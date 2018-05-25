@@ -23,8 +23,7 @@ export default class Landing extends Component{
     //   this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
     // })
   })
-  this.state = {cameraPostion:new THREE.Vector3(0, 0, 5),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
-  this.setState({cameraPostion:new THREE.Vector3(0, 0, 5)})
+  this.state = {cameraKey: false, cameraPostion:new THREE.Vector3(0, 0, 5),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
   // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     let connectedPlayers = []
         this.state.connectedPlayers.map((player)=>{
@@ -46,18 +45,11 @@ export default class Landing extends Component{
     this._onAnimate = () => {
       const clientInfo = this.state
       subscribeToGameState(clientInfo,(err,gameState)=>{
-        // console.log("Is this firing?", clientInfo)
-        // console.log("this is the information the server is sending back", gameState.connectedPlayers)
-        // console.log("this is the current connected players state", this.state.connectedPlayers)
-        // console.log("hopefully one day I can jsut set one to the other")
-        //update the camera location for a specific socket.
         this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
       })
-
-      subscribeToCameraPosition(this.state.cameraPosition,(err,cameraPosition)=>{
-        // update the states camera position
-        
-        this.setState({cameraPosition})
+      const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
+      subscribeToCameraPosition(camera,(err,cameraLocation)=>{
+        this.setState({cameraPosition: cameraLocation, cameraKey:false})
       })
     }
   }
@@ -70,9 +62,14 @@ export default class Landing extends Component{
   // }
   handleKeyDown (event){
     // console.log("this is the key being pressed", event.keyCode)
-    // console.log("this is the stae?", this.state.keydown)
+    // console.log("this is the keydown?", this.state.keydown)
     //I want to send this data back to the server, then the server will respond with new location for the player moving.
-    this.setState({keydown:event.keyCode})
+    // if(event.keyCode)
+    if(event.keyCode >= 37 && event.keyCode <=40){
+      this.setState({cameraKey: event.keyCode})
+    }else{
+      this.setState({keydown:event.keyCode})
+    }
     // this.cameraPosition = this.
   }
 
@@ -153,7 +150,7 @@ export default class Landing extends Component{
     }
         {
           this.state.connectedPlayers.map((player)=>{
-            console.log("this is the player id", player.id, "and this is thier location", player.loc)
+            // console.log("this is the player id", player.id, "and this is thier location", player.loc)
             return(<mesh
               rotation={player.rot} position={player.loc} >
               <boxGeometry width={1} height={2} depth={1} />

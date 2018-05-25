@@ -47,10 +47,10 @@ function subscribeToGameState(clientData,cb){
     socket.on('gameState', gameState=> cb(null,gameState));
     socket.emit("subscribeToGameState",clientData)
 }
-function subscribeToCameraPosition(clientData,cb){
-    // console.log("are we getting here?, sending", clientData)
-    socket.on('gameState', cameraLocation=> cb(null,cameraLocation));
-    socket.emit("subscribeToCameraPosition",clientData)
+function subscribeToCameraPosition(camera, cb){
+    // console.log("this is the camera object", camera)
+    socket.on('cameraPosition', cameraPosition=> cb(null,cameraPosition));
+    socket.emit("subscribeToCameraPosition", camera)
 }
 
 

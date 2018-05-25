@@ -111,13 +111,14 @@ io.on('connection',(socket)=>{
                 // console.log("key down?", clientData.keydown)
                 // player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
                 if(player.id == socket.id){
-                    console.log("this player is moving", player)
+                    // console.log("this player is moving", player)
                     if(player.loc == undefined){
                         //this line means when a player stops pressing a key they snap back to the middle?
                         player.loc = new THREE.Vector3(0,0,0)
                         //send back new camera coords as well....
                     }else if(clientData.keydown != false){
                         player.loc = movement(clientData.keydown,player.loc)
+                        io.to(socket.id).emit('cameraPosition',player.loc)
                     }
                 }
 
@@ -131,6 +132,39 @@ io.on('connection',(socket)=>{
         // console.log("this is the new player location",theServerInQuestion.connectedPlayers[0].loc)
         io.emit('gameState',theServerInQuestion)
     })
+    socket.on('subscribeToCameraPosition',(camera)=>{
+        let theServerInQuestion = badwayMasterGameState.servers[camera.serverId]
+        if(theServerInQuestion){
+        theServerInQuestion.connectedPlayers.map((player)=>{
+            //here we want to find the location of the cube 
+            if(player.id == socket.id && player.loc != undefined){
+                    if(camera.cameraKey != false){
+                        console.log("the player is trying to rotate the camera", camera.cameraKey)
+                              // if(event.keyCode == 38){
+                                //   console.log("looking up")
+                                // }
+                                // if(event.keyCode == 39){
+                                //   console.log("looking right")
+                                // }
+                                // if(event.keyCode == 40){
+                                //   console.log("looking down")
+                                // }
+                                // if(event.keyCode == 37){
+                                //   console.log("looking left")
+                                // }
+                    }else{
+                        // console.log("the cub connected to the camera is moving, player location is", player.loc)
+                        const cameraPosition = new THREE.Vector3(player.loc.x,player.loc.y, player.loc.z+ 5)
+                        // const back = {cameraPosition:updatedCameraPosition}
+                        io.to(socket.id).emit('cameraPosition',cameraPosition);
+                    }
+                }
+            })
+        }
+    })
+
+
+
     socket.on('connection name',function(user){
       io.sockets.emit('new user', user.name + " has joined.");
     })
