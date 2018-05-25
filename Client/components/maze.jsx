@@ -48,8 +48,8 @@ export default class Landing extends Component{
         this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
       })
       const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
-      subscribeToCameraPosition(camera,(err,cameraLocation)=>{
-        this.setState({cameraPosition: cameraLocation, cameraKey:false})
+      subscribeToCameraPosition(camera,(err,camera)=>{
+        this.setState({cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey:false})
       })
     }
   }
@@ -100,6 +100,7 @@ export default class Landing extends Component{
           near={0.1}
           far={1000}
           position={this.state.cameraPosition}
+          rotation={this.state.cameraRotation}
         />
         <axisHelper position ={new THREE.Vector3(-4,3,0)}/>
         {

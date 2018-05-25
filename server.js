@@ -133,38 +133,38 @@ io.on('connection',(socket)=>{
         io.emit('gameState',theServerInQuestion)
     })
     socket.on('subscribeToCameraPosition',(camera)=>{
+        //      const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
         let theServerInQuestion = badwayMasterGameState.servers[camera.serverId]
         if(theServerInQuestion){
         theServerInQuestion.connectedPlayers.map((player)=>{
             //here we want to find the location of the cube 
             if(player.id == socket.id && player.loc != undefined){
+                let cameraPosition = camera.position
+                let cameraRotation = camera.rotation
                     if(camera.cameraKey != false){
                         console.log("the player is trying to rotate the camera", camera.cameraKey)
-                              // if(event.keyCode == 38){
-                                //   console.log("looking up")
-                                // }
-                                // if(event.keyCode == 39){
-                                //   console.log("looking right")
-                                // }
-                                // if(event.keyCode == 40){
-                                //   console.log("looking down")
-                                // }
-                                // if(event.keyCode == 37){
-                                //   console.log("looking left")
-                                // }
+                        if(camera.cameraKey ==38){
+                            cameraRotation = camera.rotation.x + 5
+                        }
+                        if(camera.cameraKey == 39){
+                            cameraRotation = camera.rotation.y - 5
+                        }
+                        if(camera.cameraKey ==37){
+                            cameraRotation = camera.rotation.y + 5
+                        }
+                        if(camera.cameraKey == 40){
+                            cameraRotation = camera.rotation.x - 5
+                        }
                     }else{
                         // console.log("the cub connected to the camera is moving, player location is", player.loc)
-                        const cameraPosition = new THREE.Vector3(player.loc.x,player.loc.y, player.loc.z+ 5)
-                        // const back = {cameraPosition:updatedCameraPosition}
-                        io.to(socket.id).emit('cameraPosition',cameraPosition);
+                        cameraPosition = new THREE.Vector3(player.loc.x,player.loc.y, player.loc.z+ 5)
                     }
+                    const cameraUpdated = {position:cameraPosition, rotation:cameraRotation}
+                    io.to(socket.id).emit('cameraPosition',cameraUpdated);
                 }
             })
         }
     })
-
-
-
     socket.on('connection name',function(user){
       io.sockets.emit('new user', user.name + " has joined.");
     })

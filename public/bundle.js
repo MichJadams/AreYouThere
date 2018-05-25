@@ -700,7 +700,8 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             aspect: width / height,
             near: 0.1,
             far: 1000,
-            position: this.state.cameraPosition
+            position: this.state.cameraPosition,
+            rotation: this.state.cameraRotation
           }),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4, 3, 0) }),
 
