@@ -142,24 +142,24 @@ io.on('connection',(socket)=>{
                 let cameraPosition = camera.position
                 let cameraRotation = camera.rotation
                     if(camera.cameraKey != false){
-                        console.log("the player is trying to rotate the camera:", camera.rotation)
+                        // console.log("the player is trying to rotate the camera:", camera.rotation)
                         if(camera.cameraKey ==38){
-                            cameraRotation = new THREE.Euler(camera.rotation._x + 5,camera.rotation._y,0)
-                            // cameraRotation = camera.rotation._x + 5
+                            cameraRotation = new THREE.Euler(camera.rotation._x + 1,camera.rotation._y,0)
+                            
                         }
                         if(camera.cameraKey == 39){
-                            cameraRotation = new THREE.Euler(camera.rotation._x,camera.rotation._y-5,0)
-                            // cameraRotation = camera.rotation._y - 5
+                            cameraRotation = new THREE.Euler(camera.rotation._x,camera.rotation._y-1,0)
+                            
                         }
                         if(camera.cameraKey ==37){
-                            cameraRotation = new THREE.Euler(camera.rotation._x,camera.rotation._y+5,0)
-                            // cameraRotation = camera.rotation._y + 5
+                            cameraRotation = new THREE.Euler(camera.rotation._x,camera.rotation._y+1,0)
+                            
                         }
                         if(camera.cameraKey == 40){
-                            cameraRotation = new THREE.Euler(camera.rotation._x - 5,camera.rotation._y,0)
-                            // cameraRotation = camera.rotation._x - 5
+                            cameraRotation = new THREE.Euler(camera.rotation._x - 1,camera.rotation._y,0)
+                            
                         }
-                        console.log("changed the rotation to:", cameraRotation)
+                        // console.log("changed the rotation to:", cameraRotation)
                     }else{
                         // console.log("the cub connected to the camera is moving, player location is", player.loc)
                         cameraPosition = new THREE.Vector3(player.loc.x,player.loc.y, player.loc.z+ 5)
