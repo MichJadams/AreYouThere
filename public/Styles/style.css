@@ -36,11 +36,40 @@
 /* the lobby styles  */
 .lobbyContainer{
     display:flex;
+    background: black;
+    height: 100vh;
+    width: 100vw;
 }
 .waitingPlayers{
-    flex:1
+    flex:1;
+    color:white;
+    padding: 3%;
 }
 
 .waitingServers{
-    flex: 1
+    flex: 1;
+    color:white;
+    padding: 3%;
+}
+.serverButton{
+    margin-top: 12%;
+    width: 230px;
+    text-align: center;
+    height: 0; 
+    position: relative;
+    border-right: 50px solid transparent;
+    border-top: 40px solid #2963BD;
+    border-left: 50px solid transparent;
+    border-bottom: 0px;
+    box-sizing: content-box;
+    background: black
+}
+.serverButton span{
+position: absolute;
+top: -30px;
+left: 25%;
+color: #fff;
+}
+.lobbyText{
+    color:white;
 }

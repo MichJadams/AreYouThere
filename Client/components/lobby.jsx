@@ -35,10 +35,8 @@ export default class Landing extends Component{
         <h4>Theses are players waiting to join or start a maze</h4>
           {
             this.state.waitingPlayers.map(player =>{
-              
                 if(player.inGame === false){
-
-                  return <li key={this.state.waitingPlayers.indexOf(player)}>{player.name}</li>
+                  return <li className ="lobbyText" key={this.state.waitingPlayers.indexOf(player)}>{player.name}</li>
                 }
               
             })
@@ -51,13 +49,13 @@ export default class Landing extends Component{
               console.log("server.gamestate.player",this.state.servers)
               if(this.state.servers[server].gameState.playing === false){
                 return(
-                  <li key={this.state.servers[server].id}>{this.state.servers[server].name}
+                  <li className ="lobbyText" key={this.state.servers[server].id}>{this.state.servers[server].name}
                   <button onClick={this.goingToServer} id={this.state.servers[server].id}> Join Server</button>
                   </li>)
               }
             })
           }
-          <Link to={"/server/createServer"}><button autoFocus>Create a Server</button></Link>
+          <Link to={"/server/createServer"}><button className="serverButton" autoFocus><span>Create a Server</span></button></Link>
         </div>
       </div>)
   } 

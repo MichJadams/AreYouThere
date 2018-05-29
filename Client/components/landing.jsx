@@ -6,6 +6,9 @@ import axios from 'axios';
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
 import {subscribeToName} from './client.js'
+
+// let OrbitControls = require('three-orbit-controls')(THREE)
+
 export default class Landing extends Component{
 
   constructor(props) {
@@ -14,7 +17,10 @@ export default class Landing extends Component{
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  
+  componentDidMount(){
+    const controls = new THREE.OrbitControls(this.refs.camera);
+    this.controls = controls
+  }
   handleChange(event) {
     this.setState({value: event.target.value});
     console.log("this is the state", this.state)
@@ -25,17 +31,17 @@ export default class Landing extends Component{
     const name = this.state.value
       subscribeToName(name)
       this.props.history.push({pathname:`/lobby`})
-      
-    // axios.post('/name',{name: this.state.value})
-    // .then(()=>{
-    // })
-    // .catch((err)=>{console.log(err)})
-    // event.preventDefault();
   }
 
   render(){
     const width = window.innerWidth -10 ; // canvas width
     const height = window.innerHeight -10 ; // canvas height
+    let aspectratio = width / height;
+
+    let cameraprops = {fov : 75, aspect : aspectratio,
+                      near : 0.1, far : 1000,
+                      position : new THREE.Vector3(300,400,600),
+                      lookAt : new THREE.Vector3(0,0,0) };
   return (
     <div>
     <div className="welcomeContainer">
@@ -51,11 +57,11 @@ export default class Landing extends Component{
     </div>
     
     <React3 className='reactScene'      
-    mainCamera="camera" // this points to the perspectiveCamera which has the name set to "camera" below
+    mainCamera="mainCamera" // this points to the perspectiveCamera which has the name set to "camera" below
     width={width}
     height={height}> 
     <scene>
-    <perspectiveCamera name = "camera"
+    <perspectiveCamera ref = "camera" name = "mainCamera"
     fov={75}
     aspect={width / height}
     near={0.1}

@@ -317,6 +317,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+// let OrbitControls = require('three-orbit-controls')(THREE)
+
 class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   constructor(props) {
@@ -325,7 +328,10 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
+  componentDidMount() {
+    const controls = new three__WEBPACK_IMPORTED_MODULE_6__["OrbitControls"](this.refs.camera);
+    this.controls = controls;
+  }
   handleChange(event) {
     this.setState({ value: event.target.value });
     console.log("this is the state", this.state);
@@ -336,17 +342,17 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     const name = this.state.value;
     Object(_client_js__WEBPACK_IMPORTED_MODULE_7__["subscribeToName"])(name);
     this.props.history.push({ pathname: `/lobby` });
-
-    // axios.post('/name',{name: this.state.value})
-    // .then(()=>{
-    // })
-    // .catch((err)=>{console.log(err)})
-    // event.preventDefault();
   }
 
   render() {
     const width = window.innerWidth - 10; // canvas width
     const height = window.innerHeight - 10; // canvas height
+    let aspectratio = width / height;
+
+    let cameraprops = { fov: 75, aspect: aspectratio,
+      near: 0.1, far: 1000,
+      position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](300, 400, 600),
+      lookAt: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](0, 0, 0) };
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
       null,
@@ -380,13 +386,13 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         react_three_renderer__WEBPACK_IMPORTED_MODULE_5___default.a,
         { className: 'reactScene',
-          mainCamera: 'camera' // this points to the perspectiveCamera which has the name set to "camera" below
+          mainCamera: 'mainCamera' // this points to the perspectiveCamera which has the name set to "camera" below
           , width: width,
           height: height },
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'scene',
           null,
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('perspectiveCamera', { name: 'camera',
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('perspectiveCamera', { ref: 'camera', name: 'mainCamera',
             fov: 75,
             aspect: width / height,
             near: 0.1,
@@ -516,12 +522,10 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           'Theses are players waiting to join or start a maze'
         ),
         this.state.waitingPlayers.map(player => {
-
           if (player.inGame === false) {
-
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               'li',
-              { key: this.state.waitingPlayers.indexOf(player) },
+              { className: 'lobbyText', key: this.state.waitingPlayers.indexOf(player) },
               player.name
             );
           }
@@ -540,7 +544,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           if (this.state.servers[server].gameState.playing === false) {
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               'li',
-              { key: this.state.servers[server].id },
+              { className: 'lobbyText', key: this.state.servers[server].id },
               this.state.servers[server].name,
               react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
                 'button',
@@ -555,8 +559,12 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           { to: "/server/createServer" },
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'button',
-            { autoFocus: true },
-            'Create a Server'
+            { className: 'serverButton', autoFocus: true },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'span',
+              null,
+              'Create a Server'
+            )
           )
         )
       )

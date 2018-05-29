@@ -173,7 +173,7 @@ io.on('connection',(socket)=>{
     socket.on('connection name',function(user){
       io.sockets.emit('new user', user.name + " has joined.");
     })
-    const gameLogic = require('./gameLogic.js')(app,io,socket)
+    // const gameLogic = require('./gameLogic.js')(app,io,socket)
 })
 server.listen(process.env.PORT || 8081, ()=>{
     console.log("listening on port", server.address().port)
