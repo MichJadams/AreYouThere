@@ -52,7 +52,7 @@ export default class Landing extends Component{
     <label className='nameForm'>
     <input className='nameInput' type="text" autoFocus value={this.state.value} onChange={this.handleChange} />
     </label>
-    <button type="submit">Pick name</button>
+    <button type="submit" className = 'pickNameBtn'>Pick name</button>
     </form>
     </div>
     
@@ -71,45 +71,45 @@ export default class Landing extends Component{
     <mesh
               rotation={new THREE.Euler(20,0,15)} position={new THREE.Vector3(-5, -2, 0)} >
               <boxGeometry width={2} height={6} depth={2} />
-              <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.2} color={0xff0000}/>
+              <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.2} color={0xffffff}/>
             </mesh>
             <mesh
             rotation={new THREE.Euler(-20,0,-15)} position={new THREE.Vector3(3, -2, 0)} >
             <boxGeometry width={2} height={6} depth={2} />
-            <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.3} color={0xff0000}/>
+            <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.3} color={0xffffff}/>
           </mesh>
 
           <mesh
           rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(-10, 0, 0)} >
           <boxGeometry width={2} height={9} depth={3} />
-          <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.5} color={0xa82f10}/>
+          <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.5} color={0xffffff}/>
           </mesh>
           <mesh
           rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(-13, -3, 0)} >
           <boxGeometry width={2} height={6} depth={3} />
-          <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.5} color={0xa82f10}/>
+          <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.5} color={0xffffff}/>
           </mesh>
           <mesh
           rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(-13, -3, 0)} >
           <boxGeometry width={2} height={6} depth={3} />
-          <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.5} color={0xa82f10}/>
+          <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.5} color={0xffffff}/>
           </mesh>
           <mesh
           rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(-15, -6, 0)} >
           <boxGeometry width={2} height={3} depth={3} />
-          <meshBasicMaterial wireframe={false} transparent={false} opacity ={0.5} color={0xa82f10}/>
+          <meshBasicMaterial wireframe={false} transparent={false} opacity ={0.5} color={0xffffff}/>
           </mesh>
 
 
         <mesh
         rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0, -5, 0)} >
         <boxGeometry width={20} height={2} depth={20} />
-        <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.2} color={0xff0000}/>
+        <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.2} color={0xffffff}/>
       </mesh>
       <mesh
       rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0, -5, 0)} >
       <boxGeometry width={20} height={2} depth={20} />
-      <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
+      <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xffffff}/>
     </mesh>
     </scene>
     </React3>

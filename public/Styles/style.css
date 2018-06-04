@@ -10,9 +10,9 @@
     left: 30vw;
 }
 .welcomeText{
-    color:purple;
+    color:white;
     font-size: 30px;
-    font-family: 'Gamja Flower', cursive;
+    font-family: 'Press Start 2P', cursive;
 }
 .reactScene{
     position: absolute;
@@ -22,16 +22,20 @@
 .nameInput{
     background: transparent;
     border: none;
-    color:purple;
+    color:white;
     font-size: 30px;
-    font-family: 'Gamja Flower', cursive;
+    font-family: 'Press Start 2P', cursive;
     outline:none;
 }
 .nameForm{
     border: none;
-    border-bottom: 5px solid red;
+    border-bottom: 5px solid white;
     padding: 10px;
     text-align: center;
+}
+.pickNameBtn{
+    font-family: 'Press Start 2P', cursive;
+    
 }
 /* the lobby styles  */
 .lobbyContainer{

@@ -37,14 +37,55 @@ app.post('/createServer',(req,res,next)=>{
 })
 app.get('/mazeOne',(req,res,next)=>{
 //send back a red cube for testing
-const mazeArray = buildMaze([]) 
+// const mazeArray = buildMaze([]) 
 
-    // const block = {
-    //     rotation: new THREE.Euler(0,0,0),
-    //     location: new THREE.Vector3(0,-5,0),
-    //     color: 0xff0000
-    // }
-    res.send(mazeArray)
+    const maze = [{
+        name: 'bottom wrieframe',
+        rotation: new THREE.Euler(0,0,0),
+        location: new THREE.Vector3(0,-5,0),
+        color: 0xff0000,
+        transparent:false, 
+        wireframe: true,
+        width: 30, 
+        height:2, 
+        depth:30,
+        opacity: 0
+    },{
+        name: 'bottom transparent',
+        rotation: new THREE.Euler(0,0,0),
+        location: new THREE.Vector3(0,-5,0),
+        color: 0xff0000,
+        transparent:false, 
+        wireframe: true,
+        width: 30, 
+        height:2, 
+        depth:30,
+        opacity: 0.4
+    },{
+        name: 'left',
+        rotation: new THREE.Euler(0,0,0),
+        location: new THREE.Vector3(-4.8,0,0),
+        color: 0xff0000,
+        transparent:false, 
+        wireframe: true,
+        width: 2, 
+        height:5, 
+        depth:5,
+        opacity: 0
+    },{
+        name: 'right',
+        rotation: new THREE.Euler(0,0,0),
+        location: new THREE.Vector3(4.8,0,0),
+        color: 0xff0000,
+        transparent:false, 
+        wireframe: true,
+        width: 2, 
+        height:5, 
+        depth:5,
+        opacity: 0
+    }]
+    
+    res.send(maze)
 })
 
 io.use(cookierParser('hello there',{}))
@@ -87,7 +128,7 @@ io.on('connection',(socket)=>{
             io.emit('serversList', badwayMasterGameState.servers)
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //this is where you can set the initial state of the play, such as color or location ect. 
-                player.color = 0x00ff00
+                player.color = 0xdcdcdc
                 player.rot= new THREE.Euler(0,0,0) 
             })
             //also generate a map? who knows....
@@ -199,6 +240,22 @@ function randomLocation (max){
 }
 function movement(keycode,playerlocation){
     //check for collision?? somehow....
+    // console.log("this is the moving player location", playerlocation, "and theses are the potential cub locations")
+//example code from the internet
+//     for (var vertexIndex = 0; vertexIndex < Player.geometry.vertices.length; vertexIndex++)
+// {       
+//     var localVertex = Player.geometry.vertices[vertexIndex].clone();
+//     var globalVertex = Player.matrix.multiplyVector3(localVertex);
+//     var directionVector = globalVertex.subSelf( Player.position );
+
+//     var ray = new THREE.Ray( Player.position, directionVector.clone().normalize() );
+//     var collisionResults = ray.intersectObjects( collidableMeshList );
+//     if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+//     {
+//         // a collision occurred... do something...
+//     }
+// }
+
     if(keycode == 87){
         //forward
         // console.log("old player location in terms of z", playerlocation.z)

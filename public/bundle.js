@@ -378,7 +378,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           ),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'button',
-            { type: 'submit' },
+            { type: 'submit', className: 'pickNameBtn' },
             'Pick name'
           )
         )
@@ -404,56 +404,56 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             {
               rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](20, 0, 15), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-5, -2, 0) },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 6, depth: 2 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: 0xff0000 })
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: 0xffffff })
           ),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
               rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](-20, 0, -15), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](3, -2, 0) },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 6, depth: 2 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.3, color: 0xff0000 })
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.3, color: 0xffffff })
           ),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
               rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-10, 0, 0) },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 9, depth: 3 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.5, color: 0xa82f10 })
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.5, color: 0xffffff })
           ),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
               rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-13, -3, 0) },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 6, depth: 3 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.5, color: 0xa82f10 })
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.5, color: 0xffffff })
           ),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
               rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-13, -3, 0) },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 6, depth: 3 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.5, color: 0xa82f10 })
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.5, color: 0xffffff })
           ),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
               rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](-15, -6, 0) },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 3, depth: 3 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: false, opacity: 0.5, color: 0xa82f10 })
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: false, opacity: 0.5, color: 0xffffff })
           ),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
               rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](0, -5, 0) },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: 0xff0000 })
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: false, transparent: true, opacity: 0.2, color: 0xffffff })
           ),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
             'mesh',
             {
               rotation: new three__WEBPACK_IMPORTED_MODULE_6__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](0, -5, 0) },
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 20, height: 2, depth: 20 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xffffff })
           )
         )
       )
@@ -621,7 +621,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       //   this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
       // })
     });
-    this.state = { cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 5), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
+    this.state = { cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 13), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
     // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     let connectedPlayers = [];
     this.state.connectedPlayers.map(player => {
@@ -634,20 +634,24 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.setState({ connectedPlayers });
     const clientData = this.state;
     axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('/mazeOne').then(res => {
-      // console.log("the maze looks like this", res.data)
-      const maze = res.data;
-      this.setState({ maze });
-      // console.log("this is the state of the maze", this.state.maze)
+      console.log("the maze looks like this", res.data);
+      const mazeData = res.data;
+      this.setState({ maze: mazeData });
+      console.log("this is the state of the maze", this.state.maze);
     });
     this._onAnimate = () => {
       const clientInfo = this.state;
+      //perform collision detection here. 
+      // console.log("this is the moving player, ")
       Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToGameState"])(clientInfo, (err, gameState) => {
         this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
       });
-      const camera = { position: this.state.cameraPostion, rotation: this.state.cameraRotation, cameraKey: this.state.cameraKey, serverId: this.state.serverId };
-      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToCameraPosition"])(camera, (err, camera) => {
-        this.setState({ cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey: false });
-      });
+      // const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
+      // subscribeToCameraPosition(camera,(err,camera)=>{
+      //   //uncomment the line below for camera movmenet with cube 
+      //   console.log("this is the positon", camera.position,"this is the rotation", this.state.cameraRotation)
+      //   this.setState({cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey:false})
+      // })
     };
   }
   componentDidMount() {
@@ -708,45 +712,20 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             aspect: width / height,
             near: 0.1,
             far: 1000,
-            position: this.state.cameraPosition,
-            rotation: this.state.cameraRotation
+            position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 5, 5),
+            rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](-1, 0, 0)
           }),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4, 3, 0) }),
-
-          //bottom
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'mesh',
-            {
-              rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, -5, 0) },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 10, height: 2, depth: 10 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
-          ),
-          //left
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'mesh',
-            {
-              rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4.8, 0, 0) },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 5, depth: 5 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
-          ),
-
-          //right
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'mesh',
-            {
-              rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](4.8, 0, 0) },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 2, height: 5, depth: 5 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
-          ),
-
-          //top
-          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'mesh',
-            {
-              rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 5, 0) },
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 10, height: 2, depth: 10 }),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: true, transparent: false, opacity: 0.2, color: 0xff0000 })
-          ),
+          this.state.maze.map(blockObject => {
+            // console.log(blockObject.location)
+            return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'mesh',
+              {
+                rotation: blockObject.rotation, position: blockObject.location },
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: blockObject.width, height: blockObject.height, depth: blockObject.depth }),
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: blockObject.wireframe, transparent: blockObject.transparent, opacity: blockObject.opacity, color: blockObject.color })
+            );
+          }),
           this.state.connectedPlayers.map(player => {
             // console.log("this is the player id", player.id, "and this is thier location", player.loc)
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
