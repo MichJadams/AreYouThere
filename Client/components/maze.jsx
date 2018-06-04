@@ -15,15 +15,8 @@ export default class Landing extends Component{
     subscribeToTimer((err,timestamp)=>{this.setState({
       timestamp
     })
-    //     subscribeToGameState(this.state,(err,gameState)=>{
-    //   // console.log("Is this firing?", clientInfo)
-    //   // console.log("this is the information the server is sending back", gameState.connectedPlayers[0].loc)
-    //   // console.log("this is the current connected players state", this.state.connectedPlayers)
-    //   // console.log("hopefully one day I can jsut set one to the other")
-    //   this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
-    // })
   })
-  this.state = {cameraKey: false, cameraPostion:new THREE.Vector3(0, 0, 13),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: undefined}; 
+  this.state = {cameraKey: false, cameraPostion:new THREE.Vector3(0, 0, 13),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: []}; 
   // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     let connectedPlayers = []
         this.state.connectedPlayers.map((player)=>{
@@ -45,7 +38,7 @@ export default class Landing extends Component{
     this._onAnimate = () => {
       const clientInfo = this.state
       //perform collision detection here. 
-      // console.log("this is the moving player, ")
+      // console.log("this is the moving player, ", )
       subscribeToGameState(clientInfo,(err,gameState)=>{
         this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
       })
@@ -65,10 +58,7 @@ export default class Landing extends Component{
   //   document.removeEventListener("keydown", this.handleKeyDown.bind(this));
   // }
   handleKeyDown (event){
-    // console.log("this is the key being pressed", event.keyCode)
-    // console.log("this is the keydown?", this.state.keydown)
-    //I want to send this data back to the server, then the server will respond with new location for the player moving.
-    // if(event.keyCode)
+
     if(event.keyCode >= 37 && event.keyCode <=40){
       this.setState({cameraKey: event.keyCode})
     }else{
@@ -103,7 +93,7 @@ export default class Landing extends Component{
           aspect={width / height}
           near={0.1}
           far={1000}
-          position={new THREE.Vector3(0,5,5)}
+          position={new THREE.Vector3(0,15,15)}
           rotation={new THREE.Euler(-1,0,0)}
         />
         <axisHelper position ={new THREE.Vector3(-4,3,0)}/>
@@ -117,58 +107,6 @@ export default class Landing extends Component{
             </mesh>)
           })
         }
-        {
-          //bottom
-          // <mesh
-          //   rotation={this.state.maze[0].} position={new THREE.Vector3(0,-5,0)} >
-          //   <boxGeometry width={30} height={2} depth={30} />
-          //   <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xffffff}/>
-          //   </mesh>
-        }{
-          // <mesh
-          //   rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0,-5,0)} >
-          //   <boxGeometry width={30} height={2} depth={30} />
-          //   <meshBasicMaterial wireframe={false} transparent={true} opacity ={0.4} color={0xffffff}/>
-          //   </mesh>
-        }
-        {
-          //back
-          // <mesh
-          //   rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0,0,-4.5)} >
-          //   <boxGeometry width={5} height={5} depth={2} />
-          //   <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xffffff}/>
-          //   </mesh>
-        }
-        {//front
-          // <mesh
-          //   rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0,0,0)} >
-          //   <boxGeometry width={5} height={5} depth={2} />
-          //   <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xffffff}/>
-          //   </mesh>
-        }
-        {//left
-          // <mesh
-          //   rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(-4.8,0,0)} >
-          //   <boxGeometry width={2} height={5} depth={5} />
-          //   <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xffffff}/>
-          //   </mesh>
-        }
-        {
-          //right
-        // <mesh
-        // rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(4.8,0,0)} >
-        // <boxGeometry width={2} height={5} depth={5} />
-        // <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xffffff}/>
-        // </mesh>
-    }
-    {
-      //top
-      // <mesh
-      //   rotation={new THREE.Euler(0,0,0)} position={new THREE.Vector3(0,5,0)} >
-      //   <boxGeometry width={10} height={2} depth={10} />
-      //   <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xffffff}/>
-      //   </mesh>
-    }
         {
           this.state.connectedPlayers.map((player)=>{
             // console.log("this is the player id", player.id, "and this is thier location", player.loc)

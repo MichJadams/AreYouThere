@@ -613,15 +613,8 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       this.setState({
         timestamp
       });
-      //     subscribeToGameState(this.state,(err,gameState)=>{
-      //   // console.log("Is this firing?", clientInfo)
-      //   // console.log("this is the information the server is sending back", gameState.connectedPlayers[0].loc)
-      //   // console.log("this is the current connected players state", this.state.connectedPlayers)
-      //   // console.log("hopefully one day I can jsut set one to the other")
-      //   this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
-      // })
     });
-    this.state = { cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 13), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: undefined };
+    this.state = { cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 13), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
     // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     let connectedPlayers = [];
     this.state.connectedPlayers.map(player => {
@@ -642,7 +635,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this._onAnimate = () => {
       const clientInfo = this.state;
       //perform collision detection here. 
-      // console.log("this is the moving player, ")
+      // console.log("this is the moving player, ", )
       Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToGameState"])(clientInfo, (err, gameState) => {
         this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
       });
@@ -662,10 +655,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   //   document.removeEventListener("keydown", this.handleKeyDown.bind(this));
   // }
   handleKeyDown(event) {
-    // console.log("this is the key being pressed", event.keyCode)
-    // console.log("this is the keydown?", this.state.keydown)
-    //I want to send this data back to the server, then the server will respond with new location for the player moving.
-    // if(event.keyCode)
+
     if (event.keyCode >= 37 && event.keyCode <= 40) {
       this.setState({ cameraKey: event.keyCode });
     } else {
@@ -712,7 +702,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             aspect: width / height,
             near: 0.1,
             far: 1000,
-            position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 5, 5),
+            position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 15, 15),
             rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](-1, 0, 0)
           }),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4, 3, 0) }),

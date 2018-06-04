@@ -36,56 +36,14 @@ app.post('/createServer',(req,res,next)=>{
     next()
 })
 app.get('/mazeOne',(req,res,next)=>{
-//send back a red cube for testing
-// const mazeArray = buildMaze([]) 
 
-    const maze = [{
-        name: 'bottom wrieframe',
-        rotation: new THREE.Euler(0,0,0),
-        location: new THREE.Vector3(0,-5,0),
-        color: 0xff0000,
-        transparent:false, 
-        wireframe: true,
-        width: 30, 
-        height:2, 
-        depth:30,
-        opacity: 0
-    },{
-        name: 'bottom transparent',
-        rotation: new THREE.Euler(0,0,0),
-        location: new THREE.Vector3(0,-5,0),
-        color: 0xff0000,
-        transparent:false, 
-        wireframe: true,
-        width: 30, 
-        height:2, 
-        depth:30,
-        opacity: 0.4
-    },{
-        name: 'left',
-        rotation: new THREE.Euler(0,0,0),
-        location: new THREE.Vector3(-4.8,0,0),
-        color: 0xff0000,
-        transparent:false, 
-        wireframe: true,
-        width: 2, 
-        height:5, 
-        depth:5,
-        opacity: 0
-    },{
-        name: 'right',
-        rotation: new THREE.Euler(0,0,0),
-        location: new THREE.Vector3(4.8,0,0),
-        color: 0xff0000,
-        transparent:false, 
-        wireframe: true,
-        width: 2, 
-        height:5, 
-        depth:5,
-        opacity: 0
-    }]
-    
-    res.send(maze)
+    const collisionHash = {
+        "":false,
+        "":false, 
+    }
+    let mapOne = require('./mapOne')
+    // console.log("kjfdklsjflkjsdfjdsljfkds",mapOne.mazeOne)
+    res.send(mapOne.mapTwo)
 })
 
 io.use(cookierParser('hello there',{}))
