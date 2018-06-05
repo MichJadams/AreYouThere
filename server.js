@@ -133,19 +133,19 @@ io.on('connection',(socket)=>{
                     if(camera.cameraKey != false){
                         // console.log("the player is trying to rotate the camera:", camera.rotation)
                         if(camera.cameraKey ==38){
-                            cameraRotation = new THREE.Euler(camera.rotation._x + 1,camera.rotation._y,0)
+                            cameraRotation = new THREE.Euler(camera.rotation._x + 0.1,camera.rotation._y,0)
                             
                         }
                         if(camera.cameraKey == 39){
-                            cameraRotation = new THREE.Euler(camera.rotation._x,camera.rotation._y-1,0)
+                            cameraRotation = new THREE.Euler(camera.rotation._x,camera.rotation._y-0.1,0)
                             
                         }
                         if(camera.cameraKey ==37){
-                            cameraRotation = new THREE.Euler(camera.rotation._x,camera.rotation._y+1,0)
+                            cameraRotation = new THREE.Euler(camera.rotation._x,camera.rotation._y+0.1,0)
                             
                         }
                         if(camera.cameraKey == 40){
-                            cameraRotation = new THREE.Euler(camera.rotation._x - 1,camera.rotation._y,0)
+                            cameraRotation = new THREE.Euler(camera.rotation._x - 0.1,camera.rotation._y,0)
                             
                         }
                         // console.log("changed the rotation to:", cameraRotation)
@@ -167,7 +167,7 @@ io.on('connection',(socket)=>{
 server.listen(process.env.PORT || 8081, ()=>{
     console.log("listening on port", server.address().port)
 })
-//helper functions 
+//helper functions, currently not using new coords  
 function newCoords(oldCoords, type){  
       
     if(type == 'rotation'){
@@ -188,7 +188,7 @@ function randomLocation (max){
 }
 function movement(keycode,playerlocation){
     //check for collision?? somehow....
-
+    const deltMovement = 1 
 
     if(keycode == 87){
         //forward
@@ -199,16 +199,26 @@ function movement(keycode,playerlocation){
     if(keycode == 65){
         //left
         // console.log("left")
-        return new THREE.Vector3(playerlocation.x-1,playerlocation.y,playerlocation.z)
+        return new THREE.Vector3(playerlocation.x-deltMovement,playerlocation.y,playerlocation.z)
     }
     if(keycode == 83){
         //backwards
         // console.log("backwards")
-        return new THREE.Vector3(playerlocation.x,playerlocation.y,playerlocation.z+1)
+        return new THREE.Vector3(playerlocation.x,playerlocation.y,playerlocation.z+deltMovement)
     }
     if(keycode == 68){
         //right
         // console.log("right")
-        return new THREE.Vector3(playerlocation.x+1,playerlocation.y,playerlocation.z)
+        return new THREE.Vector3(playerlocation.x+deltMovement,playerlocation.y,playerlocation.z)
+    }
+    if(keycode == 69){
+        //up
+        // console.log("right")
+        return new THREE.Vector3(playerlocation.x,playerlocation.y+deltMovement,playerlocation.z)
+    }
+    if(keycode == 81){
+        //down
+        // console.log("right")
+        return new THREE.Vector3(playerlocation.x,playerlocation.y-deltMovement,playerlocation.z)
     }
 }

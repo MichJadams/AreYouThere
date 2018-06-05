@@ -193,19 +193,19 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   handleNameChange(event) {
     this.setState({ name: event.target.value });
-    console.log("this is the name", event.target.value);
+    // console.log("this is the name", event.target.value)
   }
   handleStatusChange(event) {
     this.setState({ status: event.target.value });
-    console.log("this is the status", event.target.value);
+    // console.log("this is the status", event.target.value)
   }
   handleCapacityChange(event) {
     this.setState({ capacity: event.target.value });
-    console.log("this capacity", event.target.value);
+    // console.log("this capacity", event.target.value)
   }
 
   handleSubmit(event) {
-    console.log("this state is", this.state);
+    // console.log("this state is", this.state)
     // this.setState({serverSubmitted:true})
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/createServer', this.state).then(res => {
 
@@ -328,13 +328,9 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  componentDidMount() {
-    const controls = new three__WEBPACK_IMPORTED_MODULE_6__["OrbitControls"](this.refs.camera);
-    this.controls = controls;
-  }
   handleChange(event) {
     this.setState({ value: event.target.value });
-    console.log("this is the state", this.state);
+    // console.log("this is the state", this.state)
   }
 
   handleSubmit(event) {
@@ -385,7 +381,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         react_three_renderer__WEBPACK_IMPORTED_MODULE_5___default.a,
-        { className: 'reactScene',
+        {
           mainCamera: 'mainCamera' // this points to the perspectiveCamera which has the name set to "camera" below
           , width: width,
           height: height },
@@ -614,18 +610,19 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         timestamp
       });
     });
-    this.state = { cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 13), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
+    this.state = { cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](2, 2, 10), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
     // this.cameraPosition = new THREE.Vector3(0, 0, 5);
+    //the following code aggrogates the updates for each player and then pushes them to the connected players array and then updates the state with the new array all at once
     let connectedPlayers = [];
     this.state.connectedPlayers.map(player => {
       const nextPlayer = player;
       nextPlayer.rot = new three__WEBPACK_IMPORTED_MODULE_4__["Euler"]();
-      nextPlayer.loc = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](2, 2, 1);
+      nextPlayer.loc = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 0, 0);
       connectedPlayers.push(nextPlayer);
     });
-    // console.log("the connected player state initially ", this.state.connectedPlayers)
     this.setState({ connectedPlayers });
-    const clientData = this.state;
+    // console.log("the connected player state initially ", this.state.connectedPlayers)
+    // const clientData = this.state
     axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('/mazeOne').then(res => {
       console.log("the maze looks like this", res.data);
       const mazeData = res.data;
@@ -650,18 +647,35 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   componentDidMount() {
     this.setState({ isMounted: true });
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
+    document.addEventListener("wheel", this.wheel.bind(this));
   }
   // componentWillUnmount() {
   //   document.removeEventListener("keydown", this.handleKeyDown.bind(this));
   // }
   handleKeyDown(event) {
+    this.setState({ keydown: event.keyCode });
+  }
+  wheel(event) {
 
-    if (event.keyCode >= 37 && event.keyCode <= 40) {
-      this.setState({ cameraKey: event.keyCode });
-    } else {
-      this.setState({ keydown: event.keyCode });
+    if (event.deltaY < 0) {
+      // console.log('scrolling up');
+      this.setState({ cameraKey: 38 });
+      // console.log("this is the state", this.state.cameraKey)
     }
-    // this.cameraPosition = this.
+    if (event.deltaY > 0) {
+      // console.log('scrolling down');
+      this.setState({ cameraKey: 40 });
+    }
+    if (event.deltaX < 0) {
+      // console.log('scrolling left');
+      this.setState({ cameraKey: 37 });
+    }
+    if (event.deltaX > 0) {
+      // console.log('scrolling right');
+      this.setState({ cameraKey: 39 });
+    }
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   render() {
@@ -670,7 +684,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
-      null,
+      { onWheel: this.wheel },
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'div',
         { className: 'App' },
@@ -712,7 +726,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
               'mesh',
               {
                 rotation: blockObject.rotation, position: blockObject.location },
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: blockObject.width, heigwht: blockObject.height, depth: blockObject.depth }),
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: blockObject.width, height: blockObject.height, depth: blockObject.depth }),
               react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: blockObject.wireframe, transparent: blockObject.transparent, opacity: blockObject.opacity, color: blockObject.color })
             );
           }),
@@ -722,7 +736,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
               'mesh',
               {
                 rotation: player.rot, position: player.loc },
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 1, height: 2, depth: 1 }),
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 1, height: 1, depth: 1 }),
               react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { color: player.color })
             );
           })
@@ -731,77 +745,6 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     );
   }
 }
-
-//other ideas
-// {
-//   this.state.mazze && <mesh>
-//   <bufferGeometry position={new THREE.bufferAttribute([-1.0, -1.0,  1.0,
-//     1.0, -1.0,  1.0,
-//     1.0,  1.0,  1.0,
-//     1.0,  1.0,  1.0,
-//    -1.0,  1.0,  1.0,
-//    -1.0, -1.0,  1.0],3)} />
-//   <meshBasicMaterial wireframe={true} transparent={true} opacity ={0.2} color={0xfff000}/>
-// </mesh>
-// }
-
-// {this.state.maze && this.state.maze.map((block)=>{
-//   for(let i =1; i<=6;i++){
-//     // console.log("adding this bit", block)
-//     if(block.openSides.indexOf(i) != -1){
-
-//       //return nothing, no side 
-//     }
-//     else if(i == 1){
-//       // <Tunnel position={new THREE.Vector3(0,-5,0)} rotation={new THREE.Euler(90,0,0)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 2){
-//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(0,0,90)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 3){
-//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(90,0,0)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 4){
-//       // <Tunnel position={new THREE.Vector3(-5,0,0)} rotation={new THREE.Euler(0,0,90)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 5){
-//       // <Tunnel position={new THREE.Vector3(0,-5,0)} rotation={new THREE.Euler(0,0,0)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 6){
-//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(0,0,0)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//   }
-// })}
 
 /***/ }),
 

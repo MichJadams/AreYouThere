@@ -17,13 +17,9 @@ export default class Landing extends Component{
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  componentDidMount(){
-    const controls = new THREE.OrbitControls(this.refs.camera);
-    this.controls = controls
-  }
   handleChange(event) {
     this.setState({value: event.target.value});
-    console.log("this is the state", this.state)
+    // console.log("this is the state", this.state)
   }
   
   handleSubmit(event) {
@@ -56,7 +52,7 @@ export default class Landing extends Component{
     </form>
     </div>
     
-    <React3 className='reactScene'      
+    <React3     
     mainCamera="mainCamera" // this points to the perspectiveCamera which has the name set to "camera" below
     width={width}
     height={height}> 

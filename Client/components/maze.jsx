@@ -16,18 +16,19 @@ export default class Landing extends Component{
       timestamp
     })
   })
-  this.state = {cameraKey: false, cameraPostion:new THREE.Vector3(0, 0, 13),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: []}; 
+  this.state = {cameraKey: false, cameraPostion:new THREE.Vector3(2, 2, 10),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: []}; 
   // this.cameraPosition = new THREE.Vector3(0, 0, 5);
-    let connectedPlayers = []
+  //the following code aggrogates the updates for each player and then pushes them to the connected players array and then updates the state with the new array all at once
+        let connectedPlayers = []
         this.state.connectedPlayers.map((player)=>{
           const nextPlayer = player
           nextPlayer.rot = new THREE.Euler()
-          nextPlayer.loc = new THREE.Vector3(2,2,1)
+          nextPlayer.loc = new THREE.Vector3(0,0,0)
           connectedPlayers.push(nextPlayer)
         })
-        // console.log("the connected player state initially ", this.state.connectedPlayers)
         this.setState({connectedPlayers})
-    const clientData = this.state
+    // console.log("the connected player state initially ", this.state.connectedPlayers)
+    // const clientData = this.state
     axios.get('/mazeOne')
     .then((res)=>{
       console.log("the maze looks like this", res.data)
@@ -53,25 +54,45 @@ export default class Landing extends Component{
   componentDidMount(){
     this.setState({isMounted: true})
     document.addEventListener("keydown", this.handleKeyDown.bind(this))
+    document.addEventListener("wheel", this.wheel.bind(this))
   }
   // componentWillUnmount() {
   //   document.removeEventListener("keydown", this.handleKeyDown.bind(this));
   // }
   handleKeyDown (event){
-
-    if(event.keyCode >= 37 && event.keyCode <=40){
-      this.setState({cameraKey: event.keyCode})
-    }else{
       this.setState({keydown:event.keyCode})
+  }
+  wheel(event){
+    
+    if (event.deltaY < 0) {
+      // console.log('scrolling up');
+      this.setState({cameraKey: 38})
+      // console.log("this is the state", this.state.cameraKey)
+      
     }
-    // this.cameraPosition = this.
+    if (event.deltaY > 0) {
+      // console.log('scrolling down');
+      this.setState({cameraKey: 40})
+      
+    }
+    if (event.deltaX < 0) {
+      // console.log('scrolling left');
+      this.setState({cameraKey: 37})
+      
+    }
+    if (event.deltaX > 0) {
+      // console.log('scrolling right');
+      this.setState({cameraKey: 39})
+    }
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   render(){
     const width = window.innerWidth; // canvas width
     const height = window.innerHeight; // canvas height
 
-        return (<div>
+        return (<div onWheel={this.wheel}>
         <div className="App">
         <p className="App-intro">
         This is the timer value: {this.state.timestamp}
@@ -79,7 +100,7 @@ export default class Landing extends Component{
       </div>
 
       <title>Game</title>
-		
+        
 		
       <React3
       mainCamera="camera" // this points to the perspectiveCamera which has the name set to "camera" below
@@ -102,7 +123,7 @@ export default class Landing extends Component{
             // console.log(blockObject.location)
             return (<mesh
             rotation={blockObject.rotation} position={blockObject.location} >
-            <boxGeometry width={blockObject.width} heigwht={blockObject.height} depth={blockObject.depth} />
+            <boxGeometry width={blockObject.width} height={blockObject.height} depth={blockObject.depth} />
             <meshBasicMaterial wireframe={blockObject.wireframe} transparent={blockObject.transparent} opacity ={blockObject.opacity} color={blockObject.color}/>
             </mesh>)
           })
@@ -112,7 +133,7 @@ export default class Landing extends Component{
             // console.log("this is the player id", player.id, "and this is thier location", player.loc)
             return(<mesh
               rotation={player.rot} position={player.loc} >
-              <boxGeometry width={1} height={2} depth={1} />
+              <boxGeometry width={1} height={1} depth={1} />
               <meshBasicMaterial color={player.color}/>
             </mesh>)
           })
@@ -124,75 +145,3 @@ export default class Landing extends Component{
   )}
 }
 
-
-
-//other ideas
-// {
-//   this.state.mazze && <mesh>
-//   <bufferGeometry position={new THREE.bufferAttribute([-1.0, -1.0,  1.0,
-//     1.0, -1.0,  1.0,
-//     1.0,  1.0,  1.0,
-//     1.0,  1.0,  1.0,
-//    -1.0,  1.0,  1.0,
-//    -1.0, -1.0,  1.0],3)} />
-//   <meshBasicMaterial wireframe={true} transparent={true} opacity ={0.2} color={0xfff000}/>
-// </mesh>
-// }
-
-// {this.state.maze && this.state.maze.map((block)=>{
-//   for(let i =1; i<=6;i++){
-//     // console.log("adding this bit", block)
-//     if(block.openSides.indexOf(i) != -1){
-      
-//       //return nothing, no side 
-//     }
-//     else if(i == 1){
-//       // <Tunnel position={new THREE.Vector3(0,-5,0)} rotation={new THREE.Euler(90,0,0)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 2){
-//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(0,0,90)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 3){
-//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(90,0,0)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 4){
-//       // <Tunnel position={new THREE.Vector3(-5,0,0)} rotation={new THREE.Euler(0,0,90)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 5){
-//       // <Tunnel position={new THREE.Vector3(0,-5,0)} rotation={new THREE.Euler(0,0,0)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//     else if(i == 6){
-//       // <Tunnel position={new THREE.Vector3(0,0,0)} rotation={new THREE.Euler(0,0,0)} />
-//       <mesh
-//       rotation={new THREE.Vector3(0,-5,0)} position={new THREE.Euler(90,0,0)} >
-//       <boxGeometry width={20} height={2} depth={20} />
-//       <meshBasicMaterial wireframe={true} transparent={false} opacity ={0.2} color={0xff0000}/>
-//       </mesh>
-//     }
-//   }
-// })}
