@@ -31,10 +31,10 @@ export default class Landing extends Component{
     // const clientData = this.state
     axios.get('/mazeOne')
     .then((res)=>{
-      console.log("the maze looks like this", res.data)
+      // console.log("the maze looks like this", res.data)
       const mazeData = res.data
       this.setState({maze:mazeData})
-      console.log("this is the state of the maze", this.state.maze)
+      // console.log("this is the state of the maze", this.state.maze)
     })
     this._onAnimate = () => {
       const clientInfo = this.state

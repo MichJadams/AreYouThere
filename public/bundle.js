@@ -624,10 +624,10 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     // console.log("the connected player state initially ", this.state.connectedPlayers)
     // const clientData = this.state
     axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('/mazeOne').then(res => {
-      console.log("the maze looks like this", res.data);
+      // console.log("the maze looks like this", res.data)
       const mazeData = res.data;
       this.setState({ maze: mazeData });
-      console.log("this is the state of the maze", this.state.maze);
+      // console.log("this is the state of the maze", this.state.maze)
     });
     this._onAnimate = () => {
       const clientInfo = this.state;

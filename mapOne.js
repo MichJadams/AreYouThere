@@ -133,12 +133,6 @@ const collisionHashTwoSpiral ={
     300: true, 
     400: true,
 
-    040: true,
-    140: true, 
-    240: true,
-    340: true, 
-    440: true,
-
     410: true,
     411: true, 
     412: true, 
@@ -157,6 +151,12 @@ const collisionHashTwoSpiral ={
     031: true,
     030: true,
 
+    040: true,
+    140: true, 
+    240: true,
+    340: true, 
+    440: true,
+
     044: true,
     043: true,
     042: true,
@@ -165,14 +165,13 @@ const collisionHashTwoSpiral ={
 }
 function bigBlock(width, height, depth, collisionMap){
     let arrayOut = []
-    for(let w=0;w<=width;w++){
-        for(let h=0;h<=height;h++){
-            for(let d=0;d<=depth;d++){
+    for(let w=0;w<width;w++){
+        for(let h=0;h<height;h++){
+            for(let d=0;d<depth;d++){
                 const stringkey = w.toString().concat(h,d)
-                if(collisionMap[stringkey] === true){
+                if(collisionMap[+stringkey] === true){
                     // console.log("making", stringkey)
                     const block = {
-                        name: 'right',
                         rotation: new THREE.Euler(0,0,0),
                         location: new THREE.Vector3(w,h,d),
                         color: 0xff0000,
@@ -240,5 +239,6 @@ module.exports ={
         opacity: 0
     }],
     mapTwo: bigBlock(5,5,5,collisionHashTwoSpiral),
-    mapTwoCollisionHash: collisionHash
+    mapTwoCollisionHash: collisionHashTwoSpiral,
+
 }
