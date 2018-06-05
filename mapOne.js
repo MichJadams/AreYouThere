@@ -1,4 +1,161 @@
 const THREE = require('three')
+const collisionHash = {
+000: true,    
+001 :true,
+002 :true,
+003 :true,
+004 :false,
+010 :false,
+011 :false,
+012 :false,
+013 :false,
+014 :false,
+020 :false,
+021 :false,
+022 :false,
+023 :false,
+024 :false,
+030 :false,
+031 :false,
+032 :false,
+033 :false,
+034 :false,
+040 :false,
+041 :false,
+042 :false,
+043 :false,
+044 :false,
+100 :false,
+101 :false,
+102 :false,
+103 :false,
+104 :false,
+110 :false,
+111 :false,
+112 :false,
+113 :false,
+114 :false,
+120 :false,
+121 :false,
+122 :false,
+123 :false,
+124 :false,
+130 :false,
+131 :false,
+132 :false,
+133 :false,
+134 :false,
+140 :false,
+141 :false,
+142 :false,
+143 :false,
+144 :false,
+200 :false,
+201 :false,
+202 :false,
+203 :false,
+204 :false,
+210 :false,
+211 :false,
+212 :false,
+213 :false,
+214 :false,
+220 :false,
+221 :true,
+222 :true,
+223 :false,
+224 :true,
+230 :true,
+231 :false,
+232 :false,
+233 :false,
+234 :false,
+240 :false,
+241 :false,
+242 :false,
+243 :false,
+244 :false,
+300 :false,
+301 :false,
+302 :false,
+303 :false,
+304 :false,
+310 :false,
+311 :false,
+312 :false,
+313 :false,
+314 :false,
+320 :false,
+321 :true,
+322 :true,
+323 :true,
+324 :false,
+330 :false,
+331 :false,
+332 :false,
+333 :false,
+334 :false,
+340 :false,
+341 :false,
+342 :false,
+343 :false,
+344 :false,
+400 :false,
+401 :false,
+402 :false,
+403 :false,
+404 :false,
+410 :false,
+411 :false,
+412 :false,
+413 :false,
+414 :false,
+420 :false,
+421 :false,
+422 :false,
+423 :false,
+424 :false,
+430 :false,
+431 :false,
+432 :false,
+433 :false,
+434 :false,
+440 :false,
+441 :false,
+442 :true,
+443 :true,
+444 :true,
+}
+function bigBlock(width, height, depth, collisionMap){
+    let arrayOut = []
+    for(let w=0;w<width;w++){
+        for(let h=0;h<height;h++){
+            for(let d=0;d<depth;d++){
+                const stringkey = w.toString().concat(h,d)
+                if(collisionMap[stringkey] === false){
+                    // console.log("making", stringkey)
+                    const block = {
+                        name: 'right',
+                        rotation: new THREE.Euler(0,0,0),
+                        location: new THREE.Vector3(w,h,d),
+                        color: 0xff0000,
+                        transparent:false, 
+                        wireframe: true,
+                        width: 3, 
+                        height:3, 
+                        depth:3,
+                        opacity: 0
+                    }
+                    arrayOut.push(block)
+                }else{
+                    console.log(w.toString().concat(h,d),":false," )
+                }
+            }
+        }
+    }
+    return arrayOut
+}
+// console.log("big block", bigBlock(5,5,5))
 module.exports ={
     mazeOne:[{
         name: 'bottom wrieframe',
@@ -45,30 +202,6 @@ module.exports ={
         depth:5,
         opacity: 0
     }],
-    mapTwo: bigBlock(5,5,5)
+    mapTwo: bigBlock(5,5,5,collisionHash),
+    mapTwoCollisionHash: collisionHash
 }
-
-function bigBlock(width, height, depth){
-    let arrayOut = []
-    for(let w=0;w<width;w++){
-        for(let h=0;h<height;h++){
-            for(let d=0;d<depth;d++){
-                const block = {
-                        name: 'right',
-                        rotation: new THREE.Euler(0,0,0),
-                        location: new THREE.Vector3(w,h,d),
-                        color: 0xff0000,
-                        transparent:false, 
-                        wireframe: true,
-                        width: 2, 
-                        height:5, 
-                        depth:5,
-                        opacity: 0
-                    }
-                    arrayOut.push(block)
-            }
-        }
-    }
-    return arrayOut
-}
-console.log("big block", bigBlock(5,5,5))

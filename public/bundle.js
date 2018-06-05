@@ -620,7 +620,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.state.connectedPlayers.map(player => {
       const nextPlayer = player;
       nextPlayer.rot = new three__WEBPACK_IMPORTED_MODULE_4__["Euler"]();
-      nextPlayer.loc = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](1, 1, 0);
+      nextPlayer.loc = new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](2, 2, 1);
       connectedPlayers.push(nextPlayer);
     });
     // console.log("the connected player state initially ", this.state.connectedPlayers)
@@ -639,12 +639,12 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToGameState"])(clientInfo, (err, gameState) => {
         this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
       });
-      // const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
-      // subscribeToCameraPosition(camera,(err,camera)=>{
-      //   //uncomment the line below for camera movmenet with cube 
-      //   console.log("this is the positon", camera.position,"this is the rotation", this.state.cameraRotation)
-      //   this.setState({cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey:false})
-      // })
+      const camera = { position: this.state.cameraPostion, rotation: this.state.cameraRotation, cameraKey: this.state.cameraKey, serverId: this.state.serverId };
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToCameraPosition"])(camera, (err, camera) => {
+        //uncomment the line below for camera movmenet with cube 
+        // console.log("this is the positon", camera.position,"this is the rotation", this.state.cameraRotation)
+        this.setState({ cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey: false });
+      });
     };
   }
   componentDidMount() {
@@ -702,8 +702,8 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             aspect: width / height,
             near: 0.1,
             far: 1000,
-            position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](0, 15, 15),
-            rotation: new three__WEBPACK_IMPORTED_MODULE_4__["Euler"](-1, 0, 0)
+            position: this.state.cameraPostion,
+            rotation: this.state.cameraRotation
           }),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_4__["Vector3"](-4, 3, 0) }),
           this.state.maze.map(blockObject => {
@@ -712,7 +712,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
               'mesh',
               {
                 rotation: blockObject.rotation, position: blockObject.location },
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: blockObject.width, height: blockObject.height, depth: blockObject.depth }),
+              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: blockObject.width, heigwht: blockObject.height, depth: blockObject.depth }),
               react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: blockObject.wireframe, transparent: blockObject.transparent, opacity: blockObject.opacity, color: blockObject.color })
             );
           }),

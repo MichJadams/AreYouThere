@@ -22,7 +22,7 @@ export default class Landing extends Component{
         this.state.connectedPlayers.map((player)=>{
           const nextPlayer = player
           nextPlayer.rot = new THREE.Euler()
-          nextPlayer.loc = new THREE.Vector3(1,1,0)
+          nextPlayer.loc = new THREE.Vector3(2,2,1)
           connectedPlayers.push(nextPlayer)
         })
         // console.log("the connected player state initially ", this.state.connectedPlayers)
@@ -42,12 +42,12 @@ export default class Landing extends Component{
       subscribeToGameState(clientInfo,(err,gameState)=>{
         this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
       })
-      // const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
-      // subscribeToCameraPosition(camera,(err,camera)=>{
-      //   //uncomment the line below for camera movmenet with cube 
-      //   console.log("this is the positon", camera.position,"this is the rotation", this.state.cameraRotation)
-      //   this.setState({cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey:false})
-      // })
+      const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
+      subscribeToCameraPosition(camera,(err,camera)=>{
+        //uncomment the line below for camera movmenet with cube 
+        // console.log("this is the positon", camera.position,"this is the rotation", this.state.cameraRotation)
+        this.setState({cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey:false})
+      })
     }
   }
   componentDidMount(){
@@ -93,8 +93,8 @@ export default class Landing extends Component{
           aspect={width / height}
           near={0.1}
           far={1000}
-          position={new THREE.Vector3(0,15,15)}
-          rotation={new THREE.Euler(-1,0,0)}
+          position={this.state.cameraPostion}
+          rotation={this.state.cameraRotation}
         />
         <axisHelper position ={new THREE.Vector3(-4,3,0)}/>
         {
@@ -102,7 +102,7 @@ export default class Landing extends Component{
             // console.log(blockObject.location)
             return (<mesh
             rotation={blockObject.rotation} position={blockObject.location} >
-            <boxGeometry width={blockObject.width} height={blockObject.height} depth={blockObject.depth} />
+            <boxGeometry width={blockObject.width} heigwht={blockObject.height} depth={blockObject.depth} />
             <meshBasicMaterial wireframe={blockObject.wireframe} transparent={blockObject.transparent} opacity ={blockObject.opacity} color={blockObject.color}/>
             </mesh>)
           })

@@ -37,10 +37,6 @@ app.post('/createServer',(req,res,next)=>{
 })
 app.get('/mazeOne',(req,res,next)=>{
 
-    const collisionHash = {
-        "":false,
-        "":false, 
-    }
     let mapOne = require('./mapOne')
     // console.log("kjfdklsjflkjsdfjdsljfkds",mapOne.mazeOne)
     res.send(mapOne.mapTwo)
@@ -63,13 +59,7 @@ io.on('connection',(socket)=>{
         socket.emit('serverCookieID', socket.id);
     })
     socket.on('subscribeToName',(name)=>{
-        // app.post('/name',(req,res,next)=>{ 
-            //     res.sendStatus(201)
-            //     next()
-            //     badwayMasterGameState.waitingPlayers.push({name: req.body.name,id:req.cookies.io, inGame:false})
-        // })
         badwayMasterGameState.waitingPlayers.push({name: name,id:socket.id, inGame:false})
-
     })
     socket.on('subscribeToJoinServer', (serverId)=>{
     const playerToMove = badwayMasterGameState.waitingPlayers.find(player=> {console.log("player id", player.id, "server id", socket.id)
@@ -132,7 +122,7 @@ io.on('connection',(socket)=>{
         io.emit('gameState',theServerInQuestion)
     })
     socket.on('subscribeToCameraPosition',(camera)=>{
-        //      const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
+            //  const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
         let theServerInQuestion = badwayMasterGameState.servers[camera.serverId]
         if(theServerInQuestion){
         theServerInQuestion.connectedPlayers.map((player)=>{
@@ -198,21 +188,7 @@ function randomLocation (max){
 }
 function movement(keycode,playerlocation){
     //check for collision?? somehow....
-    // console.log("this is the moving player location", playerlocation, "and theses are the potential cub locations")
-//example code from the internet
-//     for (var vertexIndex = 0; vertexIndex < Player.geometry.vertices.length; vertexIndex++)
-// {       
-//     var localVertex = Player.geometry.vertices[vertexIndex].clone();
-//     var globalVertex = Player.matrix.multiplyVector3(localVertex);
-//     var directionVector = globalVertex.subSelf( Player.position );
 
-//     var ray = new THREE.Ray( Player.position, directionVector.clone().normalize() );
-//     var collisionResults = ray.intersectObjects( collidableMeshList );
-//     if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
-//     {
-//         // a collision occurred... do something...
-//     }
-// }
 
     if(keycode == 87){
         //forward
@@ -235,23 +211,4 @@ function movement(keycode,playerlocation){
         // console.log("right")
         return new THREE.Vector3(playerlocation.x+1,playerlocation.y,playerlocation.z)
     }
-}
-function buildMaze(mazeArray){
-//open sides is an array with a max of 6 numbers, each representing the side that is missing from the block
-//btmrcoords is an array of three numbers representing the btm right coords of the block, each block is 5 long
-
-    mazeArray.push({
-        openSides:[1,3],
-        btmRCoords:[0,0,0] //origin
-    })
-    // mazeArray.push({
-    //     openSides:[1,3],
-    //     btmRCoords:[0,0,5]
-    // })
-    // mazeArray.push({
-    //     openSides:[1,3],
-    //     btmRCoords:[0,0,10]
-    // })
-
-    return mazeArray
 }
