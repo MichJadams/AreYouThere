@@ -9,6 +9,7 @@ const session = require('express-session')
 const cookieParser = require("cookie-parser")
 const path = require('path')
 const THREE = require('three')
+const helperFunctions = require('./helperFunctions')
 // app.use('/assests', express.static(__dirname+'/assests'))
 // app.use('/js', express.static(__dirname+'/js'))
 
@@ -24,7 +25,7 @@ resave: false,
 saveUninitialized: true}))
 
 //hoooorible way of storing game state, there must be a better way. Perhapse redux on the backend? not sure
-//bu bsacially this object just gets really big holding everything together
+//but bsacially this object just gets really big holding everything together. I fill it with initial data as a template 
 let badwayMasterGameState = {
     servers:{},
     waitingPlayers:[{name:'fakeplayer', id: '124u234fdsk932', inGame: false}]
@@ -36,12 +37,9 @@ app.post('/createServer',(req,res,next)=>{
     next()
 })
 app.get('/mazeOne',(req,res,next)=>{
-
     let mapOne = require('./mapOne')
-    // console.log("kjfdklsjflkjsdfjdsljfkds",mapOne.mazeOne)
     res.send(mapOne.mapTwo)
 })
-
 io.use(cookierParser('hello there',{}))
 io.on('connection',(socket)=>{
     socket.on('subscribeToTimer', (interval)=>{
@@ -66,8 +64,6 @@ io.on('connection',(socket)=>{
     return player.id ==socket.id})
     playerToMove.inGame = true;
     badwayMasterGameState.servers[serverId].connectedPlayers.push(playerToMove)
-    //    console.log("this is the players in the servers", badwayMasterGameState.servers[serverId].connectedPlayers)
-    //    console.log('this is the state afer the player has joined',badwayMasterGameState )
     })
     socket.on('subscribeToServerState', (clientInfo)=>{
         let theServerInQuestion = badwayMasterGameState.servers[clientInfo.serverId]
@@ -79,7 +75,6 @@ io.on('connection',(socket)=>{
                 player.color = 0xdcdcdc
                 player.rot= new THREE.Euler(0,0,0) 
             })
-            //also generate a map? who knows....
         }
         for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
             if(theServerInQuestion.connectedPlayers[i]){
@@ -103,10 +98,15 @@ io.on('connection',(socket)=>{
                     // console.log("this player is moving", player)
                     if(player.loc == undefined){
                         //this line means when a player stops pressing a key they snap back to the middle?
-                        player.loc = new THREE.Vector3(0,3,4)
+                        player.loc = new THREE.Vector3(0,3,4) //this is where I generate a random location.
+                        const mapOne = require('./mapOne') //remove this line once the selected map is stored on the server object in gameState
+                        const coords = helperFunctions.randomKey(mapOne.mapTwoCollisionHash)
+                        const arrayCoords = [String(coords).charAt(0),String(coords).charAt(1),String(coords).charAt(2)]
+                        console.log("random coords",...arrayCoords)
+                        player.loc = new THREE.Vector3(...arrayCoords) 
                         //send back new camera coords as well....
                     }else if(clientData.keydown != false){
-                        player.loc = movement(clientData.keydown,player.loc)
+                        player.loc = require('./movement').movement(clientData.keydown,player.loc)
                         // io.to(socket.id).emit('cameraPosition',player.loc)
                     }
                 }
@@ -185,76 +185,4 @@ function randomLocation (max){
         location[value] = Math.floor(Math.random() * Math.floor(max));
     }
     return location
-}
-function movement(keycode,playerlocation){
-    //check for collision?? somehow....
-    // console.log("player location", playerlocation),it needs to look ahead, collision detection after the augmentation fo movement. 
-    const mapOne = require('./mapOne')
-    // const collisionCheckPlayerLocation = playerlocation.x.toString().concat(playerlocation.y,playerlocation.z)
-    // console.log("looking for ",collisionCheckPlayerLocation, "inside of map one collision hash:",mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation])
-    
-    // if(mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation] === true){
-    //     console.log("moving allowed: this",collisionCheckPlayerLocation,"is equal to:", mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation])
-    
-
-    const deltMovement = 1 
-        if(keycode == 87){
-            //forward
-            // console.log("old player location in terms of z", playerlocation.z)
-            // console.log("forward, returning:",new THREE.Vector3(0,0,playerlocation.z+5))
-
-            const collisionCheckPlayerLocation = playerlocation.x.toString().concat(playerlocation.y,playerlocation.z-deltMovement)
-            if(mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation] === true){
-                // console.log("moving allowed: this",collisionCheckPlayerLocation,"is equal to:", mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation])
-                return new THREE.Vector3(playerlocation.x,playerlocation.y,playerlocation.z-1)
-            }
-        }
-        if(keycode == 65){
-            //left
-            // console.log("left")
-            const collisionCheckPlayerLocation = (playerlocation.x-deltMovement).toString().concat(playerlocation.y,playerlocation.z)
-            if(mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation] === true){
-                // console.log("moving allowed: this",collisionCheckPlayerLocation,"is equal to:", mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation])
-                return new THREE.Vector3(playerlocation.x-deltMovement,playerlocation.y,playerlocation.z)
-            }
-        }
-        if(keycode == 83){
-            //backwards
-            // console.log("backwards")
-            const collisionCheckPlayerLocation = playerlocation.x.toString().concat(playerlocation.y,playerlocation.z+deltMovement)
-            if(mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation] === true){
-                // console.log("moving allowed: this",collisionCheckPlayerLocation,"is equal to:", mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation])
-                return new THREE.Vector3(playerlocation.x,playerlocation.y,playerlocation.z+deltMovement)
-            }
-        }
-        if(keycode == 68){
-            //right
-            // console.log("right")
-            const collisionCheckPlayerLocation = (playerlocation.x+deltMovement).toString().concat(playerlocation.y,playerlocation.z)
-            if(mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation] === true){
-                // console.log("moving allowed: this",collisionCheckPlayerLocation,"is equal to:", mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation])
-                return new THREE.Vector3(playerlocation.x+deltMovement,playerlocation.y,playerlocation.z)
-            }
-        }
-        if(keycode == 69){
-            //up
-            // console.log("right")
-            const collisionCheckPlayerLocation = playerlocation.x.toString().concat(playerlocation.y+deltMovement,playerlocation.z)
-            if(mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation] === true){
-                // console.log("moving allowed: this",collisionCheckPlayerLocation,"is equal to:", mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation])
-                return new THREE.Vector3(playerlocation.x,playerlocation.y+deltMovement,playerlocation.z)
-            }
-        }
-        if(keycode == 81){
-            //down
-            // console.log("right")
-            const collisionCheckPlayerLocation = playerlocation.x.toString().concat(playerlocation.y-deltMovement,playerlocation.z)
-            if(mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation] === true){
-                // console.log("moving allowed: this",collisionCheckPlayerLocation,"is equal to:", mapOne.mapTwoCollisionHash[+collisionCheckPlayerLocation])
-                return new THREE.Vector3(playerlocation.x,playerlocation.y-deltMovement,playerlocation.z)
-            }
-        }
-        console.log("movmenet not allowed")
-        return playerlocation
-    
 }
