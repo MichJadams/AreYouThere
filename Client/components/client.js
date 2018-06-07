@@ -63,5 +63,5 @@ export {
     subscribeToServerState,
     subscribeToGameState,
     subscribeToJoinServer,
-    subscribeToCameraPosition 
+    subscribeToCameraPosition, 
 }
