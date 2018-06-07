@@ -95,7 +95,6 @@ io.on('connection',(socket)=>{
                 // console.log("key down?", clientData.keydown)
                 // player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
                 if(player.id == socket.id){
-                    // console.log("this player is moving", player)
                     if(player.loc == undefined){
                         //this line means when a player stops pressing a key they snap back to the middle?
                         player.loc = new THREE.Vector3(0,3,4) //this is where I generate a random location.
@@ -107,13 +106,8 @@ io.on('connection',(socket)=>{
                         //send back new camera coords as well....
                     }else if(clientData.keydown != false){
                         player.loc = require('./movement').movement(clientData.keydown,player.loc)
-                        // io.to(socket.id).emit('cameraPosition',player.loc)
                     }
                 }
-
-                // console.log("this is what the movement thing is returning",movement(clientData.keydown,player.loc) )
-                // player.loc = new THREE.Vector3(0,0,0)
-                // console.log("this player:", socket.id, "is pressing this button", clientData.keydown," and thier new location is", player.loc )
                 return player 
             })
             theServerInQuestion.keydown = undefined

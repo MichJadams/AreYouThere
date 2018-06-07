@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { render, Link } from 'react-router-dom';
-import Client, { subscribeToTimer } from './client.js'
+// import { render, Link } from 'react-router-dom';
+import { subscribeToTimer } from './client.js'
 import React3 from 'react-three-renderer';
 import * as THREE from 'three';
 import {subscribeToGameState, subscribeToCameraPosition } from './client.js'
 import axios from 'axios'
-import Tunnel from './tunnel.js'
 
 
 export default class Landing extends Component{
@@ -16,7 +15,7 @@ export default class Landing extends Component{
       timestamp
     })
   })
-  this.state = {cameraKey: false, cameraPostion:new THREE.Vector3(2, 2, 10),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: []}; 
+  this.state = {moveDirectionVote: [0,0,0,0,0,0],cameraKey: false, cameraPostion:new THREE.Vector3(2, 2, 10),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: []}; 
   // this.cameraPosition = new THREE.Vector3(0, 0, 5);
   //the following code aggrogates the updates for each player and then pushes them to the connected players array and then updates the state with the new array all at once
         let connectedPlayers = []
@@ -100,7 +99,8 @@ export default class Landing extends Component{
       </div>
 
       <title>Game</title>
-        
+      <div>The number of people who agree on a move:</div>
+      <div>forward:{this.state.moveDirectionVote[0]} backward:{this.state.moveDirectionVote[1]} left:{this.state.moveDirectionVote[2]} right:{this.state.moveDirectionVote[3]} up:{this.state.moveDirectionVote[4]} down:{this.state.moveDirectionVote[5]}</div>
 		
       <React3
       mainCamera="camera" // this points to the perspectiveCamera which has the name set to "camera" below

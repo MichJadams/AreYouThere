@@ -1,5 +1,4 @@
 /* the landing styles */
-
 .welcomeContainer{
     display: flex;
     justify-content: center;
@@ -7,12 +6,24 @@
     text-align: center;
     z-index: 2;
     position: absolute;
-    left: 30vw;
+    height: 100vh;
+    width: 100vw;
+    z-index: -2;
+    background: #000000;
+    align-items: center;
+
 }
 .welcomeText{
     color:white;
     font-size: 30px;
     font-family: 'Press Start 2P', cursive;
+    flex: 1;
+    max-height: 30vh;
+}
+.pickNameBtn{
+    font-family: 'Press Start 2P', cursive;
+    flex: 1
+    
 }
 .reactScene{
     position: absolute;
@@ -33,10 +44,7 @@
     padding: 10px;
     text-align: center;
 }
-.pickNameBtn{
-    font-family: 'Press Start 2P', cursive;
-    
-}
+
 /* the lobby styles  */
 .lobbyContainer{
     display:flex;
@@ -48,32 +56,53 @@
     flex:1;
     color:white;
     padding: 3%;
+    font-family: 'Press Start 2P', cursive;
 }
 
 .waitingServers{
     flex: 1;
     color:white;
     padding: 3%;
+    font-family: 'Press Start 2P', cursive;
 }
 .serverButton{
-    margin-top: 12%;
-    width: 230px;
-    text-align: center;
-    height: 0; 
-    position: relative;
-    border-right: 50px solid transparent;
-    border-top: 40px solid #2963BD;
-    border-left: 50px solid transparent;
-    border-bottom: 0px;
-    box-sizing: content-box;
-    background: black
-}
-.serverButton span{
-position: absolute;
-top: -30px;
-left: 25%;
-color: #fff;
+    font-family: 'Press Start 2P', cursive;
+
 }
 .lobbyText{
     color:white;
+}
+
+/* The create server styles */
+.creatServerContainer{
+    background: black; 
+    height: 100vh; 
+    width: 100vw; 
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.createServerHeader{
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color:white;
+    flex: 2;
+    max-height: 30vh;
+    padding-top: 15%;
+}
+.createServerForm{
+    color:white;
+    font-family: 'Press Start 2P', cursive;
+    flex: 1;
+    padding: 3%;
+}
+.createServerForm label input{
+    font-family: 'Press Start 2P', cursive;
+    color: green;
+}
+.createServerForm label button{
+    font-family: 'Press Start 2P', cursive;
+    color: green;
 }
