@@ -7,7 +7,7 @@ export default class WaitingRoom extends Component{
     super(props)
     
     const clientInfo = {serverId:props.match.params.id, playing: false}
-    this.state = {isMounted: false,id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{ playing: false}, name:'', capacity:5, proceedToMaze:false}
+    this.state = {mazeType:'one',isMounted: false,id:this.props.match.params, connectedPlayers:[],status:'closed', gameState:{ playing: false}, name:'', capacity:5, proceedToMaze:false}
       if(this.state.isMounted){
         // console.log("this is the server state the server is sending and the client in recievning", clientInfo)
         subscribeToServerState(clientInfo,(err,serverState)=>{
@@ -29,15 +29,15 @@ export default class WaitingRoom extends Component{
     const clientInfo = {serverId:this.state.id, playing: this.state.gameState.playing}
 
     subscribeToServerState(clientInfo,(err,serverState)=>{
-      console.log("this is the server state the server is sending and the client in recievning", clientInfo)
+      console.log("this is the server state the server is sending and the client in recievning", serverState)
       this.setState(serverState)
       // let passingState = this.state
       if(this.state.gameState.playing){
         console.log("THE GAME IS A FOOT")
         // this.props.match.params.connectedPlayers = this.state.connectedPlayers
-        // console.log("the params", this.props.match.params)
+        // console.log("this is", this.props.match.params)
         const connectedPlayers = this.state.connectedPlayers
-        this.props.history.push({pathname:`/${this.state.id}/maze`, state: {connectedPlayers}})
+        this.props.history.push({pathname:`/${this.state.id}/maze`, state: {connectedPlayers}, mazeType:serverState.mazeType})
 
       }
     })
@@ -60,15 +60,15 @@ export default class WaitingRoom extends Component{
 
   render(){
     const id = this.state.id
-  return (<div>
-        <h1 >This is the waitingRoom</h1>
-        <div>Theses are the players in the waiting room</div>
-        <div>There are {this.state.connectedPlayers.length} players connected and this room can fit {this.state.capacity}</div>
+  return (<div className='waitingRoomContainer'>
+        <div className='waitingRoomTextBanner'>This is the waitingRoom</div>
+        <div className='waitingRoomText'>Theses are the players in the waiting room</div>
+        <div className='waitingRoomText'>There are {this.state.connectedPlayers.length}/{this.state.capacity} players connected</div>
         {
           this.state.connectedPlayers.map(player =>{
             return(
-              <div key={this.state.connectedPlayers.indexOf(player)}>
-                <li >{player.name} has the id of {player.id}</li>
+              <div className='waitingRoomText' key={this.state.connectedPlayers.indexOf(player)}>
+                <ul>{player.name} has the id of {player.id}</ul>
               </div>
             )
           })
@@ -76,10 +76,10 @@ export default class WaitingRoom extends Component{
         {
           this.state.proceedToMaze?
           <Link to={`/${this.state.id}/maze`}>Continue into the maze</Link>
-          :<button onClick={this.startingAGame} autoFocus>Start the Game</button>
+          :<button className='waitingRoombtn'onClick={this.startingAGame} autoFocus>Start the Game</button>
         }
         {
-          this.state.gameState.playing?<h1>PLAYING</h1>: <h1>not playing</h1>
+          this.state.gameState.playing?<h1>The server has failed to start</h1>: <div className='waitingRoomText'>ServerStatus: waiting for friends</div>
         }
       </div>)
     }

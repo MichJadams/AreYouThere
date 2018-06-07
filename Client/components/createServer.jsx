@@ -13,10 +13,11 @@ export default class createServer extends Component{
         //hash the cookie id here
         this.setState({id:serverCookieID})
     })
-    this.state = {id:null,status: 'open', name: 'lost', capacity:2, gameState: {playing: false}, connectedPlayers:[], serverSubmitted: false};
+    this.state = {mazeType: 'one',id:null,status: 'open', name: 'lost', capacity:2, gameState: {playing: false}, connectedPlayers:[], serverSubmitted: false};
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
     this.handleCapacityChange = this.handleCapacityChange.bind(this);
+    this.handleMazeChange = this.handleMazeChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -31,6 +32,9 @@ export default class createServer extends Component{
   handleCapacityChange(event) {
   this.setState({capacity: event.target.value});
   // console.log("this capacity", event.target.value)
+}
+handleMazeChange(event){
+  this.setState({mazeType: event.target.value});
 }
 
   handleSubmit(event) {
@@ -50,21 +54,28 @@ export default class createServer extends Component{
         Create your own room/server
       </div>
             <form onSubmit={this.handleSubmit} className='createServerForm'>
-              <label>
+              <ul>
                 Name of Room:
                 <input type="text" value={this.state.name} onChange={this.handleNameChange} />
-              </label>
-              <label>
+              </ul>
+              <ul>
                 status?(open or closed to public):
                 <select value={this.state.status} onChange={this.handleStatusChange}>
                   <option value="open">Open</option>
                   <option value="closed">Closed</option>
                 </select>
-                </label>
-                <label>
+                </ul>
+                <ul>
                     number of people you want to host:
                   <input type="number" value={this.state.capacity} onChange={this.handleCapacityChange} />
-                </label>
+                </ul>
+                <ul>
+                Which Maze do you want to navigate?
+                <select value={this.state.mazeType} onChange={this.handleMazeChange}>
+                <option value="one">One</option>
+                <option value="two">Two</option>
+              </select>
+                </ul>
                 <button autoFocus type="button" onClick={this.handleSubmit}>Create Server</button>
                 </form>
                 <div>

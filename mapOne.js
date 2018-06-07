@@ -164,7 +164,7 @@ const collisionHashTwoSpiral ={
     040: true,
 }
 const collisionHashZigZag ={
-    
+
 }
 function bigBlock(width, height, depth, collisionMap){
     let arrayOut = []
@@ -196,7 +196,8 @@ function bigBlock(width, height, depth, collisionMap){
 }
 // console.log("big block", bigBlock(5,5,5))
 module.exports ={
-    mapTwo: bigBlock(5,5,5,collisionHashTwoSpiral),
+    one: bigBlock(5,5,5,collisionHashTwoSpiral),
+    two: bigBlock(5,5,5,collisionHashTwoSpiral),
     mapTwoCollisionHash: collisionHashTwoSpiral,
     mapThreeCollisionHash: collisionHashZigZag
 }

@@ -32,13 +32,14 @@ let badwayMasterGameState = {
 } 
 app.post('/createServer',(req,res,next)=>{ 
     badwayMasterGameState.servers[req.body.id]=(req.body)
-    console.log("the server being created!", badwayMasterGameState)
+    // console.log("the server being created!", badwayMasterGameState)
     res.sendStatus(201)
     next()
 })
-app.get('/mazeOne',(req,res,next)=>{
+app.get('/getMaze/:mazeId',(req,res,next)=>{
     let mapOne = require('./mapOne')
-    res.send(mapOne.mapTwo)
+    // console.log("sending back this, ", mapOne[req.params.mazeId], "this coming in",req.params.mazeId )
+    res.send(mapOne[req.params.mazeId])
 })
 io.use(cookierParser('hello there',{}))
 io.on('connection',(socket)=>{

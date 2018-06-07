@@ -184,10 +184,11 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       //hash the cookie id here
       this.setState({ id: serverCookieID });
     });
-    this.state = { id: null, status: 'open', name: 'lost', capacity: 2, gameState: { playing: false }, connectedPlayers: [], serverSubmitted: false };
+    this.state = { mazeType: 'one', id: null, status: 'open', name: 'lost', capacity: 2, gameState: { playing: false }, connectedPlayers: [], serverSubmitted: false };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
     this.handleCapacityChange = this.handleCapacityChange.bind(this);
+    this.handleMazeChange = this.handleMazeChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -202,6 +203,9 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   handleCapacityChange(event) {
     this.setState({ capacity: event.target.value });
     // console.log("this capacity", event.target.value)
+  }
+  handleMazeChange(event) {
+    this.setState({ mazeType: event.target.value });
   }
 
   handleSubmit(event) {
@@ -227,13 +231,13 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         'form',
         { onSubmit: this.handleSubmit, className: 'createServerForm' },
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-          'label',
+          'ul',
           null,
           'Name of Room:',
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'text', value: this.state.name, onChange: this.handleNameChange })
         ),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-          'label',
+          'ul',
           null,
           'status?(open or closed to public):',
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
@@ -252,10 +256,29 @@ class createServer extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           )
         ),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-          'label',
+          'ul',
           null,
           'number of people you want to host:',
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('input', { type: 'number', value: this.state.capacity, onChange: this.handleCapacityChange })
+        ),
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'ul',
+          null,
+          'Which Maze do you want to navigate?',
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'select',
+            { value: this.state.mazeType, onChange: this.handleMazeChange },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'option',
+              { value: 'one' },
+              'One'
+            ),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+              'option',
+              { value: 'two' },
+              'Two'
+            )
+          )
         ),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'button',
@@ -508,7 +531,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         timestamp
       });
     });
-    this.state = { moveDirectionVote: [0, 0, 0, 0, 0, 0], cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](2, 2, 10), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_3__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
+    this.state = { mazeType: this.props.location.mazeType, moveDirectionVote: [0, 0, 0, 0, 0, 0], cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](2, 2, 10), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_3__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
     // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     //the following code aggrogates the updates for each player and then pushes them to the connected players array and then updates the state with the new array all at once
     let connectedPlayers = [];
@@ -521,7 +544,8 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.setState({ connectedPlayers });
     // console.log("the connected player state initially ", this.state.connectedPlayers)
     // const clientData = this.state
-    axios__WEBPACK_IMPORTED_MODULE_4___default.a.get('/mazeOne').then(res => {
+    console.log("this is the state", this.state.mazeType);
+    axios__WEBPACK_IMPORTED_MODULE_4___default.a.get(`/getMaze/${this.state.mazeType}`).then(res => {
       // console.log("the maze looks like this", res.data)
       const mazeData = res.data;
       this.setState({ maze: mazeData });
@@ -691,7 +715,7 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     super(props);
 
     const clientInfo = { serverId: props.match.params.id, playing: false };
-    this.state = { isMounted: false, id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5, proceedToMaze: false };
+    this.state = { mazeType: 'one', isMounted: false, id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5, proceedToMaze: false };
     if (this.state.isMounted) {
       // console.log("this is the server state the server is sending and the client in recievning", clientInfo)
       Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
@@ -712,15 +736,15 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     const clientInfo = { serverId: this.state.id, playing: this.state.gameState.playing };
 
     Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
-      console.log("this is the server state the server is sending and the client in recievning", clientInfo);
+      console.log("this is the server state the server is sending and the client in recievning", serverState);
       this.setState(serverState);
       // let passingState = this.state
       if (this.state.gameState.playing) {
         console.log("THE GAME IS A FOOT");
         // this.props.match.params.connectedPlayers = this.state.connectedPlayers
-        // console.log("the params", this.props.match.params)
+        // console.log("this is", this.props.match.params)
         const connectedPlayers = this.state.connectedPlayers;
-        this.props.history.push({ pathname: `/${this.state.id}/maze`, state: { connectedPlayers } });
+        this.props.history.push({ pathname: `/${this.state.id}/maze`, state: { connectedPlayers }, mazeType: serverState.mazeType });
       }
     });
   }
@@ -743,31 +767,32 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     const id = this.state.id;
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
-      null,
+      { className: 'waitingRoomContainer' },
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-        'h1',
-        null,
+        'div',
+        { className: 'waitingRoomTextBanner' },
         'This is the waitingRoom'
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'div',
-        null,
+        { className: 'waitingRoomText' },
         'Theses are the players in the waiting room'
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'div',
-        null,
+        { className: 'waitingRoomText' },
         'There are ',
         this.state.connectedPlayers.length,
-        ' players connected and this room can fit ',
-        this.state.capacity
+        '/',
+        this.state.capacity,
+        ' players connected'
       ),
       this.state.connectedPlayers.map(player => {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
           'div',
-          { key: this.state.connectedPlayers.indexOf(player) },
+          { className: 'waitingRoomText', key: this.state.connectedPlayers.indexOf(player) },
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-            'li',
+            'ul',
             null,
             player.name,
             ' has the id of ',
@@ -781,17 +806,17 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         'Continue into the maze'
       ) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'button',
-        { onClick: this.startingAGame, autoFocus: true },
+        { className: 'waitingRoombtn', onClick: this.startingAGame, autoFocus: true },
         'Start the Game'
       ),
       this.state.gameState.playing ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'h1',
         null,
-        'PLAYING'
+        'The server has failed to start'
       ) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-        'h1',
-        null,
-        'not playing'
+        'div',
+        { className: 'waitingRoomText' },
+        'ServerStatus: waiting for friends'
       )
     );
   }
