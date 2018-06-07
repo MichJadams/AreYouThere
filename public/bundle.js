@@ -531,7 +531,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         timestamp
       });
     });
-    this.state = { mazeType: this.props.location.mazeType, moveDirectionVote: [0, 0, 0, 0, 0, 0], cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](2, 2, 10), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_3__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
+    this.state = { mazeType: this.props.location.mazeType, moveDirectionVote: { forward: 0, backward: 0 }, cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](2, 2, 10), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_3__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
     // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     //the following code aggrogates the updates for each player and then pushes them to the connected players array and then updates the state with the new array all at once
     let connectedPlayers = [];
@@ -544,7 +544,6 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.setState({ connectedPlayers });
     // console.log("the connected player state initially ", this.state.connectedPlayers)
     // const clientData = this.state
-    console.log("this is the state", this.state.mazeType);
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.get(`/getMaze/${this.state.mazeType}`).then(res => {
       // console.log("the maze looks like this", res.data)
       const mazeData = res.data;
@@ -552,12 +551,15 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       // console.log("this is the state of the maze", this.state.maze)
     });
     this._onAnimate = () => {
-      const clientInfo = this.state;
+      console.log("this is the votes", this.state.moveDirectionVote);
+      let clientInfo = this.state;
+      // let clientInfo.moveDirectionVote = this.state.moveDirectionVote
       //perform collision detection here. 
       // console.log("this is the moving player, ", )
-      Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToGameState"])(clientInfo, (err, gameState) => {
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToGameState"])(this.state, (err, gameState) => {
         this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
       });
+
       const camera = { position: this.state.cameraPostion, rotation: this.state.cameraRotation, cameraKey: this.state.cameraKey, serverId: this.state.serverId };
       Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToCameraPosition"])(camera, (err, camera) => {
         //uncomment the line below for camera movmenet with cube 

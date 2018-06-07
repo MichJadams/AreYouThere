@@ -89,7 +89,9 @@ io.on('connection',(socket)=>{
     socket.on('subscribeToGameState',(clientData)=>{
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
         if(theServerInQuestion){
+            //determine here if the move is a vote or results in movement
 
+            console.log("this is the votes state fo the server in question", theServerInQuestion)
             theServerInQuestion.connectedPlayers.map((player)=>{
                 //this is where each plays state can be updated
                 // const newRotation = newCoords(player.rot, 'rotation') //uncomment this for rotation
