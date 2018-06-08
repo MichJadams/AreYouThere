@@ -44,6 +44,7 @@ export default class Landing extends Component{
       // console.log("this is the moving player, ", )
       subscribeToGameState(this.state,(err,gameState)=>{
         // this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
+        // console.log("cube position from the sever",gameState.cube.location)
         this.setState({cube:gameState.cube, keydown:false })
       })
       const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}

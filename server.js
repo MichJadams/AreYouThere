@@ -94,40 +94,36 @@ io.on('connection',(socket)=>{
         // console.log("checking here if the votes count is ever passed to the server", clientData)
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
         if(theServerInQuestion){
-            //determine here if the move is a vote or results in movement
-            // console.log("this is the votes state fo the server in question", theServerInQuestion)
             theServerInQuestion.connectedPlayers.map((player)=>{
                 if(player.id == socket.id){
-                    // if(player.loc == undefined){
-                    //     player.loc = new THREE.Vector3(0,3,4) //this is where I generate a random location.
-                    //     const mapOne = require('./mapOne') //remove this line once the selected map is stored on the server object in gameState
-                    //     const coords = helperFunctions.randomKey(mapOne.mapTwoCollisionHash)
-                    //     const arrayCoords = [String(coords).charAt(0),String(coords).charAt(1),String(coords).charAt(2)]
-                    //     player.loc = new THREE.Vector3(...arrayCoords) 
-                    // }else
                      if(clientData.keydown != false){
                         if(!player.voted){
+                            //if this player has not voted 
                             console.log("this player", socket.id," wishes to vote",clientData.keydown)
                             theServerInQuestion.moveDirectionVote = require('./vote').vote(clientData.keydown, theServerInQuestion.moveDirectionVote) 
                             console.log("now the votes look like:",theServerInQuestion.moveDirectionVote)
-                            if(false){
-                                //if everyone has voted and agrees, then move 
+                            player.voted = true
+                            if(require('./helperFunctions').quorum(theServerInQuestion.moveDirectionVote,theServerInQuestion.connectedPlayers.length )){
+                                //if everyone has voted
+                                console.log("everyone has voted:")
                                 for(key in theServerInQuestion.moveDirectionVote){
-                                    if(key === theServerInQuestion.connectedPlayers.length){
+                                    if(theServerInQuestion.moveDirectionVote[key] === theServerInQuestion.connectedPlayers.length){
                                         console.log("agreement!")
                                         //move 
-                                        player.loc = require('./movement').movement(clientData.keydown,player.loc)
-                                        theServerInQuestion.moveDirectionVote = {forward:0,backward:0,left:0,right: 0,up:0, down:0}
+                                        theServerInQuestion.cube.location = require('./movement').movement(clientData.keydown,theServerInQuestion.cube.location)
                                     }
                                 }
-                            }else{
-                                player.voted = true 
+                                theServerInQuestion.moveDirectionVote = {forward:0,backward:0,left:0,right: 0,up:0, down:0}
+                                //cycle through all the connected players are set their voted status to false 
+                                theServerInQuestion.connectedPlayers.map((player)=>{
+                                    player.voted = false 
+                                })
+                                
                             }
                         }else{
                             console.log("this player", socket.id," has already voted",clientData.keydown)
                             // console.log("this player has already voted")
                         }
-                        
                     }
                 }
                 return player 

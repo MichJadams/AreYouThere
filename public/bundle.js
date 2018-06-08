@@ -559,6 +559,7 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       // console.log("this is the moving player, ", )
       Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToGameState"])(this.state, (err, gameState) => {
         // this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
+        // console.log("cube position from the sever",gameState.cube.location)
         this.setState({ cube: gameState.cube, keydown: false });
       });
       const camera = { position: this.state.cameraPostion, rotation: this.state.cameraRotation, cameraKey: this.state.cameraKey, serverId: this.state.serverId };
