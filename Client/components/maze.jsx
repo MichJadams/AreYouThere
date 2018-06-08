@@ -16,17 +16,7 @@ export default class Landing extends Component{
     })
   })
   this.state = {cube:this.props.location.cube, mazeType: this.props.location.mazeType,moveDirectionVote: {forward:0,backward:0,left:0,right: 0,up:0, down:0},cameraKey: false, cameraPostion:new THREE.Vector3(2, 2, 10),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: []}; 
-  // this.cameraPosition = new THREE.Vector3(0, 0, 5);
-  //the following code aggrogates the updates for each player and then pushes them to the connected players array and then updates the state with the new array all at once
-        // let connectedPlayers = []
-        // // this.state.connectedPlayers.map((player)=>{
-        // //   const nextPlayer = player
-        // //   nextPlayer.rot = new THREE.Euler()
-        // //   nextPlayer.loc = new THREE.Vector3(0,0,0)
-        // //   nextPlayer.voted = false 
-        // //   connectedPlayers.push(nextPlayer)
-        // // })
-        // this.setState({connectedPlayers})
+
     console.log("the connected player state initially ", this.state.connectedPlayers)
     // const clientData = this.state
     axios.get(`/getMaze/${this.state.mazeType}`)
@@ -45,7 +35,7 @@ export default class Landing extends Component{
       subscribeToGameState(this.state,(err,gameState)=>{
         // this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
         // console.log("cube position from the sever",gameState.cube.location)
-        this.setState({cube:gameState.cube, keydown:false })
+        this.setState({cube:gameState.cube, keydown:false, moveDirectionVote:gameState.moveDirectionVote })
       })
       const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
       subscribeToCameraPosition(camera,(err,camera)=>{
@@ -68,44 +58,44 @@ export default class Landing extends Component{
   }
   wheel(event){
     
-    if (event.deltaY < 0) {
-      // console.log('scrolling up');
-      this.setState({cameraKey: 38})
-      // console.log("this is the state", this.state.cameraKey)
+    // if (event.deltaY < 0) {
+    //   // console.log('scrolling up');
+    //   this.setState({cameraKey: 38})
+    //   // console.log("this is the state", this.state.cameraKey)
       
-    }
-    if (event.deltaY > 0) {
-      // console.log('scrolling down');
-      this.setState({cameraKey: 40})
+    // }
+    // if (event.deltaY > 0) {
+    //   // console.log('scrolling down');
+    //   this.setState({cameraKey: 40})
       
-    }
-    if (event.deltaX < 0) {
-      // console.log('scrolling left');
-      this.setState({cameraKey: 37})
+    // }
+    // if (event.deltaX < 0) {
+    //   // console.log('scrolling left');
+    //   this.setState({cameraKey: 37})
       
-    }
-    if (event.deltaX > 0) {
-      // console.log('scrolling right');
-      this.setState({cameraKey: 39})
-    }
-    event.preventDefault();
-    event.stopPropagation();
+    // }
+    // if (event.deltaX > 0) {
+    //   // console.log('scrolling right');
+    //   this.setState({cameraKey: 39})
+    // }
+    // event.preventDefault();
+    // event.stopPropagation();
   }
 
   render(){
     const width = window.innerWidth; // canvas width
     const height = window.innerHeight; // canvas height
 
-        return (<div onWheel={this.wheel}>
-        <div className="App">
+        return (
+          <div>
+        <div className="mazeInformationContainer">
         <p className="App-intro">
-        This is the timer value: {this.state.timestamp}
+        One day this will show how long you have been playing the game {this.state.timestamp}
         </p>
+        <title>Game</title>
+        <div className="mazeInformationText">The number of people who agree on a move:</div>
+        <div className="mazeInformationText">forward:{this.state.moveDirectionVote.forward} backward:{this.state.moveDirectionVote.backward} left:{this.state.moveDirectionVote.left} right:{this.state.moveDirectionVote.right} up:{this.state.moveDirectionVote.up} down:{this.state.moveDirectionVote.down}</div>
       </div>
-
-      <title>Game</title>
-      <div>The number of people who agree on a move:</div>
-      <div>forward:{this.state.moveDirectionVote.forward} backward:{this.state.moveDirectionVote.backward} left:{this.state.moveDirectionVote.left} right:{this.state.moveDirectionVote.right} up:{this.state.moveDirectionVote.up} down:{this.state.moveDirectionVote.down}</div>
 		
       <React3
       mainCamera="camera" // this points to the perspectiveCamera which has the name set to "camera" below
@@ -134,14 +124,6 @@ export default class Landing extends Component{
           })
         }
         {
-          // this.state.connectedPlayers.map((player)=>{
-          //   // console.log("this is the player id", player.id, "and this is thier location", player.loc)
-          //   return(<mesh
-          //     rotation={player.rot} position={player.loc} >
-          //     <boxGeometry width={1} height={1} depth={1} />
-          //     <meshBasicMaterial color={player.color}/>
-          //   </mesh>)
-          // })
           <mesh rotation={this.state.cube.rotation} position={this.state.cube.location} >
               <boxGeometry width={1} height={1} depth={1} />
               <meshBasicMaterial color={this.state.cube.color}/>
