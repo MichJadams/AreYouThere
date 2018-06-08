@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import {subscribeToWaitingPlayers,subscribeToServers, subscribeToServerState, subscribeToJoinServer } from './client.js'
 
 export default class Landing extends Component{
@@ -12,10 +11,7 @@ export default class Landing extends Component{
       serverJoinable: false
     }
     subscribeToWaitingPlayers((err,waitingPlayers)=>{
-      // console.log("waiting players on the server", waitingPlayers)
       this.setState({waitingPlayers})
-      // console.log("waiting players", this.state.waitingPlayers)
-      // this.forceUpdate()
     })
     subscribeToServers((err,servers)=>{
       this.setState({servers})
@@ -60,8 +56,6 @@ export default class Landing extends Component{
       </div>)
   } 
 }
-
-// <Link to={`/${server.id}/waitingRoom`}>{server.name}</Link>
 
 
 

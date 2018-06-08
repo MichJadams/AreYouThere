@@ -10,8 +10,7 @@ const cookieParser = require("cookie-parser")
 const path = require('path')
 const THREE = require('three')
 const helperFunctions = require('./helperFunctions')
-// app.use('/assests', express.static(__dirname+'/assests'))
-// app.use('/js', express.static(__dirname+'/js'))
+
 
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: true}))
@@ -41,7 +40,7 @@ app.get('/getMaze/:mazeId',(req,res,next)=>{
     // console.log("sending back this, ", mapOne[req.params.mazeId], "this coming in",req.params.mazeId )
     res.send(mapOne[req.params.mazeId])
 })
-io.use(cookierParser('hello there',{}))
+// io.use(cookierParser('hello there',{}))
 io.on('connection',(socket)=>{
     socket.on('subscribeToTimer', (interval)=>{
         setInterval(() => {
@@ -75,11 +74,6 @@ io.on('connection',(socket)=>{
         if(clientInfo.playing == true){
             theServerInQuestion.gameState.playing = true;
             io.emit('serversList', badwayMasterGameState.servers)
-        //     theServerInQuestion.connectedPlayers.map((player)=>{
-        //         //this is where you can set the initial state of the play, such as color or location ect. 
-        //         player.color = 0xdcdcdc
-        //         player.rot= new THREE.Euler(0,0,0) 
-        //     })
         }
         for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
             if(theServerInQuestion.connectedPlayers[i]){
@@ -91,25 +85,19 @@ io.on('connection',(socket)=>{
         io.emit('serversList', badwayMasterGameState.servers)
     })
     socket.on('subscribeToGameState',(clientData)=>{
-        // console.log("checking here if the votes count is ever passed to the server", clientData)
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
         if(theServerInQuestion){
             theServerInQuestion.connectedPlayers.map((player)=>{
                 if(player.id == socket.id){
                      if(clientData.keydown != false){
                         if(!player.voted){
-                            //if this player has not voted 
-                            console.log("this player", socket.id," wishes to vote",clientData.keydown)
                             theServerInQuestion.moveDirectionVote = require('./vote').vote(clientData.keydown, theServerInQuestion.moveDirectionVote) 
-                            console.log("now the votes look like:",theServerInQuestion.moveDirectionVote)
                             player.voted = true
-                            if(require('./helperFunctions').quorum(theServerInQuestion.moveDirectionVote,theServerInQuestion.connectedPlayers.length )){
-                                //if everyone has voted
-                                console.log("everyone has voted:")
+                            if(helperFunctions.quorum(theServerInQuestion.moveDirectionVote,theServerInQuestion.connectedPlayers.length )){
+                                // if everyone has voted
                                 for(key in theServerInQuestion.moveDirectionVote){
                                     if(theServerInQuestion.moveDirectionVote[key] === theServerInQuestion.connectedPlayers.length){
-                                        console.log("agreement!")
-                                        //move 
+                                        // if there is agreement
                                         theServerInQuestion.cube.location = require('./movement').movement(clientData.keydown,theServerInQuestion.cube.location)
                                     }
                                 }
@@ -120,24 +108,21 @@ io.on('connection',(socket)=>{
                                 })
                                 
                             }
-                        }else{
-                            console.log("this player", socket.id," has already voted",clientData.keydown)
-                            // console.log("this player has already voted")
                         }
                     }
                 }
                 return player 
             })
             theServerInQuestion.keydown = undefined
+            //sometimes I need this check, not sure why. 
             if(theServerInQuestion.moveDirectionVote == undefined){
                 theServerInQuestion.moveDirectionVote = {forward:0,backward:0,left:0,right: 0,up:0, down:0}
             }
         }
-        // console.log("this is the cube object",theServerInQuestion.cube)
         io.emit('gameState',theServerInQuestion)
     })
+    //I think in this version there will be no camera control....
     socket.on('subscribeToCameraPosition',(camera)=>{
-            //  const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
         let theServerInQuestion = badwayMasterGameState.servers[camera.serverId]
         if(theServerInQuestion){
         theServerInQuestion.connectedPlayers.map((player)=>{
@@ -177,27 +162,7 @@ io.on('connection',(socket)=>{
     socket.on('connection name',function(user){
       io.sockets.emit('new user', user.name + " has joined.");
     })
-    // const gameLogic = require('./gameLogic.js')(app,io,socket)
 })
 server.listen(process.env.PORT || 8081, ()=>{
     console.log("listening on port", server.address().port)
 })
-//helper functions, currently not using new coords  
-function newCoords(oldCoords, type){  
-      
-    if(type == 'rotation'){
-      oldCoords.x += 0.1
-      oldCoords.y += 0.1
-      oldCoords.z += 0.1
-      return oldCoords
-    }else if (type == 'location'){
-      return oldCoords
-    }
-  }
-function randomLocation (max){
-    location = {x:0,y:0,z:0}
-    for(var value in location){
-        location[value] = Math.floor(Math.random() * Math.floor(max));
-    }
-    return location
-}

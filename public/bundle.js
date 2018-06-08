@@ -305,21 +305,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Landing; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/react.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
-/* harmony import */ var _lobby_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./lobby.jsx */ "./Client/components/lobby.jsx");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var react_three_renderer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-three-renderer */ "./node_modules/react-three-renderer/lib/React3.js");
-/* harmony import */ var react_three_renderer__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_three_renderer__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
-
-
-
-
-
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
 
 
 
@@ -336,25 +323,15 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   }
   handleChange(event) {
     this.setState({ value: event.target.value });
-    // console.log("this is the state", this.state)
   }
-
   handleSubmit(event) {
     this.setState({ nameSelected: true });
     const name = this.state.value;
-    Object(_client_js__WEBPACK_IMPORTED_MODULE_7__["subscribeToName"])(name);
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToName"])(name);
     this.props.history.push({ pathname: `/lobby` });
   }
 
   render() {
-    const width = window.innerWidth - 10; // canvas width
-    const height = window.innerHeight - 10; // canvas height
-    let aspectratio = width / height;
-
-    let cameraprops = { fov: 75, aspect: aspectratio,
-      near: 0.1, far: 1000,
-      position: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](300, 400, 600),
-      lookAt: new three__WEBPACK_IMPORTED_MODULE_6__["Vector3"](0, 0, 0) };
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
       { className: 'welcomeContainer' },
@@ -400,10 +377,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/react.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
-
+/* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
 
 
 
@@ -416,20 +390,17 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       waitingPlayers: [],
       serverJoinable: false
     };
-    Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToWaitingPlayers"])((err, waitingPlayers) => {
-      // console.log("waiting players on the server", waitingPlayers)
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToWaitingPlayers"])((err, waitingPlayers) => {
       this.setState({ waitingPlayers });
-      // console.log("waiting players", this.state.waitingPlayers)
-      // this.forceUpdate()
     });
-    Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToServers"])((err, servers) => {
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServers"])((err, servers) => {
       this.setState({ servers });
     });
     this.goingToServer = this.goingToServer.bind(this);
   }
   goingToServer(event) {
     const serverID = event.target.id;
-    Object(_client_js__WEBPACK_IMPORTED_MODULE_3__["subscribeToJoinServer"])(serverID);
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToJoinServer"])(serverID);
     this.props.history.push({ pathname: `/${serverID}/waitingRoom` });
   }
 
@@ -492,8 +463,6 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   }
 }
 
-// <Link to={`/${server.id}/waitingRoom`}>{server.name}</Link>
-
 /***/ }),
 
 /***/ "./Client/components/maze.jsx":
@@ -515,7 +484,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
 
-// import { render, Link } from 'react-router-dom';
 
 
 
@@ -523,7 +491,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
-
   constructor(props) {
     super(props);
     Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToTimer"])((err, timestamp) => {
@@ -531,31 +498,31 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         timestamp
       });
     });
-    this.state = { cube: this.props.location.cube, mazeType: this.props.location.mazeType, moveDirectionVote: { forward: 0, backward: 0, left: 0, right: 0, up: 0, down: 0 }, cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](2, 2, 10), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_3__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
-
+    this.state = { cube: this.props.location.cube,
+      mazeType: this.props.location.mazeType,
+      moveDirectionVote: { forward: 0, backward: 0, left: 0, right: 0, up: 0, down: 0 },
+      cameraKey: false,
+      cameraPostion: new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](2, 2, 10),
+      cameraRotation: new three__WEBPACK_IMPORTED_MODULE_3__["Euler"](0, 0, 0),
+      keydown: false,
+      connectedPlayers: this.props.history.location.state.connectedPlayers,
+      isMounted: false,
+      timestamp: 'no timestamp yet',
+      value: '',
+      serverId: this.props.match.params.id,
+      maze: []
+    };
     console.log("the connected player state initially ", this.state.connectedPlayers);
-    // const clientData = this.state
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.get(`/getMaze/${this.state.mazeType}`).then(res => {
-      // console.log("the maze looks like this", res.data)
       const mazeData = res.data;
       this.setState({ maze: mazeData });
-      // console.log("this is the state of the maze", this.state.maze)
     });
     this._onAnimate = () => {
-      // console.log("this is the votes", this.state.moveDirectionVote)
-      let clientInfo = this.state;
-      // let clientInfo.moveDirectionVote = this.state.moveDirectionVote
-      //perform collision detection here. 
-      // console.log("this is the moving player, ", )
       Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToGameState"])(this.state, (err, gameState) => {
-        // this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
-        // console.log("cube position from the sever",gameState.cube.location)
         this.setState({ cube: gameState.cube, keydown: false, moveDirectionVote: gameState.moveDirectionVote });
       });
       const camera = { position: this.state.cameraPostion, rotation: this.state.cameraRotation, cameraKey: this.state.cameraKey, serverId: this.state.serverId };
       Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToCameraPosition"])(camera, (err, camera) => {
-        //uncomment the line below for camera movmenet with cube 
-        // console.log("this is the positon", camera.position,"this is the rotation", this.state.cameraRotation)
         this.setState({ cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey: false });
       });
     };
@@ -565,42 +532,12 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
     document.addEventListener("wheel", this.wheel.bind(this));
   }
-  // componentWillUnmount() {
-  //   document.removeEventListener("keydown", this.handleKeyDown.bind(this));
-  // }
   handleKeyDown(event) {
     this.setState({ keydown: event.keyCode });
   }
-  wheel(event) {
-
-    // if (event.deltaY < 0) {
-    //   // console.log('scrolling up');
-    //   this.setState({cameraKey: 38})
-    //   // console.log("this is the state", this.state.cameraKey)
-
-    // }
-    // if (event.deltaY > 0) {
-    //   // console.log('scrolling down');
-    //   this.setState({cameraKey: 40})
-
-    // }
-    // if (event.deltaX < 0) {
-    //   // console.log('scrolling left');
-    //   this.setState({cameraKey: 37})
-
-    // }
-    // if (event.deltaX > 0) {
-    //   // console.log('scrolling right');
-    //   this.setState({cameraKey: 39})
-    // }
-    // event.preventDefault();
-    // event.stopPropagation();
-  }
-
   render() {
     const width = window.innerWidth; // canvas width
     const height = window.innerHeight; // canvas height
-
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
       'div',
       null,
@@ -661,7 +598,6 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           }),
           react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('axisHelper', { position: new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](-4, 3, 0) }),
           this.state.maze.map(blockObject => {
-            // console.log(blockObject.location)
             return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
               'mesh',
               {
@@ -707,17 +643,20 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   constructor(props) {
     super(props);
 
-    const clientInfo = { serverId: props.match.params.id, playing: false };
-    this.state = { mazeType: 'one', isMounted: false, id: this.props.match.params, connectedPlayers: [], status: 'closed', gameState: { playing: false }, name: '', capacity: 5, proceedToMaze: false };
+    this.state = { mazeType: 'one',
+      isMounted: false,
+      id: this.props.match.params,
+      connectedPlayers: [],
+      status: 'closed',
+      gameState: { playing: false },
+      name: '',
+      capacity: 5,
+      proceedToMaze: false };
     if (this.state.isMounted) {
-      // console.log("this is the server state the server is sending and the client in recievning", clientInfo)
+      const clientInfo = { serverId: props.match.params.id, playing: false };
       Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
-        // console.log("")
         this.setState(serverState);
-        // let passingState = this.state
         if (this.state.gameState.playing) {
-          console.log("THE GAME IS A FOOT");
-          // console.log(`going here /${this.state.id}/maze`)
           this.props.history.push({ pathname: `/${this.state.id}/maze` });
         }
       });
@@ -727,15 +666,9 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   componentDidMount() {
     this.setState({ isMounted: true });
     const clientInfo = { serverId: this.state.id, playing: this.state.gameState.playing };
-
     Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
-      console.log("this is the server state the server is sending and the client in recievning", serverState);
       this.setState(serverState);
-      // let passingState = this.state
       if (this.state.gameState.playing) {
-        console.log("THE GAME IS A FOOT");
-        // this.props.match.params.connectedPlayers = this.state.connectedPlayers
-        // console.log("this is", this.props.match.params)
         const connectedPlayers = this.state.connectedPlayers;
         this.props.history.push({ pathname: `/${this.state.id}/maze`, state: { connectedPlayers }, mazeType: serverState.mazeType, cube: serverState.cube });
       }
@@ -744,13 +677,10 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
   componentWillUnmount() {
     this.setState({ isMounted: false });
   }
-  startingAGame(event) {
+  startingAGame() {
     if (this.state.isMounted) {
-      const clientInfo = { serverId: this.state.id, playing: true
-        //here I want to emit and event to the server that changes the gamestate to "starting!" 
-      };Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
-        // console.log("starting the game!", serverState)
-        // serverState.proceedToMaze = true
+      const clientInfo = { serverId: this.state.id, playing: true };
+      Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServerState"])(clientInfo, (err, serverState) => {
         this.setState(serverState);
       });
     }

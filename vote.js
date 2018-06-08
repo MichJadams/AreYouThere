@@ -1,11 +1,6 @@
-
-
 function vote(keycode,moveDirectionVote){
     
     if(keycode == 87){
-        //forward
-        // console.log("old player location in terms of z", playerlocation.z)
-        // console.log("forward, returning:",new THREE.Vector3(0,0,playerlocation.z+5))
         moveDirectionVote.forward+=1
         
     }
