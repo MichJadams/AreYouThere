@@ -71,6 +71,7 @@ io.on('connection',(socket)=>{
         theServerInQuestion.cube.location = new THREE.Vector3(0,0,0)
         theServerInQuestion.cube.rotation = new THREE.Euler(0,0,0)
         theServerInQuestion.cube.color = 0xdcdcdc
+        theServerInQuestion.won = false
         if(clientInfo.playing == true){
             theServerInQuestion.gameState.playing = true;
             io.emit('serversList', badwayMasterGameState.servers)
@@ -99,6 +100,7 @@ io.on('connection',(socket)=>{
                                     if(theServerInQuestion.moveDirectionVote[key] === theServerInQuestion.connectedPlayers.length){
                                         // if there is agreement
                                         theServerInQuestion.cube.location = require('./movement').movement(clientData.keydown,theServerInQuestion.cube.location)
+                                        theServerInQuestion.won = require('./movement').winCheck(clientData.keydown,theServerInQuestion.cube.location)
                                     }
                                 }
                                 theServerInQuestion.moveDirectionVote = {forward:0,backward:0,left:0,right: 0,up:0, down:0}
@@ -125,6 +127,7 @@ io.on('connection',(socket)=>{
     socket.on('subscribeToCameraPosition',(camera)=>{
         let theServerInQuestion = badwayMasterGameState.servers[camera.serverId]
         if(theServerInQuestion){
+             
         theServerInQuestion.connectedPlayers.map((player)=>{
             //here we want to find the location of the cube 
             if(player.id == socket.id && player.loc != undefined){

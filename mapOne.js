@@ -4,7 +4,7 @@ const collisionHashTwoSpiral ={
     100: true, 
     200: true,
     300: true, 
-    400: true,
+    400: 'winning',
 
     410: true,
     411: true, 
@@ -46,20 +46,35 @@ function bigBlock(width, height, depth, collisionMap){
         for(let h=0;h<height;h++){
             for(let d=0;d<depth;d++){
                 const stringkey = w.toString().concat(h,d)
-                if(collisionMap[+stringkey] === true){
+                if(collisionMap[+stringkey]){
                     //if the coordinates are in the predefined instructions, or hash table, then add a block
-                    const block = {
-                        rotation: new THREE.Euler(0,0,0),
-                        location: new THREE.Vector3(w,h,d),
-                        color: 0xff0000,
-                        transparent:true, 
-                        wireframe: true,
-                        width: 1, 
-                        height:1, 
-                        depth:1,
-                        opacity: 0.3
+                    if(collisionMap[+stringkey] === 'winning'){
+                        const block = {
+                            rotation: new THREE.Euler(0,0,0),
+                            location: new THREE.Vector3(w,h,d),
+                            color: 0xffffff,
+                            transparent:true, 
+                            wireframe: true,
+                            width: 1, 
+                            height:1, 
+                            depth:1,
+                            opacity: 0.3
+                        }
+                        arrayOut.push(block)
+                    }else{
+                        const block = {
+                            rotation: new THREE.Euler(0,0,0),
+                            location: new THREE.Vector3(w,h,d),
+                            color: 0xff0000,
+                            transparent:true, 
+                            wireframe: true,
+                            width: 1, 
+                            height:1, 
+                            depth:1,
+                            opacity: 0.3
+                        }
+                        arrayOut.push(block)
                     }
-                    arrayOut.push(block)
                 }
             }
         }

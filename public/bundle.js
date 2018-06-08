@@ -698,8 +698,23 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'div',
-        { className: 'waitingRoomText' },
-        'Theses are the players in the waiting room'
+        { className: 'waitingRoomTextinstructions' },
+        'Objective: Navigate the white box in a little time as possible '
+      ),
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        'div',
+        { className: 'waitingRoomTextinstructions' },
+        'rules: vote for a move direction using w,a,s,d,e and q. '
+      ),
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        'div',
+        { className: 'waitingRoomTextinstructions' },
+        'w = forward, a = left, s = backward,d = right, e = up, q = down '
+      ),
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        'div',
+        { className: 'waitingRoomTextinstructions' },
+        'Once all the players have voted, if they agree the cube moves. If not, you may recast your votes'
       ),
       react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
         'div',
