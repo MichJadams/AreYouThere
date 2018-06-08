@@ -37,7 +37,7 @@ export default class WaitingRoom extends Component{
         // this.props.match.params.connectedPlayers = this.state.connectedPlayers
         // console.log("this is", this.props.match.params)
         const connectedPlayers = this.state.connectedPlayers
-        this.props.history.push({pathname:`/${this.state.id}/maze`, state: {connectedPlayers}, mazeType:serverState.mazeType})
+        this.props.history.push({pathname:`/${this.state.id}/maze`, state: {connectedPlayers}, mazeType:serverState.mazeType, cube: serverState.cube})
 
       }
     })

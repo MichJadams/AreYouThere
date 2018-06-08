@@ -15,19 +15,19 @@ export default class Landing extends Component{
       timestamp
     })
   })
-  this.state = {mazeType: this.props.location.mazeType,moveDirectionVote: {forward:0,backward:0,left:0,right: 0,up:0, down:0},cameraKey: false, cameraPostion:new THREE.Vector3(2, 2, 10),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: []}; 
+  this.state = {cube:this.props.location.cube, mazeType: this.props.location.mazeType,moveDirectionVote: {forward:0,backward:0,left:0,right: 0,up:0, down:0},cameraKey: false, cameraPostion:new THREE.Vector3(2, 2, 10),cameraRotation:new THREE.Euler(0, 0, 0),keydown:false,connectedPlayers: this.props.history.location.state.connectedPlayers,isMounted:false,timestamp:'no timestamp yet', value: '', serverId:this.props.match.params.id, maze: []}; 
   // this.cameraPosition = new THREE.Vector3(0, 0, 5);
   //the following code aggrogates the updates for each player and then pushes them to the connected players array and then updates the state with the new array all at once
-        let connectedPlayers = []
-        this.state.connectedPlayers.map((player)=>{
-          const nextPlayer = player
-          nextPlayer.rot = new THREE.Euler()
-          nextPlayer.loc = new THREE.Vector3(0,0,0)
-          nextPlayer.voted = false 
-          connectedPlayers.push(nextPlayer)
-        })
-        this.setState({connectedPlayers})
-    // console.log("the connected player state initially ", this.state.connectedPlayers)
+        // let connectedPlayers = []
+        // // this.state.connectedPlayers.map((player)=>{
+        // //   const nextPlayer = player
+        // //   nextPlayer.rot = new THREE.Euler()
+        // //   nextPlayer.loc = new THREE.Vector3(0,0,0)
+        // //   nextPlayer.voted = false 
+        // //   connectedPlayers.push(nextPlayer)
+        // // })
+        // this.setState({connectedPlayers})
+    console.log("the connected player state initially ", this.state.connectedPlayers)
     // const clientData = this.state
     axios.get(`/getMaze/${this.state.mazeType}`)
     .then((res)=>{
@@ -43,7 +43,8 @@ export default class Landing extends Component{
       //perform collision detection here. 
       // console.log("this is the moving player, ", )
       subscribeToGameState(this.state,(err,gameState)=>{
-        this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
+        // this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
+        this.setState({cube:gameState.cube, keydown:false })
       })
       const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
       subscribeToCameraPosition(camera,(err,camera)=>{
@@ -132,14 +133,18 @@ export default class Landing extends Component{
           })
         }
         {
-          this.state.connectedPlayers.map((player)=>{
-            // console.log("this is the player id", player.id, "and this is thier location", player.loc)
-            return(<mesh
-              rotation={player.rot} position={player.loc} >
+          // this.state.connectedPlayers.map((player)=>{
+          //   // console.log("this is the player id", player.id, "and this is thier location", player.loc)
+          //   return(<mesh
+          //     rotation={player.rot} position={player.loc} >
+          //     <boxGeometry width={1} height={1} depth={1} />
+          //     <meshBasicMaterial color={player.color}/>
+          //   </mesh>)
+          // })
+          <mesh rotation={this.state.cube.rotation} position={this.state.cube.location} >
               <boxGeometry width={1} height={1} depth={1} />
-              <meshBasicMaterial color={player.color}/>
-            </mesh>)
-          })
+              <meshBasicMaterial color={this.state.cube.color}/>
+            </mesh>
         }
       </scene>
     </React3>

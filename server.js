@@ -68,14 +68,18 @@ io.on('connection',(socket)=>{
     })
     socket.on('subscribeToServerState', (clientInfo)=>{
         let theServerInQuestion = badwayMasterGameState.servers[clientInfo.serverId]
+        theServerInQuestion.cube = {}
+        theServerInQuestion.cube.location = new THREE.Vector3(0,0,0)
+        theServerInQuestion.cube.rotation = new THREE.Euler(0,0,0)
+        theServerInQuestion.cube.color = 0xdcdcdc
         if(clientInfo.playing == true){
             theServerInQuestion.gameState.playing = true;
             io.emit('serversList', badwayMasterGameState.servers)
-            theServerInQuestion.connectedPlayers.map((player)=>{
-                //this is where you can set the initial state of the play, such as color or location ect. 
-                player.color = 0xdcdcdc
-                player.rot= new THREE.Euler(0,0,0) 
-            })
+        //     theServerInQuestion.connectedPlayers.map((player)=>{
+        //         //this is where you can set the initial state of the play, such as color or location ect. 
+        //         player.color = 0xdcdcdc
+        //         player.rot= new THREE.Euler(0,0,0) 
+        //     })
         }
         for(let i = 0; i < theServerInQuestion.connectedPlayers.length; i ++){
             if(theServerInQuestion.connectedPlayers[i]){
@@ -86,58 +90,54 @@ io.on('connection',(socket)=>{
         io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
         io.emit('serversList', badwayMasterGameState.servers)
     })
-    socket.on('subscribeToVoting',(serveridAndDirection)=>{
-        let theServerInQuestion = badwayMasterGameState.servers[serveridAndDirection.serverId]
-        console.log("this player,", socket.id," voted to move this way", serveridAndDirection.direction)
-        //set this players voted status to true 
-        //record thier votes in the gamer master state 
-
-    })
     socket.on('subscribeToGameState',(clientData)=>{
         // console.log("checking here if the votes count is ever passed to the server", clientData)
         let theServerInQuestion = badwayMasterGameState.servers[clientData.serverId]
         if(theServerInQuestion){
             //determine here if the move is a vote or results in movement
-
             // console.log("this is the votes state fo the server in question", theServerInQuestion)
             theServerInQuestion.connectedPlayers.map((player)=>{
-                //this is where each plays state can be updated
-                // const newRotation = newCoords(player.rot, 'rotation') //uncomment this for rotation
-                // console.log("key down?", clientData.keydown)
-                // player.rot = new THREE.Euler(newRotation.x, newRotation.y,newRotation.z)
-
                 if(player.id == socket.id){
-
-                    if(player.loc == undefined){
-                        //this line means when a player stops pressing a key they snap back to the middle?
-                        player.loc = new THREE.Vector3(0,3,4) //this is where I generate a random location.
-                        const mapOne = require('./mapOne') //remove this line once the selected map is stored on the server object in gameState
-                        const coords = helperFunctions.randomKey(mapOne.mapTwoCollisionHash)
-                        const arrayCoords = [String(coords).charAt(0),String(coords).charAt(1),String(coords).charAt(2)]
-                        // console.log("random coords",...arrayCoords)
-                        player.loc = new THREE.Vector3(...arrayCoords) 
-                        //send back new camera coords as well....
-                    }else if(clientData.keydown != false){
+                    // if(player.loc == undefined){
+                    //     player.loc = new THREE.Vector3(0,3,4) //this is where I generate a random location.
+                    //     const mapOne = require('./mapOne') //remove this line once the selected map is stored on the server object in gameState
+                    //     const coords = helperFunctions.randomKey(mapOne.mapTwoCollisionHash)
+                    //     const arrayCoords = [String(coords).charAt(0),String(coords).charAt(1),String(coords).charAt(2)]
+                    //     player.loc = new THREE.Vector3(...arrayCoords) 
+                    // }else
+                     if(clientData.keydown != false){
                         if(!player.voted){
-                            console.log("player wishes to vote",clientData.keydown)
+                            console.log("this player", socket.id," wishes to vote",clientData.keydown)
                             theServerInQuestion.moveDirectionVote = require('./vote').vote(clientData.keydown, theServerInQuestion.moveDirectionVote) 
                             console.log("now the votes look like:",theServerInQuestion.moveDirectionVote)
                             if(false){
                                 //if everyone has voted and agrees, then move 
+                                for(key in theServerInQuestion.moveDirectionVote){
+                                    if(key === theServerInQuestion.connectedPlayers.length){
+                                        console.log("agreement!")
+                                        //move 
+                                        player.loc = require('./movement').movement(clientData.keydown,player.loc)
+                                        theServerInQuestion.moveDirectionVote = {forward:0,backward:0,left:0,right: 0,up:0, down:0}
+                                    }
+                                }
                             }else{
                                 player.voted = true 
                             }
+                        }else{
+                            console.log("this player", socket.id," has already voted",clientData.keydown)
+                            // console.log("this player has already voted")
                         }
                         
-                        player.loc = require('./movement').movement(clientData.keydown,player.loc)
                     }
                 }
                 return player 
             })
             theServerInQuestion.keydown = undefined
-            theServerInQuestion.moveDirectionVote = {forward:0,backward:0,left:0,right: 0,up:0, down:0}
+            if(theServerInQuestion.moveDirectionVote == undefined){
+                theServerInQuestion.moveDirectionVote = {forward:0,backward:0,left:0,right: 0,up:0, down:0}
+            }
         }
-        // console.log("this is the new player location",theServerInQuestion.connectedPlayers[0].loc)
+        // console.log("this is the cube object",theServerInQuestion.cube)
         io.emit('gameState',theServerInQuestion)
     })
     socket.on('subscribeToCameraPosition',(camera)=>{

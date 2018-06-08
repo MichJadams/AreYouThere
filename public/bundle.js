@@ -531,19 +531,19 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         timestamp
       });
     });
-    this.state = { mazeType: this.props.location.mazeType, moveDirectionVote: { forward: 0, backward: 0, left: 0, right: 0, up: 0, down: 0 }, cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](2, 2, 10), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_3__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
+    this.state = { cube: this.props.location.cube, mazeType: this.props.location.mazeType, moveDirectionVote: { forward: 0, backward: 0, left: 0, right: 0, up: 0, down: 0 }, cameraKey: false, cameraPostion: new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](2, 2, 10), cameraRotation: new three__WEBPACK_IMPORTED_MODULE_3__["Euler"](0, 0, 0), keydown: false, connectedPlayers: this.props.history.location.state.connectedPlayers, isMounted: false, timestamp: 'no timestamp yet', value: '', serverId: this.props.match.params.id, maze: [] };
     // this.cameraPosition = new THREE.Vector3(0, 0, 5);
     //the following code aggrogates the updates for each player and then pushes them to the connected players array and then updates the state with the new array all at once
-    let connectedPlayers = [];
-    this.state.connectedPlayers.map(player => {
-      const nextPlayer = player;
-      nextPlayer.rot = new three__WEBPACK_IMPORTED_MODULE_3__["Euler"]();
-      nextPlayer.loc = new three__WEBPACK_IMPORTED_MODULE_3__["Vector3"](0, 0, 0);
-      nextPlayer.voted = false;
-      connectedPlayers.push(nextPlayer);
-    });
-    this.setState({ connectedPlayers });
-    // console.log("the connected player state initially ", this.state.connectedPlayers)
+    // let connectedPlayers = []
+    // // this.state.connectedPlayers.map((player)=>{
+    // //   const nextPlayer = player
+    // //   nextPlayer.rot = new THREE.Euler()
+    // //   nextPlayer.loc = new THREE.Vector3(0,0,0)
+    // //   nextPlayer.voted = false 
+    // //   connectedPlayers.push(nextPlayer)
+    // // })
+    // this.setState({connectedPlayers})
+    console.log("the connected player state initially ", this.state.connectedPlayers);
     // const clientData = this.state
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.get(`/getMaze/${this.state.mazeType}`).then(res => {
       // console.log("the maze looks like this", res.data)
@@ -558,7 +558,8 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       //perform collision detection here. 
       // console.log("this is the moving player, ", )
       Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToGameState"])(this.state, (err, gameState) => {
-        this.setState({ connectedPlayers: gameState.connectedPlayers, keydown: false });
+        // this.setState({connectedPlayers:gameState.connectedPlayers, keydown:false})
+        this.setState({ cube: gameState.cube, keydown: false });
       });
       const camera = { position: this.state.cameraPostion, rotation: this.state.cameraRotation, cameraKey: this.state.cameraKey, serverId: this.state.serverId };
       Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToCameraPosition"])(camera, (err, camera) => {
@@ -675,16 +676,21 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
               react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { wireframe: blockObject.wireframe, transparent: blockObject.transparent, opacity: blockObject.opacity, color: blockObject.color })
             );
           }),
-          this.state.connectedPlayers.map(player => {
-            // console.log("this is the player id", player.id, "and this is thier location", player.loc)
-            return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
-              'mesh',
-              {
-                rotation: player.rot, position: player.loc },
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 1, height: 1, depth: 1 }),
-              react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { color: player.color })
-            );
-          })
+
+          // this.state.connectedPlayers.map((player)=>{
+          //   // console.log("this is the player id", player.id, "and this is thier location", player.loc)
+          //   return(<mesh
+          //     rotation={player.rot} position={player.loc} >
+          //     <boxGeometry width={1} height={1} depth={1} />
+          //     <meshBasicMaterial color={player.color}/>
+          //   </mesh>)
+          // })
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'mesh',
+            { rotation: this.state.cube.rotation, position: this.state.cube.location },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('boxGeometry', { width: 1, height: 1, depth: 1 }),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement('meshBasicMaterial', { color: this.state.cube.color })
+          )
         )
       )
     );
@@ -746,7 +752,7 @@ class WaitingRoom extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
         // this.props.match.params.connectedPlayers = this.state.connectedPlayers
         // console.log("this is", this.props.match.params)
         const connectedPlayers = this.state.connectedPlayers;
-        this.props.history.push({ pathname: `/${this.state.id}/maze`, state: { connectedPlayers }, mazeType: serverState.mazeType });
+        this.props.history.push({ pathname: `/${this.state.id}/maze`, state: { connectedPlayers }, mazeType: serverState.mazeType, cube: serverState.cube });
       }
     });
   }
