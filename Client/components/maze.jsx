@@ -24,9 +24,10 @@ export default class Landing extends Component{
     timestamp:'no timestamp yet', 
     value: '', 
     serverId:this.props.match.params.id, 
-    maze: []
+    maze: [],
+    won: false
   }; 
-    console.log("the connected player state initially ", this.state.connectedPlayers)
+    // console.log("the connected player state initially ", this.state.connectedPlayers)
     axios.get(`/getMaze/${this.state.mazeType}`)
     .then((res)=>{
       const mazeData = res.data
@@ -34,12 +35,16 @@ export default class Landing extends Component{
     })
     this._onAnimate = () => {
       subscribeToGameState(this.state,(err,gameState)=>{
-        this.setState({cube:gameState.cube, keydown:false, moveDirectionVote:gameState.moveDirectionVote })
+        this.setState({won: gameState.won, cube:gameState.cube, keydown:false, moveDirectionVote:gameState.moveDirectionVote })
+        if(this.state.won){
+          //push the user out and back to the begining
+          this.props.history.push({pathname:`/lobby`})
+        }
       })
-      const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
-      subscribeToCameraPosition(camera,(err,camera)=>{
-        this.setState({cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey:false})
-      })
+      // const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
+      // subscribeToCameraPosition(camera,(err,camera)=>{
+      //   this.setState({cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey:false})
+      // })
     }
   }
   componentDidMount(){
