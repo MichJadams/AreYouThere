@@ -11,6 +11,10 @@ function subscribeToTimer(cb){
     socket.on('timer', timestamp => cb(null, timestamp));
     socket.emit('subscribeToTimer', 1000);
 }
+function subscribeToHighScores(cb){
+    socket.on('highScores', highScores => cb(null, highScores));
+    // socket.emit("subscribeToHighScores")
+}
 function subscribeToWaitingPlayers(cb){
     socket.on('waitingPlayerList', waitingPlayerList => cb(null, waitingPlayerList));
     socket.emit("subscribeToWaitingPlayers")
@@ -59,6 +63,7 @@ export {
     subscribeToTimer,
     subscribeToWaitingPlayers, 
     subscribeToServers,
+    subscribeToHighScores,
     subscribeToServerCookieID, 
     subscribeToServerState,
     subscribeToGameState,

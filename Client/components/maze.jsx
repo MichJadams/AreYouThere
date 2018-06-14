@@ -37,8 +37,7 @@ export default class Landing extends Component{
       subscribeToGameState(this.state,(err,gameState)=>{
         this.setState({won: gameState.won, cube:gameState.cube, keydown:false, moveDirectionVote:gameState.moveDirectionVote })
         if(this.state.won){
-          //push the user out and back to the begining
-          this.props.history.push({pathname:`/lobby`})
+          this.props.history.push({pathname:`/landing`})
         }
       })
       // const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}

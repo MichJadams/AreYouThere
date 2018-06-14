@@ -75,7 +75,7 @@
 /*!*************************************!*\
   !*** ./Client/components/client.js ***!
   \*************************************/
-/*! exports provided: subscribeToName, subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToServerCookieID, subscribeToServerState, subscribeToGameState, subscribeToJoinServer, subscribeToCameraPosition */
+/*! exports provided: subscribeToName, subscribeToTimer, subscribeToWaitingPlayers, subscribeToServers, subscribeToHighScores, subscribeToServerCookieID, subscribeToServerState, subscribeToGameState, subscribeToJoinServer, subscribeToCameraPosition */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84,6 +84,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToTimer", function() { return subscribeToTimer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToWaitingPlayers", function() { return subscribeToWaitingPlayers; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServers", function() { return subscribeToServers; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToHighScores", function() { return subscribeToHighScores; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerCookieID", function() { return subscribeToServerCookieID; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToServerState", function() { return subscribeToServerState; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribeToGameState", function() { return subscribeToGameState; });
@@ -103,6 +104,10 @@ function subscribeToName(name) {
 function subscribeToTimer(cb) {
     socket.on('timer', timestamp => cb(null, timestamp));
     socket.emit('subscribeToTimer', 1000);
+}
+function subscribeToHighScores(cb) {
+    socket.on('highScores', highScores => cb(null, highScores));
+    // socket.emit("subscribeToHighScores")
 }
 function subscribeToWaitingPlayers(cb) {
     socket.on('waitingPlayerList', waitingPlayerList => cb(null, waitingPlayerList));
@@ -305,9 +310,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Landing; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/react.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
-
+/* harmony import */ var _client_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./client.js */ "./Client/components/client.js");
 
 
 
@@ -322,13 +325,13 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleChange(event) {
-    this.setState({ value: event.target.value });
+    this.setState({ value: event.target.value, nameSelected: true });
   }
   handleSubmit(event) {
     this.setState({ nameSelected: true });
     const name = this.state.value;
-    Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToName"])(name);
-    this.props.history.push({ pathname: `/lobby` });
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToName"])(name);
+    this.props.history.push({ pathname: '/lobby' });
   }
 
   render() {
@@ -388,13 +391,18 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     this.state = {
       servers: {},
       waitingPlayers: [],
-      serverJoinable: false
+      serverJoinable: false,
+      highScores: [{ players: [{ name: 'bestplayer' }], score: 100 }] //an array of objects with players and score keys. The players are the players in the map
     };
     Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToWaitingPlayers"])((err, waitingPlayers) => {
       this.setState({ waitingPlayers });
     });
     Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToServers"])((err, servers) => {
       this.setState({ servers });
+    });
+    Object(_client_js__WEBPACK_IMPORTED_MODULE_2__["subscribeToHighScores"])((err, highScores) => {
+      console.log("scores I got back");
+      this.setState({ highScores });
     });
     this.goingToServer = this.goingToServer.bind(this);
   }
@@ -458,6 +466,25 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
             'Create a Server'
           )
         )
+      ),
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+        'div',
+        { className: 'waitingServers' },
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+          'h4',
+          null,
+          'High scores'
+        ),
+        this.state.highScores.map(game => {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(
+            'div',
+            { className: 'lobbyText' },
+            'players: ',
+            game.players.map(player => player.name.concat(",  ")),
+            ' scored ',
+            game.score
+          );
+        })
       )
     );
   }
@@ -510,21 +537,25 @@ class Landing extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       timestamp: 'no timestamp yet',
       value: '',
       serverId: this.props.match.params.id,
-      maze: []
+      maze: [],
+      won: false
     };
-    console.log("the connected player state initially ", this.state.connectedPlayers);
+    // console.log("the connected player state initially ", this.state.connectedPlayers)
     axios__WEBPACK_IMPORTED_MODULE_4___default.a.get(`/getMaze/${this.state.mazeType}`).then(res => {
       const mazeData = res.data;
       this.setState({ maze: mazeData });
     });
     this._onAnimate = () => {
       Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToGameState"])(this.state, (err, gameState) => {
-        this.setState({ cube: gameState.cube, keydown: false, moveDirectionVote: gameState.moveDirectionVote });
+        this.setState({ won: gameState.won, cube: gameState.cube, keydown: false, moveDirectionVote: gameState.moveDirectionVote });
+        if (this.state.won) {
+          this.props.history.push({ pathname: `/landing` });
+        }
       });
-      const camera = { position: this.state.cameraPostion, rotation: this.state.cameraRotation, cameraKey: this.state.cameraKey, serverId: this.state.serverId };
-      Object(_client_js__WEBPACK_IMPORTED_MODULE_1__["subscribeToCameraPosition"])(camera, (err, camera) => {
-        this.setState({ cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey: false });
-      });
+      // const camera = {position:this.state.cameraPostion,rotation: this.state.cameraRotation, cameraKey:this.state.cameraKey, serverId: this.state.serverId}
+      // subscribeToCameraPosition(camera,(err,camera)=>{
+      //   this.setState({cameraRotation: camera.rotation, cameraPosition: camera.position, cameraKey:false})
+      // })
     };
   }
   componentDidMount() {
@@ -798,7 +829,7 @@ react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_
         null,
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { exact: true, path: '/', component: _components_landing_jsx__WEBPACK_IMPORTED_MODULE_3__["default"] }),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { path: '/lobby', component: _components_lobby_jsx__WEBPACK_IMPORTED_MODULE_4__["default"] }),
-        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { exact: true, path: '/server/createServer', component: _components_createServer_jsx__WEBPACK_IMPORTED_MODULE_6__["default"] }),
+        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { path: '/server/createServer', component: _components_createServer_jsx__WEBPACK_IMPORTED_MODULE_6__["default"] }),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { exact: true, path: '/:id/waitingRoom', component: _components_waitingRoom_jsx__WEBPACK_IMPORTED_MODULE_5__["default"] }),
         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], { exact: true, path: '/:id/maze', component: _components_maze_jsx__WEBPACK_IMPORTED_MODULE_7__["default"] })
     )

@@ -2,7 +2,7 @@ const express = require('express');
 const app = express()
 const server = require('http').Server(app);
 const io = require('socket.io')(server)
-const cookierParser = require('socket.io-cookie-parser') //gah, which of these is the real cookieParser?
+// const cookierParser = require('socket.io-cookie-parser') //gah, which of these is the real cookieParser?
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const session = require('express-session')
@@ -27,7 +27,8 @@ saveUninitialized: true}))
 //but bsacially this object just gets really big holding everything together. I fill it with initial data as a template 
 let badwayMasterGameState = {
     servers:{},
-    waitingPlayers:[{name:'fakeplayer', id: '124u234fdsk932', inGame: false}]
+    waitingPlayers:[{name:'fakeplayer', id: '124u234fdsk932', inGame: false}],
+    highScores:[{players:[{name:'goodplayer', id: '124u234fdsk932'},{name:'another', id: 'jfkdsjlkfdsjfkdjs'}],score:100}]
 } 
 app.post('/createServer',(req,res,next)=>{ 
     badwayMasterGameState.servers[req.body.id]=(req.body)
@@ -48,9 +49,10 @@ io.on('connection',(socket)=>{
       }, interval);
     })
     socket.on('subscribeToWaitingPlayers', ()=>{
-        io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
     })
     socket.on('subscribeToServers', ()=>{
+        io.emit('highScores', badwayMasterGameState.highScores)
+        io.emit('waitingPlayerList',badwayMasterGameState.waitingPlayers)
         io.emit('serversList', badwayMasterGameState.servers);
     })
     socket.on('subscribeToServerCookieID', ()=>{
@@ -101,6 +103,7 @@ io.on('connection',(socket)=>{
                                         // if there is agreement
                                         theServerInQuestion.cube.location = require('./movement').movement(clientData.keydown,theServerInQuestion.cube.location)
                                         theServerInQuestion.won = require('./movement').winCheck(clientData.keydown,theServerInQuestion.cube.location)
+                                        
                                     }
                                 }
                                 theServerInQuestion.moveDirectionVote = {forward:0,backward:0,left:0,right: 0,up:0, down:0}
@@ -112,6 +115,14 @@ io.on('connection',(socket)=>{
                             }
                         }
                     }
+                }
+                if(theServerInQuestion.won){
+                    //add thier high score to the gamer master state,
+                    badwayMasterGameState.highScores.push({
+                        players:theServerInQuestion.connectedPlayers,
+                        score:100
+                    }) 
+                    io.emit('highScores',badwayMasterGameState.highScores)
                 }
                 return player 
             })

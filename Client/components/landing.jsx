@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as THREE from 'three';
 import {subscribeToName} from './client.js'
 
 // let OrbitControls = require('three-orbit-controls')(THREE)
@@ -13,13 +12,13 @@ export default class Landing extends Component{
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleChange(event) {
-    this.setState({value: event.target.value});
+    this.setState({value: event.target.value,nameSelected:true});
   }
   handleSubmit(event) {
     this.setState({nameSelected:true})
     const name = this.state.value
       subscribeToName(name)
-      this.props.history.push({pathname:`/lobby`})
+      this.props.history.push({pathname:'/lobby'})
   }
 
   render(){

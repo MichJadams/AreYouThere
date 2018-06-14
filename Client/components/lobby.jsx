@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {subscribeToWaitingPlayers,subscribeToServers, subscribeToServerState, subscribeToJoinServer } from './client.js'
+import {subscribeToWaitingPlayers,subscribeToServers, subscribeToHighScores, subscribeToJoinServer } from './client.js'
 
 export default class Landing extends Component{
   constructor(props){
@@ -8,13 +8,18 @@ export default class Landing extends Component{
     this.state={
       servers:{},
       waitingPlayers:[],
-      serverJoinable: false
+      serverJoinable: false,
+      highScores:[{players:[{name:'bestplayer'}],score:100}] //an array of objects with players and score keys. The players are the players in the map
     }
     subscribeToWaitingPlayers((err,waitingPlayers)=>{
       this.setState({waitingPlayers})
     })
     subscribeToServers((err,servers)=>{
       this.setState({servers})
+    })
+    subscribeToHighScores((err,highScores)=>{
+      console.log("scores I got back")
+      this.setState({highScores})
     })
     this.goingToServer = this.goingToServer.bind(this)
   }
@@ -52,6 +57,14 @@ export default class Landing extends Component{
             })
           }
           <Link to={"/server/createServer"}><button className="serverButton" autoFocus>Create a Server</button></Link>
+        </div>
+        <div className ="waitingServers">
+        <h4>High scores</h4>
+        {
+          this.state.highScores.map((game)=>{
+            return <div className="lobbyText">players: {game.players.map(player=>player.name.concat(",  "))} scored {game.score}</div>
+          })
+        }
         </div>
       </div>)
   } 
